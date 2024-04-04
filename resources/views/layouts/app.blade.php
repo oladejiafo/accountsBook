@@ -46,7 +46,7 @@
 
             <div class="sidebar-header">
                 <a class="navbar-brand titlefont mr-4" href="{{ route('home') }}"><h3>AfriLedger </h3></a>
-                @if($companyName)
+                @if(isset($companyName))
                     <div class="navbar-brandc coyfont mr-4 text-center">
                         [ {{ $companyName }} ]
                     </div>
@@ -75,8 +75,8 @@
                 <li>
                     <a href="#saleSubmenu" data-toggle="collapse" class="dropdown-toggle sidebar-text right-arrow sidebar-button"><i class="fas fa-dollar-sign"></i> Sales</a>
                     <ul class="collapse list-unstyled" id="saleSubmenu">
-                        <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{% url 'new-sale' %}"><i class="fas fa-dot-circle"></i> New Outgoing Stock</a> </li>
-                        <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{% url 'sales-list' %}"><i class="fas fa-dot-circle"></i> Sales Orders</a> </li>
+                        <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('sales.create') }}"><i class="fas fa-dot-circle"></i> New Sale</a> </li>
+                        <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{% url 'sales-list' %}"><i class="fas fa-dot-circle"></i> Sales/Orders</a> </li>
                     </ul>
                 </li>
                 <li>
@@ -92,7 +92,7 @@
 
                 <li class="bottomleft">
                     <a href="#UserSubmenu" data-toggle="collapse" class="dropdown-toggle sidebar-text right-arrow sidebar-button"><i class="fas fa-user-circle"></i> @if(request()->user())
-                        <p>User: {{ request()->user()->name }}</p>
+                        <span> {{ request()->user()->name }}</span>
                     @endif
                     </a>
                     <ul class="collapse list-unstyled" id="UserSubmenu">

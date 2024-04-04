@@ -12,9 +12,14 @@ class HomeController extends Controller
 {
     public function index()
     {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }
+                
         $companyId = null;
         $companyName = null;
-//   dd(auth()->user());
+
         if (auth()->user()) {
             $companyId = auth()->user()->company_id;
             $company = Company::find($companyId);

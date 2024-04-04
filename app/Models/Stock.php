@@ -25,4 +25,9 @@ class Stock extends Model
     {
         return $this->belongsTo(StockLocation::class, 'store_location');
     }
+
+    public function saleItems()
+    {
+        return $this->hasMany(SaleItem::class, 'stock_id');
+    }
 }

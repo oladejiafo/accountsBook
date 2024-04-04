@@ -16,6 +16,11 @@ class StockController extends Controller
 {
     public function index(Request $request)
     {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }
+                
         $query = $request->input('search');
         $companyId = Auth::user()->company_id ?? 1;
     
@@ -40,6 +45,11 @@ class StockController extends Controller
 
     public function create()
     {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }
+
         $companyId = Auth::user()->company_id ?? 1;
         $title = "New Stock";
         $form = null; // Initialize the form variable
@@ -53,6 +63,11 @@ class StockController extends Controller
 
     public function edit($id)
     {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }
+
         $companyId = Auth::user()->company_id ?? 1;
         $title = "Edit Stock";
         $form = null; 
@@ -68,6 +83,11 @@ class StockController extends Controller
 
     public function store(Request $request)
     {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }
+
         // Validate the form data
         $validatedData = $request->validate([
             'category' => 'required',
@@ -98,6 +118,11 @@ class StockController extends Controller
 
     public function update(Request $request, $id)
     {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }
+
         // Validate the form data
         $validatedData = $request->validate([
             'category' => 'required',
@@ -131,6 +156,11 @@ class StockController extends Controller
 
     public function destroy($id)
     {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }
+
         // Find the stock by ID and delete it
         Stock::findOrFail($id)->delete();
     

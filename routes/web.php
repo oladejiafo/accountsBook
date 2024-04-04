@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\StockController;
 
+use App\Http\Controllers\TransactionsController;
+
 use App\Http\Controllers\Auth\RegisteredUserController;
 /*
 |--------------------------------------------------------------------------
@@ -32,9 +34,20 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/about', [HomeController::class, 'about'])->name('about');
 
+############ INVENTORY AND STOCKS
 Route::get('/inventory', [StockController::class, 'index'])->name('inventory');
 Route::get('/stock/new', [StockController::class, 'create'])->name('new-stock');
 Route::post('/stock/store', [StockController::class, 'store'])->name('store-stock');
 Route::get('/stock/{id}/edit', [StockController::class, 'edit'])->name('edit-stock');
 Route::put('/stock/{id}/update', [StockController::class, 'update'])->name('update-stock');
 Route::delete('/stock/{id}/delete', [StockController::class, 'destroy'])->name('delete-stock');
+
+########### TRANSACTIONS 
+Route::get('sales', [TransactionsController::class, 'salesIndex'])->name('sales.index');
+Route::post('/sales/new', [TransactionsController::class, 'salesCreate'])->name('sales.create');
+Route::post('sales/store', [TransactionsController::class, 'salesStore'])->name('sales.store');
+Route::delete('sales/{sale}', [TransactionsController::class, 'salesDestroy'])->name('sales.destroy');
+Route::get('/bill/{sale}', [TransactionsController::class, 'salesShow'])->name('sales.show');
+// Define similar routes for other actions
+
+
