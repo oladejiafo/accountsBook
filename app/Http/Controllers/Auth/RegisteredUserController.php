@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Company;
+use App\Models\Currency;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
@@ -49,30 +50,13 @@ class RegisteredUserController extends Controller
 
 
         event(new Registered($user));
-
-        Auth::login($user);
+        $currencies = Currency::pluck('acronym', 'id'); 
+        // Auth::login($user);
 
         // return redirect(RouteServiceProvider::HOME);
-        return view('auth.register-company');
+        return view('auth.register-company', compact('currencies'));
     }
 
-    // public function storeStep1(Request $request)
-    // {
-    //     $request->validate([
-    //         'name' => ['required', 'string', 'max:255'],
-    //         'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-    //         'password' => ['required', 'confirmed', Rules\Password::defaults()],
-    //     ]);
-
-    //     // Store the user details in the session for the next step of registration
-    //     $request->session()->put('user', [
-    //         'name' => $request->name,
-    //         'email' => $request->email,
-    //         'password' => Hash::make($request->password),
-    //     ]);
-
-    //     return redirect()->route('register.step2');
-    // }
     public function createCompany(Request $request)
     {
         // Validate company registration form data
@@ -89,6 +73,9 @@ class RegisteredUserController extends Controller
         $company->address = $request->address;
         $company->website = $request->website;
         $company->phone = $request->phone;
+        $company->business_type = $request->business_type;
+        $company->subscription_type = $request->subscription_type;
+        $company->currency = $request->currency;
         // Add other company details as needed
         $company->save();
 
@@ -97,7 +84,16 @@ class RegisteredUserController extends Controller
         $user->company_id = $company->id;
         $user->save();
 
+        Auth::login($user);
         // Redirect to home or any other desired page
         return redirect(RouteServiceProvider::HOME);
+    }
+
+    public function showRegistrationForm()
+    {
+        // Fetch currency data from the database
+        $currencies = Currency::pluck('acronym', 'id'); // Assuming 'acronym' is the column containing currency acronyms
+
+        return view('auth.register', ['currencies' => $currencies]);
     }
 }

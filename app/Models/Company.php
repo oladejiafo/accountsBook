@@ -21,6 +21,9 @@ class Company extends Model
         'address',
         'website',
         'phone',
+        'currency',
+        'business_type',
+        'subscription_type',
     ];
 
     /**

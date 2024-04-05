@@ -4,7 +4,7 @@
     <x-auth-card>
         <x-slot name="logo">
             <a href="/">
-                <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
+                <img src="{{ asset('images/afriledger_logo.png') }}" classx="w-20 h-20" alt="Logo">
             </a>
         </x-slot>
 
@@ -20,7 +20,6 @@
                 <x-input id="company_name" class="block mt-1 w-full" type="text" name="company_name" :value="old('company_name')" required autofocus />
             </div>
 
-           
             <!-- Address -->
             <div class="mt-4">
                 <x-label for="address" :value="__('Address')" />
@@ -43,29 +42,43 @@
                 <x-input id="website" class="block mt-1 w-full" type="text" name="website" :value="old('website')" />
             </div>
 
-            {{-- <!-- Subscription Type -->
+            <!-- Default Currency -->
+            <div class="mt-4">
+                <x-label for="currency" :value="__('Default Currency')" />
+                <select id="currency" class="block mt-1 w-full" name="currency" required>
+                    <option value="">Select Default Currency</option>
+                    @foreach($currencies as $id => $acronym)
+                        <option value="{{ $id }}">{{ $acronym }}</option>
+                    @endforeach
+                </select>                
+            </div>
+            
+            <!-- Subscription Type -->
             <div class="mt-4">
                 <x-label for="subscription_type" :value="__('Subscription Type')" />
-                <x-select id="subscription_type" class="block mt-1 w-full" name="subscription_type" required>
+                <select id="subscription_type" class="block mt-1 w-full" name="subscription_type" required>
                     <option value="">Select Subscription Type</option>
                     <option value="monthly">Monthly</option>
                     <option value="annual">Annual</option>
                     <!-- Add more options as needed -->
-                </x-select>
+                </select>
             </div>
 
             <!-- Business Type -->
             <div class="mt-4">
                 <x-label for="business_type" :value="__('Business Type')" />
-                <x-select id="business_type" class="block mt-1 w-full" name="business_type" required>
+                <select id="business_type" class="block mt-1 w-full" name="business_type" required>
                     <option value="">Select Business Type</option>
                     <option value="product">Product Based</option>
                     <option value="service">Service Based</option>
                     <!-- Add more options as needed -->
-                </x-select>
-            </div> --}}
+                </select>
+            </div>
 
             <div class="flex items-center justify-end mt-4">
+                <a class="underline text-sm text-gray-600 hover:text-gray-900" href="{{ route('login') }}">
+                    {{ __('Go to Login') }}
+                </a>
                 <x-button class="ml-4">
                     {{ __('Register') }}
                 </x-button>

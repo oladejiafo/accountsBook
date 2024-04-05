@@ -23,6 +23,7 @@ class CreateCompaniesTable extends Migration
             $table->string('website')->nullable();
             $table->string('subscription_type')->nullable();
             $table->enum('business_type', ['service', 'product', 'both'])->default('service');
+            $table->string('currency')->nullable();
             $table->timestamps();
         });
     }

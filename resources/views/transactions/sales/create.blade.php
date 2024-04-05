@@ -156,6 +156,7 @@
                    $(this).attr({'name': name, 'id': id}).val('').removeAttr('checked');
                }
            });
+           newElement.find('.quantity').focus().val('1');
            newElement.find('label').each(function() {
                var forValue = $(this).attr('for');
                if (forValue) {

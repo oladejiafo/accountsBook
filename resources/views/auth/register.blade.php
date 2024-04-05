@@ -2,7 +2,7 @@
     <x-auth-card>
         <x-slot name="logo">
             <a href="/">
-                <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
+                <img src="{{ asset('images/afriledger_logo.png') }}" classx="w-20 h-20" alt="Logo">
             </a>
         </x-slot>
 
@@ -38,6 +38,9 @@
 
             <!-- Next Button -->
             <div class="flex items-center justify-end mt-4">
+                <a class="underline text-sm text-gray-600 hover:text-gray-900" href="{{ route('login') }}">
+                    {{ __('Go to Login') }}
+                </a>
                 <x-button class="ml-4" type="submit" name="action" value="next">
                     {{ __('Next') }}
                 </x-button>

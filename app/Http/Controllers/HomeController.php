@@ -3,7 +3,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Stock;
 use App\Models\Company;
-use App\Models\Sale;
+use App\Models\SaleBill;
 use App\Models\Purchase;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,7 +16,7 @@ class HomeController extends Controller
         if (!auth()->check() || !auth()->user()->company_id) {
             return redirect()->route('login')->with('error', 'Unauthorized access.');
         }
-                
+
         $companyId = null;
         $companyName = null;
 
@@ -51,7 +51,7 @@ class HomeController extends Controller
             $catt[] = $item->category->name;
         }
         
-        $sales = Sale::where('company_id', $companyId)
+        $sales = SaleBill::where('company_id', $companyId)
             ->orderByDesc('created_at')
             ->take(3)
             ->get();

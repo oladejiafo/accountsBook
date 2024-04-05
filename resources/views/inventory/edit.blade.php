@@ -35,6 +35,11 @@
         </div>
 
         <div class="form-group">
+            <label for="price">Unit Price:</label>
+            <input type="number" name="price" id="price" class="form-control" value="{{ $stock->price }}" required>
+        </div>
+
+        <div class="form-group">
             <label for="reorder">Reorder Point:</label>
             <input type="number" name="reorder" id="reorder" class="form-control" value="{{ $stock->reorder_point }}">
         </div>

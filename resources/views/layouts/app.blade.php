@@ -8,12 +8,7 @@
     <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
-    <!-- Main CSS -->
-    <link rel="stylesheet" href="{{ asset('css/main.css') }}">
-    <!-- Sidebar CSS -->
-    <link rel="stylesheet" href="{{ asset('css/sidebar.css') }}">
-    <!-- Dialog Box CSS -->
-    <link rel="stylesheet" href="{{ asset('css/dialogbox.css') }}">
+
 
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 
@@ -24,9 +19,22 @@
     {{-- <link rel="stylesheet" href="{{ asset('css/app.css') }}"> --}}
     <script src="{{ asset('js/app.js') }}" defer></script>
 
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="{{ asset('css/main.css') }}">
+    <!-- Sidebar CSS -->
+    <link rel="stylesheet" href="{{ asset('css/sidebar.css') }}">
+    <!-- Dialog Box CSS -->
+    <link rel="stylesheet" href="{{ asset('css/dialogbox.css') }}">
+<style>
+    .logo-wrapper {
+        max-width: 100%;
+        height: auto;
+        color: inherit; /* Ensure the logo inherits the color of its parent */
+    }
+</style>
 </head>
 <body>
 
@@ -45,15 +53,18 @@
         <nav id="sidebar">
 
             <div class="sidebar-header">
-                <a class="navbar-brand titlefont mr-4" href="{{ route('home') }}"><h3>AfriLedger </h3></a>
+                <a class="navbar-brand titlefont mr-4" href="{{ route('home') }}">
+                    <div class="logo-wrapper">
+                        <img src="{{ asset('images/afriledger_logo_white.png') }}" class="logo" alt="Logo">
+                    </div>
+                </a>
                 @if(isset($companyName))
                     <div class="navbar-brandc coyfont mr-4 text-center">
                         [ {{ $companyName }} ]
                     </div>
                 @endif  
             </div>
-          
-        
+            
             <ul class="list-unstyled sidebar-components">
                 <li> 
                     <a class="sidebar-text sidebar-button" href="{{ route('home') }}"><i class="fas fa-home"></i> Home</a>
@@ -68,7 +79,7 @@
                 <li>
                     <a href="#purchaseSubmenu" data-toggle="collapse" class="dropdown-toggle sidebar-text right-arrow sidebar-button"><i class="fas fa-cash-register"></i> Purchases</a>
                     <ul class="collapse list-unstyled" id="purchaseSubmenu">
-                        <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{% url 'select-supplier' %}"><i class="fas fa-dot-circle"></i> New Incoming Stock</a> </li>
+                        <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('select-supplier') }}"><i class="fas fa-dot-circle"></i> New Incoming Stock</a> </li>
                         <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{% url 'purchases-list' %}"><i class="fas fa-dot-circle"></i> Purchases List</a> </li>
                     </ul>
                 </li>
@@ -76,7 +87,7 @@
                     <a href="#saleSubmenu" data-toggle="collapse" class="dropdown-toggle sidebar-text right-arrow sidebar-button"><i class="fas fa-dollar-sign"></i> Sales</a>
                     <ul class="collapse list-unstyled" id="saleSubmenu">
                         <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('sales.create') }}"><i class="fas fa-dot-circle"></i> New Sale</a> </li>
-                        <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{% url 'sales-list' %}"><i class="fas fa-dot-circle"></i> Sales/Orders</a> </li>
+                        <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('sales.index') }}"><i class="fas fa-dot-circle"></i> Sales/Orders</a> </li>
                     </ul>
                 </li>
                 <li>

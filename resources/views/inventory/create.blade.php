@@ -35,6 +35,11 @@
         </div>
 
         <div class="form-group">
+            <label for="price">Unit Price:</label>
+            <input type="number" name="price" id="price" class="form-control" required>
+        </div>
+
+        <div class="form-group">
             <label for="reorder">Reorder Point:</label>
             <input type="number" name="reorder" id="reorder" class="form-control">
         </div>

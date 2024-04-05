@@ -30,6 +30,7 @@
                             <th class="align-middle">Stock Category</th>
                             <th class="align-middle" width="20%">Stock Name</th>
                             <th class="align-middle">Current Stock in Inventory</th>
+                            <th class="align-middle">Unit Price</th>
                             <th class="align-middle">Location</th>
                             <th class="align-middle">Actions</th>
                         </tr>
@@ -46,6 +47,7 @@
                                     <td class="align-middle">{{ $stock->category ? $stock->category->name : 'N/A' }}</td>
                                     <td class="align-middle">{{ $stock->name }}</td>
                                     <td class="align-middle">{{ $stock->quantity }}</td>
+                                    <td class="align-middle">{{ $defaultCurrency }}{{ number_format($stock->price, 2) }}</td>
                                     <td class="align-middle">{{ $stock->storeLocation->name }}</td>
                                     <td class="align-middle">
                                         <a href="{{ route('edit-stock', $stock->id) }}" class="btn btn-info btn-sm">Edit Details</a>

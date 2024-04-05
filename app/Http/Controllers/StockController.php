@@ -24,22 +24,32 @@ class StockController extends Controller
         $query = $request->input('search');
         $companyId = Auth::user()->company_id ?? 1;
     
-        $stocks = Stock::where('company_id', $companyId)
-                       ->with('category');
-    
+        // $stocks = Stock::where('company_id', $companyId)
+        //                ->with('category');
+        
+        // Define $stocks before using it
+        $stocks = Stock::query();
+
         if ($query) {
-            $stocks->where(function ($queryBuilder) use ($query) {
-                $queryBuilder->where('name', 'like', '%' . $query . '%')
-                                ->orWhereHas('category', function ($categoryQuery) use ($query) {
-                                    $categoryQuery->where('name', 'like', '%' . $query . '%');
-                                })
-                                ->orWhereHas('storeLocation', function ($locationQuery) use ($query) {
-                                    $locationQuery->where('name', 'like', '%' . $query . '%');
-                                });
-            });
+            $stocks->where('company_id', $companyId)
+                ->where(function ($queryBuilder) use ($query) {
+                    $queryBuilder->where('name', 'like', '%' . $query . '%')
+                        ->orWhereHas('category', function ($categoryQuery) use ($query) {
+                            $categoryQuery->where('name', 'like', '%' . $query . '%');
+                        })
+                        ->orWhereHas('storeLocation', function ($locationQuery) use ($query) {
+                            $locationQuery->where('name', 'like', '%' . $query . '%');
+                        });
+                });
+        } else {
+            // Continue chaining methods on the $stocks query builder instance
+            $stocks->where('company_id', $companyId)
+                ->with('category');
         }
-    
+
+        // Execute the query and fetch the results
         $stocks = $stocks->get();
+
         return view('inventory.index', compact('stocks'));
     }
 
@@ -93,6 +103,7 @@ class StockController extends Controller
             'category' => 'required',
             'name' => 'required',
             'quantity' => 'required|numeric',
+            'price' => 'required|numeric',
             'location' => 'required',
             'reorder' => 'nullable|numeric',
             'description' => 'nullable',
@@ -103,6 +114,7 @@ class StockController extends Controller
         $stock->category_id = $validatedData['category'];
         $stock->name = $validatedData['name'];
         $stock->quantity = $validatedData['quantity'];
+        $stock->price = $validatedData['price'];
         $stock->store_location = $validatedData['location'];
         $stock->description = $validatedData['description'];
         $stock->reorder_point = $validatedData['reorder'];
@@ -128,6 +140,7 @@ class StockController extends Controller
             'category' => 'required',
             'name' => 'required',
             'quantity' => 'required|numeric',
+            'price' => 'required|numeric',
             'reorder' => 'nullable|numeric',
             'location' => 'required',
             'description' => 'nullable',
@@ -140,6 +153,7 @@ class StockController extends Controller
         $stock->category_id = $validatedData['category'];
         $stock->name = $validatedData['name'];
         $stock->quantity = $validatedData['quantity'];
+        $stock->price = $validatedData['price'];
         $stock->reorder_point = $validatedData['reorder'];
         $stock->store_location = $validatedData['location'];
         $stock->description = $validatedData['description'];
@@ -160,9 +174,15 @@ class StockController extends Controller
         if (!auth()->check() || !auth()->user()->company_id) {
             return redirect()->route('login')->with('error', 'Unauthorized access.');
         }
-
+        $companyId = Auth::user()->company_id ?? 1;
         // Find the stock by ID and delete it
-        Stock::findOrFail($id)->delete();
+        // Stock::where('company_id', $companyId)->findOrFail($id)->delete();
+        $stock = Stock::where('company_id', $companyId)->find($id);
+
+        if ($stock) {
+            $stock->delete();
+            // Optionally, you might want to handle successful deletion here
+        }
     
         // Redirect back to the inventory page or any other desired page
         return redirect()->route('inventory')->with('success', 'Stock deleted successfully.');

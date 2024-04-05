@@ -3,7 +3,7 @@
 @section('title', 'Home')
 
 @section('content')
-<div style="margin: 5%">
+<div>
    
     <div style="color:#464646; font-style: bold; font-size: 3rem; border-bottom: 1px solid #464646;">
         <span>Welcome,  @auth {{ auth()->user()->name }} @else Guest @endauth </span>
@@ -27,10 +27,10 @@
 
     <div class="row">
         <div class="col-md-6">
-            <a href="{% url 'select-supplier' %}" class="btn btn-success btn-lg btn-block btn-huge">New Incoming Stock</a>
+            <a href="{{ route('sales.create') }}" class="btn btn-success btn-lg btn-block btn-huge">Add New Sales</a>
         </div>
         <div class="col-md-6">
-            <a href="{% url 'new-sale' %}" class="btn btn-success btn-lg btn-block btn-huge">New Outgoing Stock</a>
+            <a href="{% url 'select-supplier' %}" class="btn btn-success btn-lg btn-block btn-huge">Add New Purchases</a>
         </div>
     </div>
     
@@ -47,11 +47,11 @@
                     @endif
                     <div class="row">               
                         <div class="col-md-9"> 
-                            Bill No: #{{ $item->billno }} <br> 
+                            Bill No: #{{ $item->id }} <br> 
                             Purchased by <b>{{ $item->name }}</b> <br>
-                            <small><i>{{ $item->time->toDateString() }}</i></small>
+                            <small><i>{{ $item->created_at->format('F j, Y') }}</i></small>
                         </div>
-                        <div class="col-md-2"> <br> ${{ $item->get_total_price }} <br> <a href="{{ route('sale-bill', $item->billno) }}">View Bill</a> </div>
+                        <div class="col-md-2"> <br>  {{ $defaultCurrency }}{{ number_format($item->totalprice, 2) }} <br> <a href="{{ route('sales.show', $item->id) }}">View Bill</a> </div>
                     </div>
                 @endforeach
             </div>
@@ -64,11 +64,11 @@
                     @endif
                     <div class="row">               
                         <div class="col-md-9"> 
-                            Bill No: #{{ $item->billno }} <br> 
-                            Purchased by <b>{{ $item->supplier->name }}</b> <br>
-                            <small><i>{{ $item->time->toDateString() }}</i></small>
+                            Bill No: #{{ $item->id }} <br> 
+                            Purchased from <b>{{ $item->supplier->name }}</b> <br>
+                            <small><i>{{ $item->created_at->format('F j, Y') }}</i></small>
                         </div>
-                        <div class="col-md-2"> <br>${{ $item->get_total_price }} <br> <a href="{{ route('purchase-bill', $item->billno) }}">View Bill</a> </div>
+                        <div class="col-md-2"> <br>{{ $defaultCurrency }}{{ number_format($item->totalprice, 2) }} <br> <a href="{{ route('purchase.bill', $item->id) }}">View Bill</a> </div>
                     </div>
                 @endforeach
             </div>

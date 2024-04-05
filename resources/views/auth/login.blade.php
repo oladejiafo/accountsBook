@@ -7,8 +7,8 @@
         </style>
         <x-slot name="logo">
             <a href="/">
-                <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
-                {{-- <img src="{{ asset('path/to/your/logo.png') }}" class="w-20 h-20" alt="Logo"> --}}
+                {{-- <x-application-logo class="w-20 h-20 fill-current text-gray-500" /> --}}
+                <img src="{{ asset('images/afriledger_logo.png') }}" classx="w-20 h-20" alt="Logo">
             </a>
         </x-slot>
         
