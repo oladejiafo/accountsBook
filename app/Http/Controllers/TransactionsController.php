@@ -28,7 +28,7 @@ class TransactionsController extends Controller
         }
         $companyId = auth()->user()->company_id;
         $sales = SaleBill::where('company_id', $companyId)->with('saleItems')->orderBy('created_at', 'desc')->paginate(10);
-       
+
         return view('transactions.sales.index', compact('sales'));
     }
 
@@ -231,18 +231,6 @@ class TransactionsController extends Controller
         return view('transactions.purchases.index', compact('purchases'));
     }
 
-    public function supplierIndex()
-    {
-        // Check authentication and company identification
-        if (!auth()->check() || !auth()->user()->company_id) {
-            return redirect()->route('login')->with('error', 'Unauthorized access.');
-        }
-        $companyId = auth()->user()->company_id;
-        // $purchases = PurchaseBill::where('company_id', $companyId)->with('items')->orderBy('created_at', 'desc')->paginate(10);
-       
-        // return view('transactions.purchases.index', compact('purchases'));
-    }
-
     public function purchasesShow($id)
     {
         // Check authentication and company identification
@@ -288,4 +276,106 @@ class TransactionsController extends Controller
         return redirect()->route('purchases.index')->with('success', 'Purchase deleted successfully.');
     }
 
+
+    public function supplierIndex()
+    {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }
+        $companyId = auth()->user()->company_id;
+        $suppliers = Supplier::where('company_id', $companyId)->orderBy('created_at', 'desc')->paginate(10);
+       
+        return view('transactions.suppliers.index', compact('suppliers'));
+    }
+
+    public function supplier($id)
+    {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }
+
+        $companyId = auth()->user()->company_id;
+        $supplier = Supplier::where('company_id', $companyId)->findOrFail($id);
+
+        // Retrieve the purchases for the supplier and paginate the results
+        $purchases = $supplier->purchases()->paginate(10);
+    
+        return view('transactions.suppliers.view', compact('supplier', 'purchases'));
+    }
+
+    public function supplierCreate()
+    {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }
+        return view('transactions.suppliers.create');
+    }
+
+    public function supplierStore(Request $request)
+    {
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:191',
+            'contact_person' => 'nullable|string|max:191',
+            'email' => 'nullable|email|max:191',
+            'phone' => 'nullable|string|max:191',
+            'address' => 'nullable|string',
+            'gstin' => 'nullable|string|max:45',
+        ]);
+
+        $validatedData['company_id'] = auth()->user()->company_id;
+
+        Supplier::create($validatedData);
+
+        return redirect()->route('supplier.index')->with('success', 'Supplier created successfully.');
+    }
+
+    public function supplierEdit(Supplier $supplier)
+    {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }
+
+        $companyId = auth()->user()->company_id;
+        return view('transactions.suppliers.edit', compact('supplier'));
+    }
+
+    public function supplierUpdate(Request $request, Supplier $supplier)
+    {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }
+    
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:191',
+            'contact_person' => 'nullable|string|max:191',
+            'email' => 'nullable|email|max:191',
+            'phone' => 'nullable|string|max:191',
+            'address' => 'nullable|string',
+            'gstin' => 'nullable|string|max:45',
+        ]);
+    
+        $validatedData['company_id'] = auth()->user()->company_id;
+    
+        $supplier->update($validatedData);
+    
+        return redirect()->route('supplier.index')->with('success', 'Supplier updated successfully.');
+    }
+    
+
+    public function supplierDestroy(Supplier $supplier)
+    {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }      
+        $companyId = auth()->user()->company_id;
+        $supplier->where('company_id', $companyId)->delete();
+
+        return redirect()->route('supplier.index')->with('success', 'Supplier deleted successfully.');
+    }
 }

@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
-@section('title', 'Sale Bill No: ' . $bill->id)
+@section('title', 'Purchase Invoice No: ' . $bill->id)
 
 @section('content')
 
-<div style="color:#575757; font-style: bold; font-size: 3rem;  border-bottom: 1px solid white;">Sale Bill No : {{ $bill->id }}</div>
+<div style="color:#575757; font-style: bold; font-size: 3rem;  border-bottom: 1px solid white;">Purchase Invoice No : {{ $bill->id }}</div>
 
 <form method="post">
     @csrf
@@ -19,7 +19,7 @@
                 <tbody>
 
                     <tr style="height: 1px;">
-                        <td style="border: 1px solid black;"> <p style="text-align: center;">TAX INVOICE - SALE</p> </td>
+                        <td style="border: 1px solid black;"> <p style="text-align: center;">PURCHASE INVOICE</p> </td>
                     </tr>
 
                     <tr style="text-align: center;">
@@ -45,12 +45,12 @@
                                         <td class="inner-box" style="text-align: center; font-weight: bold; border: 1px solid black;" colspan="3">GSTIN NO - 123456789CASTR0</td>
                                     </tr>
                                     <tr>
-                                        <td class="inner-box" style="width: 50%; font-weight: bold; border: 1px solid black;">&nbsp;NAME OF CONSIGNEE / BUYER</td>
+                                        <td class="inner-box" style="width: 50%; font-weight: bold; border: 1px solid black;">&nbsp;NAME OF CONSIGNEE / SELLER</td>
                                         <td class="inner-box" style="width: 25%; font-weight: bold; border: 1px solid black;">&nbsp;INVOICE NO</td>
                                         <td class="inner-box" style="width: 25%; border: 1px solid black;">&nbsp;{{ $bill->id }}</td>
                                     </tr>
                                     <tr>
-                                        <td class="inner-box" style="width: 50%; border: 1px solid black;">&nbsp;{{ $bill->name }}</td>
+                                        <td class="inner-box" style="width: 50%; border: 1px solid black;">&nbsp;{{ $bill->supplier->name }}</td>
                                         <td class="inner-box" style="width: 25%; font-weight: bold; border: 1px solid black;">&nbsp;DATE</td>
                                         <td class="inner-box" style="width: 25%; border: 1px solid black;">&nbsp;{{ $bill->created_at->format('Y-m-d') }}</td>
                                     </tr>
@@ -65,7 +65,7 @@
                                         <td class="inner-box" style="width: 25%; border: 1px solid black;">&nbsp;<input type="text" style="border: none;" name="veh" value="{{ $billdetails->veh ?? '' }}"></td>
                                     </tr>
                                     <tr>
-                                        <td class="inner-box" style="width: 50%; border: 1px solid black;">&nbsp;DESTINATION</td>
+                                        <td class="inner-box" style="width: 50%; border: 1px solid black;">&nbsp;</td>
                                         <td class="inner-box" style="width: 25%; font-weight: bold; border: 1px solid black;">&nbsp;PO NO &amp; DATE</td>
                                         <td class="inner-box" style="width: 25%; border: 1px solid black;">&nbsp;<input type="text" style="border: none;" name="po" value="{{ $billdetails->po ?? '' }}"></td>
                                     </tr>
@@ -166,7 +166,7 @@
     <div class="wrapper" style="text-align: center;">
         <button class="btn btn-primary" onclick="printpage('printArea')">Print</button>
         <button class="btn btn-success" type="submit">Save Draft</button>
-        <a href="{{ route('sales.index') }}" class="btn btn-secondary">Go Back</a>
+        <a href="{{ route('purchase.index') }}" class="btn btn-secondary">Go Back</a>
     </div>
 
 </form>

@@ -47,14 +47,21 @@ Route::get('sales', [TransactionsController::class, 'salesIndex'])->name('sales.
 Route::get('/sales/new', [TransactionsController::class, 'salesCreate'])->name('sales.create');
 Route::post('sales/store', [TransactionsController::class, 'salesStore'])->name('sales.store');
 Route::delete('sales/{sale}', [TransactionsController::class, 'salesDestroy'])->name('sales.destroy');
-Route::get('/bill/{sale}', [TransactionsController::class, 'salesShow'])->name('sales.show');
+Route::get('/bill/{id}', [TransactionsController::class, 'salesShow'])->name('sales.show');
 // Define similar routes for other actions
 
 Route::get('/purchases', [TransactionsController::class, 'purchasesIndex'])->name('purchase.index');
 Route::post('/purchases/new', [TransactionsController::class, 'purchasesCreate'])->name('purchase.create');
 Route::post('/purchases/store', [TransactionsController::class, 'purchasesStore'])->name('purchase.store');
 Route::get('/select-supplier', [TransactionsController::class, 'selectSupplier'])->name('select-supplier');
-Route::get('/bill/{sale}', [TransactionsController::class, 'purchasesShow'])->name('purchase.show');
+Route::get('/invoice/{id}', [TransactionsController::class, 'purchasesShow'])->name('purchase.show');
 Route::delete('purchases/{sale}', [TransactionsController::class, 'purchasesDestroy'])->name('purchase.destroy');
 
-Route::get('/supplier/{supplier}', [TransactionsController::class, 'supplierIndex'])->name('supplier');
+Route::get('/supplier/{supplier}', [TransactionsController::class, 'supplier'])->name('supplier');
+Route::get('/suppliers', [TransactionsController::class, 'supplierIndex'])->name('supplier.index');
+
+Route::get('/suppliers/new', [TransactionsController::class, 'supplierCreate'])->name('supplier.create');
+Route::post('/suppliers/store', [TransactionsController::class, 'supplierStore'])->name('supplier.store');
+Route::get('/suppliers/{supplier}/edit', [TransactionsController::class, 'supplierEdit'])->name('supplier.edit');
+Route::put('/suppliers/{supplier}', [TransactionsController::class, 'supplierUpdate'])->name('supplier.update');
+Route::delete('/suppliers/{supplier}', [TransactionsController::class, 'supplierDestroy'])->name('supplier.destroy');
