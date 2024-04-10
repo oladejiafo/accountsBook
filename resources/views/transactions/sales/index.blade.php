@@ -42,7 +42,9 @@
         </tbody>
     </table>
 
-    <div class="align-middle">
-        <!-- Pagination links here -->
-    </div>
+    @if ($sales->isNotEmpty())
+        <div class="pagination">
+            {{ $sales->links() }}
+        </div>                    
+    @endif
 @endsection

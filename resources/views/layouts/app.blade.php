@@ -16,7 +16,7 @@
         <!-- Fonts -->
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap">
 
-    {{-- <link rel="stylesheet" href="{{ asset('css/app.css') }}"> --}}
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <script src="{{ asset('js/app.js') }}" defer></script>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
@@ -71,15 +71,22 @@
                     <span class="sidebar-textx sidebar-button coyfont mr-4 mt-0">ACCOUNTS</span>
                     <ul class="list-unstyled">
                         <!-- Sub-items for Accounting modules and sub-modules -->
-                        <li><a class="sidebar-text sidebar-button" href="#"><i class="fas fa-tachometer-alt  fa-fw"></i> Dashboard</a></li>
+                        <li><a class="sidebar-text sidebar-button" href="{{ route('account.dashboard') }}"><i class="fas fa-tachometer-alt  fa-fw"></i> Dashboard</a></li>
                         <li>
-                            <a href="#accountTransactionsSubmenu" data-toggle="collapse" class="dropdown-toggle sidebar-text right-arrow sidebar-button"><i class="fas fa-book  fa-fw"></i> Transactions</a>
+                            <a href="#accountTransactionsSubmenu" data-toggle="collapse" class="dropdown-toggle sidebar-text right-arrow sidebar-button"><i class="fas fa-book fa-fw"></i> Ledgers</a>
                             <ul class="collapse list-unstyled" id="accountTransactionsSubmenu">
-                                <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('new-stock') }}"><i class="fas fa-dot-circle  fa-fw"></i> Add New Ledger</a> </li>
-                                <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('inventory') }}"><i class="fas fa-dot-circle  fa-fw"></i> List All Ledgers</a> </li>
+                                {{-- <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('new-stock') }}"><i class="fas fa-dot-circle  fa-fw"></i> Add New Ledger</a> </li> --}}
+                                <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('ledger.index') }}"><i class="fas fa-dot-circle  fa-fw"></i> List All Ledgers</a> </li>
                                 <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('inventory') }}"><i class="fas fa-dot-circle  fa-fw"></i> General Ledger</a> </li>
                                 <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('inventory') }}"><i class="fas fa-dot-circle  fa-fw"></i> Accounts Receivable Ledger</a> </li>
                                 <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('inventory') }}"><i class="fas fa-dot-circle  fa-fw"></i> Accounts Payable Ledger</a> </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="#transSubmenu" data-toggle="collapse" class="dropdown-toggle sidebar-text right-arrow sidebar-button"><i class="fas fas fa-exchange-alt fa-fw"></i> Transactions</a>
+                            <ul class="collapse list-unstyled" id="transSubmenu">
+                                <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('transactions.create') }}"><i class="fas fa-dot-circle  fa-fw"></i> Add New Transaction</a> </li>
+                                <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('transactions.index') }}"><i class="fas fa-dot-circle  fa-fw"></i> List Transactions</a> </li>
                             </ul>
                         </li>
                         <li>
@@ -92,6 +99,13 @@
                             </ul>
                         </li>
                         <li>
+                            <a href="#chartSubmenu" data-toggle="collapse" class="dropdown-toggle sidebar-text right-arrow sidebar-button"><i class="fas fa-chart-bar"></i> Chart of Accounts</a>
+                            <ul class="collapse list-unstyled" id="chartSubmenu">
+                                <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('chartOfAccounts') }}"><i class="fas fa-dot-circle  fa-fw"></i> Charts of Account</a> </li>
+                                <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('chartOfAccounts.create') }}"><i class="fas fa-dot-circle  fa-fw"></i> Create A New Chart of Account</a> </li>
+                            </ul>
+                        </li>
+                        <li>
                             <a href="#bankingSubmenu" data-toggle="collapse" class="dropdown-toggle sidebar-text right-arrow sidebar-button"><i class="fas fa-university fa-fw"></i> Banking</a>
                             <ul class="collapse list-unstyled" id="bankingSubmenu">
                                 <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('new-stock') }}"><i class="fas fa-dot-circle  fa-fw"></i> Bank Feeds</a> </li>
@@ -101,14 +115,7 @@
                                 <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('inventory') }}"><i class="fas fa-dot-circle  fa-fw"></i> Withdrawals</a> </li>
                             </ul>
                         </li>
-                        <li>
-                            <a href="#customersSubmenu" data-toggle="collapse" class="dropdown-toggle sidebar-text right-arrow sidebar-button"><i class="fas fa-users fa-fw"></i> Customers</a>
-                            <ul class="collapse list-unstyled" id="customersSubmenu">
-                                <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('new-stock') }}"><i class="fas fa-dot-circle  fa-fw"></i> Add New Customer</a> </li>
-                                <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('inventory') }}"><i class="fas fa-dot-circle  fa-fw"></i> List Customers</a> </li>
-                                <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('inventory') }}"><i class="fas fa-dot-circle  fa-fw"></i> Payments</a> </li>
-                            </ul>
-                        </li>
+
                     </ul>
                 </li>
 
@@ -117,7 +124,7 @@
                     <span class="sidebar-textx sidebar-button  coyfont mr-4 mt-2">INVENTORIES</span>
                     <ul class="list-unstyled">
                         <li> 
-                            <a class="sidebar-text sidebar-button" href="{{ route('home') }}"><i class="fas fa-chart-bar  fa-fw"></i> Inventory Insights</a>
+                            <a class="sidebar-text sidebar-button" href="{{ route('home') }}"><i class="fas fa-chart-line fa-fw"></i> Inventory Insights</a>
                         </li>
                         
                         <li>
@@ -135,20 +142,35 @@
                             </ul>
                         </li>
                         <li>
+                            <a href="#supplierSubmenu" data-toggle="collapse" class="dropdown-toggle sidebar-text right-arrow sidebar-button"><i class="fas fa-dolly-flatbed  fa-fw"></i> Suppliers</a>
+                            <ul class="collapse list-unstyled" id="supplierSubmenu">
+                                <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('supplier.create') }}"><i class="fas fa-dot-circle  fa-fw"></i> Add New Supplier</a> </li>
+                                <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('supplier.index') }}"><i class="fas fa-dot-circle  fa-fw"></i> Suppliers List</a> </li>
+                            </ul>
+                        </li>
+
+                    </ul>
+                </li>
+
+                <!-- Grouping for Customers -->
+                <li>
+                    <span class="sidebar-textx sidebar-button coyfont mr-4 mt-0">CUSTOMERS</span>
+                    <ul class="list-unstyled">
+                        <li>
+                            <a href="#customersSubmenu" data-toggle="collapse" class="dropdown-toggle sidebar-text right-arrow sidebar-button"><i class="fas fa-users fa-fw"></i> Customers</a>
+                            <ul class="collapse list-unstyled" id="customersSubmenu">
+                                <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('new-stock') }}"><i class="fas fa-dot-circle  fa-fw"></i> Add New Customer</a> </li>
+                                <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('inventory') }}"><i class="fas fa-dot-circle  fa-fw"></i> List Customers</a> </li>
+                                <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('inventory') }}"><i class="fas fa-dot-circle  fa-fw"></i> Payments</a> </li>
+                            </ul>
+                        </li>
+                        <li>
                             <a href="#saleSubmenu" data-toggle="collapse" class="dropdown-toggle sidebar-text right-arrow sidebar-button"><i class="fas fa-dollar-sign  fa-fw"></i> Sales</a>
                             <ul class="collapse list-unstyled" id="saleSubmenu">
                                 <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('sales.create') }}"><i class="fas fa-dot-circle  fa-fw"></i> New Sale</a> </li>
                                 <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('sales.index') }}"><i class="fas fa-dot-circle  fa-fw"></i> Sales/Orders</a> </li>
                             </ul>
                         </li>
-                        <li>
-                            <a href="#supplierSubmenu" data-toggle="collapse" class="dropdown-toggle sidebar-text right-arrow sidebar-button"><i class="fas fa-dolly-flatbed  fa-fw"></i> Suppliers</a>
-                            <ul class="collapse list-unstyled" id="supplierSubmenu">
-                                <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{% url 'new-supplier' %}"><i class="fas fa-dot-circle  fa-fw"></i> Add New Supplier</a> </li>
-                                <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('supplier.index') }}"><i class="fas fa-dot-circle  fa-fw"></i> Suppliers List</a> </li>
-                            </ul>
-                        </li>
-
                     </ul>
                 </li>
 

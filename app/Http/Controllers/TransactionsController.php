@@ -27,7 +27,7 @@ class TransactionsController extends Controller
             return redirect()->route('login')->with('error', 'Unauthorized access.');
         }
         $companyId = auth()->user()->company_id;
-        $sales = SaleBill::where('company_id', $companyId)->with('saleItems')->orderBy('created_at', 'desc')->paginate(10);
+        $sales = SaleBill::where('company_id', $companyId)->with('saleItems')->orderBy('created_at', 'desc')->paginate(15);
 
         return view('transactions.sales.index', compact('sales'));
     }
@@ -226,7 +226,7 @@ class TransactionsController extends Controller
             return redirect()->route('login')->with('error', 'Unauthorized access.');
         }
         $companyId = auth()->user()->company_id;
-        $purchases = PurchaseBill::where('company_id', $companyId)->with('items')->orderBy('created_at', 'desc')->paginate(10);
+        $purchases = PurchaseBill::where('company_id', $companyId)->with('items')->orderBy('created_at', 'desc')->paginate(15);
        
         return view('transactions.purchases.index', compact('purchases'));
     }
@@ -284,7 +284,7 @@ class TransactionsController extends Controller
             return redirect()->route('login')->with('error', 'Unauthorized access.');
         }
         $companyId = auth()->user()->company_id;
-        $suppliers = Supplier::where('company_id', $companyId)->orderBy('created_at', 'desc')->paginate(10);
+        $suppliers = Supplier::where('company_id', $companyId)->orderBy('created_at', 'desc')->paginate(15);
        
         return view('transactions.suppliers.index', compact('suppliers'));
     }
@@ -300,7 +300,7 @@ class TransactionsController extends Controller
         $supplier = Supplier::where('company_id', $companyId)->findOrFail($id);
 
         // Retrieve the purchases for the supplier and paginate the results
-        $purchases = $supplier->purchases()->paginate(10);
+        $purchases = $supplier->purchases()->paginate(15);
     
         return view('transactions.suppliers.view', compact('supplier', 'purchases'));
     }

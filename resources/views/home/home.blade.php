@@ -7,12 +7,6 @@
    
     <div style="color:#464646; font-style: bold; font-size: 3rem; border-bottom: 1px solid #464646;">
         <span>Welcome,  @auth {{ auth()->user()->name }} @else Guest @endauth </span>
-        {{-- @if($companyName)
-        <span >
-            Company Name: {{ $companyName }}
-        </span>
-        @endif --}}
-
     </div>
 
  

@@ -5,6 +5,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\StockController;
 
 use App\Http\Controllers\TransactionsController;
+use App\Http\Controllers\AccountsController;
 
 use App\Http\Controllers\Auth\RegisteredUserController;
 /*
@@ -65,3 +66,40 @@ Route::post('/suppliers/store', [TransactionsController::class, 'supplierStore']
 Route::get('/suppliers/{supplier}/edit', [TransactionsController::class, 'supplierEdit'])->name('supplier.edit');
 Route::put('/suppliers/{supplier}', [TransactionsController::class, 'supplierUpdate'])->name('supplier.update');
 Route::delete('/suppliers/{supplier}', [TransactionsController::class, 'supplierDestroy'])->name('supplier.destroy');
+
+
+############# ACCOUNTS 
+
+Route::get('/account/dashboard', [AccountsController::class, 'dashboard'])->name('account.dashboard');
+
+Route::prefix('ledger')->group(function () {
+    Route::get('/', [AccountsController::class, 'ledgerIndex'])->name('ledger.index');
+    Route::get('/create', [AccountsController::class, 'ledgerCreate'])->name('ledger.create');
+    Route::post('/store', [AccountsController::class, 'ledgerStore'])->name('ledger.store');
+    Route::get('/edit/{id}', [AccountsController::class, 'ledgerEdit'])->name('ledger.edit');
+    Route::put('/update/{id}', [AccountsController::class, 'ledgerUpdate'])->name('ledger.update');
+    Route::delete('/delete/{id}', [AccountsController::class, 'ledgerDestroy'])->name('ledger.destroy');
+});
+
+Route::prefix('transactions')->group(function () {
+    Route::get('/', [AccountsController::class, 'transactionsIndex'])->name('transactions.index');
+    Route::get('/create', [AccountsController::class, 'transactionsCreate'])->name('transactions.create');
+    Route::post('/store', [AccountsController::class, 'transactionsStore'])->name('transactions.store');
+    Route::get('/edit/{id}', [AccountsController::class, 'transactionsEdit'])->name('transactions.edit');
+    Route::put('/update/{id}', [AccountsController::class, 'transactionsUpdate'])->name('transactions.update');
+    Route::delete('/delete/{id}', [AccountsController::class, 'transactionsDestroy'])->name('transactions.destroy');
+});
+
+Route::prefix('taxes')->group(function () {
+    // Define routes for taxes module
+});
+
+Route::get('/chart-of-accounts', [AccountsController::class, 'chartOfAccounts'])->name('chartOfAccounts');
+Route::post('/chart-of-accounts/upload', [AccountsController::class, 'uploadChartOfAccounts'])->name('chartOfAccounts.upload');
+
+Route::get('/chart-of-accounts/create', [AccountsController::class, 'createChartOfAccount'])->name('chartOfAccounts.create');
+Route::post('/chart-of-accounts/store', [AccountsController::class, 'storeChartOfAccount'])->name('chartOfAccounts.store');
+Route::get('/chart-of-accounts/edit/{id}', [AccountsController::class, 'editChartOfAccount'])->name('chartOfAccounts.edit');
+Route::put('/chart-of-accounts/update/{id}', [AccountsController::class, 'updateChartOfAccount'])->name('chartOfAccounts.update');
+Route::delete('/chart-of-accounts/delete/{id}', [AccountsController::class, 'deleteChartOfAccount'])->name('chartOfAccounts.destroy');
+

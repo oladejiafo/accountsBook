@@ -63,11 +63,11 @@
                     </tbody>
                 </table>
 
-                <div class="align-middle">
-                    @if ($stocks->isNotEmpty())
-                        <!-- Handle pagination here if necessary -->
-                    @endif
-                </div>
+                @if ($stocks->isNotEmpty())
+                    <div class="pagination">
+                        {{ $stocks->links() }}
+                    </div>                    
+                @endif
             </div>
         </div>
     </div>
