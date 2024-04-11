@@ -65,7 +65,7 @@ Route::get('/suppliers/new', [TransactionsController::class, 'supplierCreate'])-
 Route::post('/suppliers/store', [TransactionsController::class, 'supplierStore'])->name('supplier.store');
 Route::get('/suppliers/{supplier}/edit', [TransactionsController::class, 'supplierEdit'])->name('supplier.edit');
 Route::put('/suppliers/{supplier}', [TransactionsController::class, 'supplierUpdate'])->name('supplier.update');
-Route::delete('/suppliers/{supplier}', [TransactionsController::class, 'supplierDestroy'])->name('supplier.destroy');
+Route::get('/suppliers/{supplier}', [TransactionsController::class, 'supplierDestroy'])->name('supplier.destroy');
 
 
 ############# ACCOUNTS 
@@ -87,7 +87,34 @@ Route::prefix('transactions')->group(function () {
     Route::post('/store', [AccountsController::class, 'transactionsStore'])->name('transactions.store');
     Route::get('/edit/{id}', [AccountsController::class, 'transactionsEdit'])->name('transactions.edit');
     Route::put('/update/{id}', [AccountsController::class, 'transactionsUpdate'])->name('transactions.update');
-    Route::delete('/delete/{id}', [AccountsController::class, 'transactionsDestroy'])->name('transactions.destroy');
+    Route::get('/delete/{id}', [AccountsController::class, 'transactionsDestroy'])->name('transactions.destroy');
+});
+
+Route::prefix('deposits')->group(function () {
+    Route::get('/', [AccountsController::class, 'depositsIndex'])->name('deposits.index');
+    Route::get('/create', [AccountsController::class, 'depositsCreate'])->name('deposits.create');
+    Route::post('/store', [AccountsController::class, 'depositsStore'])->name('deposits.store');
+    Route::get('/edit/{id}', [AccountsController::class, 'depositsEdit'])->name('deposits.edit');
+    Route::put('/update/{id}', [AccountsController::class, 'depositsUpdate'])->name('deposits.update');
+    Route::get('/delete/{id}', [AccountsController::class, 'depositsDestroy'])->name('deposits.destroy');
+});
+
+Route::prefix('withdrawals')->group(function () {
+    Route::get('/', [AccountsController::class, 'withdrawalsIndex'])->name('withdrawals.index');
+    Route::get('/create', [AccountsController::class, 'withdrawalsCreate'])->name('withdrawals.create');
+    Route::post('/store', [AccountsController::class, 'withdrawalsStore'])->name('withdrawals.store');
+    Route::get('/edit/{id}', [AccountsController::class, 'withdrawalsEdit'])->name('withdrawals.edit');
+    Route::put('/update/{id}', [AccountsController::class, 'withdrawalsUpdate'])->name('withdrawals.update');
+    Route::get('/delete/{id}', [AccountsController::class, 'withdrawalsDestroy'])->name('withdrawals.destroy');
+});
+
+Route::prefix('transfers')->group(function () {
+    Route::get('/', [AccountsController::class, 'transfersIndex'])->name('transfers.index');
+    Route::get('/create', [AccountsController::class, 'transfersCreate'])->name('transfers.create');
+    Route::post('/store', [AccountsController::class, 'transfersStore'])->name('transfers.store');
+    Route::get('/edit/{id}', [AccountsController::class, 'transfersEdit'])->name('transfers.edit');
+    Route::put('/update/{id}', [AccountsController::class, 'transfersUpdate'])->name('transfers.update');
+    Route::get('/delete/{id}', [AccountsController::class, 'transfersDestroy'])->name('transfers.destroy');
 });
 
 Route::prefix('taxes')->group(function () {
@@ -101,5 +128,15 @@ Route::get('/chart-of-accounts/create', [AccountsController::class, 'createChart
 Route::post('/chart-of-accounts/store', [AccountsController::class, 'storeChartOfAccount'])->name('chartOfAccounts.store');
 Route::get('/chart-of-accounts/edit/{id}', [AccountsController::class, 'editChartOfAccount'])->name('chartOfAccounts.edit');
 Route::put('/chart-of-accounts/update/{id}', [AccountsController::class, 'updateChartOfAccount'])->name('chartOfAccounts.update');
-Route::delete('/chart-of-accounts/delete/{id}', [AccountsController::class, 'deleteChartOfAccount'])->name('chartOfAccounts.destroy');
+Route::get('/chart-of-accounts/delete/{id}', [AccountsController::class, 'deleteChartOfAccount'])->name('chartOfAccounts.destroy');
+
+//bank feeds
+Route::group(['middleware' => 'auth'], function () {
+    Route::get('/bank-feeds', [AccountsController::class, 'indexBankFeeds'])->name('bank-feeds.index');
+    Route::post('/bank-feeds/upload', [AccountsController::class, 'uploadBankFeeds'])->name('bank-feeds.upload');
+});
+
+Route::get('/reconciliation', [AccountsController::class, 'Reconsindex'])->name('reconciliation.index');
+Route::post('/reconciliation/match', [AccountsController::class, 'matchTransactions'])->name('reconciliation.match');
+
 

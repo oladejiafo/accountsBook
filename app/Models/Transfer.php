@@ -10,7 +10,7 @@ class Transfer extends Model
     use HasFactory;
 
     protected $fillable = [
-        'company_id', 'from_account_id', 'to_account_id', 'amount', 'description', 'transaction_date'
+        'company_id', 'from_account_id', 'to_account_id', 'amount', 'description', 'date'
     ];
 
     public function fromAccount()
@@ -18,8 +18,9 @@ class Transfer extends Model
         return $this->belongsTo(ChartOfAccount::class, 'from_account_id');
     }
 
-    public function toAccount()
+    public function account()
     {
         return $this->belongsTo(ChartOfAccount::class, 'to_account_id');
     }
+
 }

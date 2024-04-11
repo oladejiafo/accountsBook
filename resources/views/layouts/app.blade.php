@@ -108,11 +108,11 @@
                         <li>
                             <a href="#bankingSubmenu" data-toggle="collapse" class="dropdown-toggle sidebar-text right-arrow sidebar-button"><i class="fas fa-university fa-fw"></i> Banking</a>
                             <ul class="collapse list-unstyled" id="bankingSubmenu">
-                                <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('new-stock') }}"><i class="fas fa-dot-circle  fa-fw"></i> Bank Feeds</a> </li>
-                                <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('inventory') }}"><i class="fas fa-dot-circle  fa-fw"></i> Reconciliation</a> </li>
-                                <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('inventory') }}"><i class="fas fa-dot-circle  fa-fw"></i> Transfers</a> </li>
-                                <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('inventory') }}"><i class="fas fa-dot-circle  fa-fw"></i> Deposits</a> </li>
-                                <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('inventory') }}"><i class="fas fa-dot-circle  fa-fw"></i> Withdrawals</a> </li>
+                                <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('bank-feeds.index') }}"><i class="fas fa-dot-circle  fa-fw"></i> Bank Feeds</a> </li>
+                                <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('reconciliation.index') }}"><i class="fas fa-dot-circle  fa-fw"></i> Reconciliation</a> </li>
+                                <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('transfers.index') }}"><i class="fas fa-dot-circle  fa-fw"></i> Transfers</a> </li>
+                                <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('deposits.index') }}"><i class="fas fa-dot-circle  fa-fw"></i> Deposits</a> </li>
+                                <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('withdrawals.index') }}"><i class="fas fa-dot-circle  fa-fw"></i> Withdrawals</a> </li>
                             </ul>
                         </li>
 

@@ -45,12 +45,7 @@
             
                 <div class="align-middle">
                     <button type="submit" class="btn btn-success">Update</button>
-                    <form action="{{ route('transactions.destroy', $transaction->id) }}" method="POST" style="display: inline;">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this record?')">Delete</button>
-                    </form>
-                    
+                    <a href="{{ route('transactions.destroy', $transaction->id) }}" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this record?')">Delete</a>
                     <a href="{{ route('transactions.index') }}" class="btn btn-secondary">Cancel</a>
                 </div>
             </form>

@@ -20,6 +20,7 @@ class CreateWithdrawalsTable extends Migration
             $table->decimal('amount', 10, 2);
             $table->string('description')->nullable();
             $table->string('type')->nullable();
+            $table->date('date');
             // Add other withdrawal related fields as needed
             $table->timestamps();
         

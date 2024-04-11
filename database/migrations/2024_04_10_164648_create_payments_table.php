@@ -21,6 +21,7 @@ class CreatePaymentsTable extends Migration
             $table->decimal('amount', 10, 2);
             $table->unsignedBigInteger('invoice_id')->nullable();
             $table->string('recipient_type');
+            $table->date('date');
             // Add other payment related fields as needed
             $table->timestamps();
         

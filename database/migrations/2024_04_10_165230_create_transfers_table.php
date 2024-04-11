@@ -20,6 +20,7 @@ class CreateTransfersTable extends Migration
             $table->unsignedBigInteger('to_account_id');
             $table->decimal('amount', 10, 2);
             $table->string('description')->nullable();
+            $table->date('date');
             // Add other transfer related fields as needed
             $table->timestamps();
         
