@@ -22,21 +22,27 @@
                 <div class="form-group">
                     <label for="bank_transaction_id">Select Bank Transaction:</label>
                     <select class="form-control" id="bank_transaction_id" name="bank_transaction_id" required>
+                        <option>General Transactions</option>
+                        <option>Payments</option>
+                        <option>Deposits</option>
                         <!-- Populate options with bank transactions -->
-                        <!-- Example: -->
-                        <!-- <option value="1">Bank Transaction 1</option> -->
+                        {{-- @foreach ($bankTransactions as $bankTransaction)
+                            <option value="{{ $bankTransaction->id }}">{{ $bankTransaction->description }} - {{ $bankTransaction->amount }}</option>
+                        @endforeach --}}
                     </select>
                 </div>
                 <div class="form-group">
                     <label for="accounting_transaction_id">Select Accounting Transaction:</label>
                     <select class="form-control" id="accounting_transaction_id" name="accounting_transaction_id" required>
                         <!-- Populate options with accounting transactions -->
-                        <!-- Example: -->
-                        <!-- <option value="1">Accounting Transaction 1</option> -->
+                        @foreach ($accountingTransactions as $accountingTransaction)
+                            <option value="{{ $accountingTransaction->id }}">{{ $accountingTransaction->description }} - {{ $accountingTransaction->amount }}</option>
+                        @endforeach
                     </select>
                 </div>
                 <button type="submit" class="btn btn-primary">Match Transactions</button>
             </form>
+            
 
             <!-- Display transactions from various tables -->
             <h3>Transactions</h3>

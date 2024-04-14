@@ -22,11 +22,18 @@ class CreateCustomersTable extends Migration
             $table->text('address');
             $table->string('city');
             $table->string('country');
-            // Add other customer related fields as needed
+            $table->text('billing_address')->nullable();
+            $table->text('shipping_address')->nullable();
+            $table->string('customer_type')->nullable();
+            $table->text('notes')->nullable();
+            $table->string('payment_terms')->nullable();
+            $table->boolean('tax_exempt')->default(false);
+            // Add custom fields as needed
             $table->timestamps();
         
             $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
         });
+        
     }
 
     /**

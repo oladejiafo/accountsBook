@@ -43,12 +43,17 @@ Route::get('/stock/{id}/edit', [StockController::class, 'edit'])->name('edit-sto
 Route::put('/stock/{id}/update', [StockController::class, 'update'])->name('update-stock');
 Route::delete('/stock/{id}/delete', [StockController::class, 'destroy'])->name('delete-stock');
 
-########### TRANSACTIONS 
+########### Sales/Purchases TRANSACTIONS 
 Route::get('sales', [TransactionsController::class, 'salesIndex'])->name('sales.index');
 Route::get('/sales/new', [TransactionsController::class, 'salesCreate'])->name('sales.create');
 Route::post('sales/store', [TransactionsController::class, 'salesStore'])->name('sales.store');
 Route::delete('sales/{sale}', [TransactionsController::class, 'salesDestroy'])->name('sales.destroy');
 Route::get('/bill/{id}', [TransactionsController::class, 'salesShow'])->name('sales.show');
+
+//Returns
+Route::get('/returns', [TransactionsController::class, 'showReturnsForm'])->name('returns.show');
+Route::post('/returns', [TransactionsController::class, 'processReturn'])->name('returns.process');
+
 // Define similar routes for other actions
 
 Route::get('/purchases', [TransactionsController::class, 'purchasesIndex'])->name('purchase.index');
@@ -67,6 +72,26 @@ Route::get('/suppliers/{supplier}/edit', [TransactionsController::class, 'suppli
 Route::put('/suppliers/{supplier}', [TransactionsController::class, 'supplierUpdate'])->name('supplier.update');
 Route::get('/suppliers/{supplier}', [TransactionsController::class, 'supplierDestroy'])->name('supplier.destroy');
 
+//Customers
+Route::prefix('customers')->group(function () {
+    Route::get('/', [TransactionsController::class, 'customersIndex'])->name('customers.index');
+    Route::get('/view/{customer}', [TransactionsController::class, 'customersShow'])->name('customers.show');
+    Route::get('/create', [TransactionsController::class, 'customersCreate'])->name('customers.create');
+    Route::post('/store', [TransactionsController::class, 'customersStore'])->name('customers.store');
+    Route::get('/{customer}/edit', [TransactionsController::class, 'customersEdit'])->name('customers.edit');
+    Route::put('/{customer}/update', [TransactionsController::class, 'customersUpdate'])->name('customers.update');
+    Route::delete('/{customer}', [TransactionsController::class, 'customersDestroy'])->name('customers.destroy');
+});
+
+//Payments
+Route::get('/payments', [TransactionsController::class, 'paymentsIndex'])->name('payments.index');
+Route::get('/payments/create', [TransactionsController::class, 'paymentsCreate'])->name('payments.create');
+Route::post('/payments', [TransactionsController::class, 'paymentsStore'])->name('payments.store');
+Route::get('/payments/{payment}/edit', [TransactionsController::class, 'paymentsEdit'])->name('payments.edit');
+Route::put('/payments/{payment}', [TransactionsController::class, 'paymentsUpdate'])->name('payments.update');
+Route::delete('/payments/{payment}', [TransactionsController::class, 'paymentsDestroy'])->name('payments.destroy');
+
+Route::get('/get-stock-details/{stock}', [TransactionsController::class, 'getStockDetails'])->name('stocks.details');
 
 ############# ACCOUNTS 
 
@@ -89,6 +114,7 @@ Route::prefix('transactions')->group(function () {
     Route::put('/update/{id}', [AccountsController::class, 'transactionsUpdate'])->name('transactions.update');
     Route::get('/delete/{id}', [AccountsController::class, 'transactionsDestroy'])->name('transactions.destroy');
 });
+Route::get('/get-account-classifications', [AccountsController::class, 'getAccountClassifications'])->name('getAccountClassifications');
 
 Route::prefix('deposits')->group(function () {
     Route::get('/', [AccountsController::class, 'depositsIndex'])->name('deposits.index');

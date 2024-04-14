@@ -12,48 +12,70 @@
             <form action="{{ route('transfers.update', $transfer->id) }}" method="POST">
                 @csrf
                 @method('PUT')
+
                 <div class="form-group">
-                    <label for="type">Transfer Type:</label>
+                    <label for="type">Transaction Type:</label>
                     <select class="form-control" id="type" name="type" required>
-                        <option value="Regular transfer" {{ old('type') == 'Regular transfer' ? 'selected' : '' }}>Regular transfer</option>
-                        <option value="Cash transfer" {{ old('type') == 'Cash transfer' ? 'selected' : '' }}>Cash transfer</option>
-                        <option value="Check transfer" {{ old('type') == 'Check transfer' ? 'selected' : '' }}>Check transfer</option>
-                        <option value="Direct transfer" {{ old('type') == 'Direct transfer' ? 'selected' : '' }}>Direct transfer</option>
-                        <option value="Mobile transfer" {{ old('type') == 'Mobile transfer' ? 'selected' : '' }}>Mobile transfer</option>
-                        <option value="ATM transfer" {{ old('type') == 'ATM transfer' ? 'selected' : '' }}>ATM transfer</option>
-                        <option value="Online Transfer" {{ old('type') == 'Online Transfer' ? 'selected' : '' }}>Online Transfer</option>
-                        <option value="Wire Transfer" {{ old('type') == 'Wire Transfer' ? 'selected' : '' }}>Wire Transfer</option>
-                        <option value="Automatic transfer" {{ old('type') == 'Automatic transfer' ? 'selected' : '' }}>Automatic transfer</option>
-                        <option value="Refund transfer" {{ old('type') == 'Refund transfer' ? 'selected' : '' }}>Refund transfer</option>
-                        <option value="Security transfer" {{ old('type') == 'Security transfer' ? 'selected' : '' }}>Security transfer</option>
-                    </select>                                
+                        <option value="Income" {{ $transfer->type == 'Income' ? 'selected' : '' }}>Income</option>
+                        <option value="Expense" {{ $transfer->type == 'Expense' ? 'selected' : '' }}>Expense</option>
+                        <option value="Asset" {{ $transfer->type == 'Asset' ? 'selected' : '' }}>Asset</option>
+                        <option value="Liability" {{ $transfer->type == 'Liability' ? 'selected' : '' }}>Liability</option>
+                        <option value="Equity" {{ $transfer->type == 'Equity' ? 'selected' : '' }}>Equity</option>
+                    </select>
                 </div>
+
                 <div class="form-group">
+                    <label for="account_id">Account Classification:</label>
+                    <select class="form-control" id="account_id" name="account_id" required>
+                        @foreach ($accounts->unique('category') as $account)
+                            <option value="{{ $account->id }}" {{ $transfer->account_id == $account->id ? 'selected' : '' }}>{{ $account->category }}</option>
+                        @endforeach
+                    </select> 
+                </div>
+                <div class="form-group"  id="to_account_group">
                     <label for="to_account_id">Account Transfered To:</label>
-                    <select class="form-control" id="to_account_id" name="to_account_id" required>
-                        @foreach ($accounts as $account)
-                            <option value="{{ $account->id }}" {{ $transfer->to_account_id == $account->id ? 'selected' : '' }}>{{ $account->category }}</option>
+                    <select class="form-control" id="to_account_id" name="to_account_id">
+                        @foreach ($accounts->unique('category') as $account)
+                            <option value="{{ $account->id }}">{{ $account->category }}</option>
                         @endforeach
                     </select> 
                 </div>
-                <div class="form-group">
-                    <label for="from_account_id">Account Transfered From:</label>
-                    <select class="form-control" id="from_account_id" name="from_account_id" required>
-                        @foreach ($accounts as $account)
-                            <option value="{{ $account->id }}" {{ $transfer->from_account_id == $account->id ? 'selected' : '' }}>{{ $account->category }}</option>
-                        @endforeach
-                    </select> 
+                <div class="form-row">
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="date">Transaction Date:</label>
+                            <input type="date" class="form-control" id="date" name="date" value="{{ $transfer->date }}" required>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="amount">Transaction Amount:</label>
+                            <input type="number" class="form-control" id="amount" name="amount" value="{{ $transfer->amount }}" required>
+                        </div>
+                    </div>
                 </div>
+                <div class="form-row" id="source_group" style="display: none;">
+                    <div class="col">
+                         <label for="source">Source of Fund:</label>
+                         <select class="form-control" id="source" name="source">
+                             <option value="Cash" {{ $transfer->source == 'Cash' ? 'selected' : '' }}>Cash</option>
+                             <option value="Bank" {{ $transfer->source == 'Bank' ? 'selected' : '' }}>Bank</option>
+                             <option value="Transfer" {{ $transfer->source == 'Transfer' ? 'selected' : '' }}>Transfer</option>
+                             <option value="Payment" {{ $transfer->source == 'Payment' ? 'selected' : '' }}>Payment</option>
+                             <option value="Other" {{ $transfer->source == 'Other' ? 'selected' : '' }}>Other</option>
+                         </select>
+                     </div>
+                     <div class="col">
+                         <label for="status">Status:</label>
+                         <select class="form-control" id="status" name="status">
+                             <option value="Paid" {{ $transfer->status == 'Paid' ? 'selected' : '' }}>Paid</option>
+                             <option value="Pending" {{ $transfer->status == 'Pending' ? 'selected' : '' }}>Pending</option>
+                             <option value="Paid In Part" {{ $transfer->status == 'Paid In Part' ? 'selected' : '' }}>Paid In Part</option>
+                         </select>
+                     </div>
+                 </div>
                 <div class="form-group">
-                    <label for="date">Date:</label>
-                    <input type="date" class="form-control" id="date" name="date" value="{{ $transfer->date }}" required>
-                </div>
-                <div class="form-group">
-                    <label for="amount">Amount:</label>
-                    <input type="number" class="form-control" id="amount" name="amount" value="{{ $transfer->amount }}" required>
-                </div>
-                <div class="form-group">
-                    <label for="description">Description:</label>
+                    <label for="description">Details:</label>
                     <textarea class="form-control" id="description" name="description" rows="3">{{ $transfer->description }}</textarea>
                 </div>
                 <br>
@@ -68,4 +90,61 @@
         </div>
     </div>
 </div>
+
+<script>
+    // Function to reset form fields
+    function resetForm() {
+        document.getElementById("account_id").value = "";
+        document.getElementById("date").value = "";
+        document.getElementById("type").value = "";
+        // document.getElementById("transaction_name").value = "";
+        document.getElementById("amount").value = "";
+        document.getElementById("description").value = "";
+        document.getElementById("source").value = "";
+        document.getElementById("status").value = "";
+        document.getElementById("to_account_id").value = "";
+    }
+</script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // $('#type').change(function() {
+        //     var selectedType = $(this).val();
+        //     if (selectedType) {
+        //         $.ajax({
+        //             url: '/get-account-classifications', // Update with your route or endpoint
+        //             method: 'GET',
+        //             data: { selectedType: selectedType },
+        //             success: function(response) {
+        //                 $('#account_id').html(response);
+        //             },
+        //             error: function(xhr) {
+        //                 console.log(xhr.responseText);
+        //             }
+        //         });
+        //     } else {
+        //         $('#account_id').html('<option value="" disabled selected>Select Account Type</option>');
+        //     }
+        // });
+
+        $('#transaction_name').change(function() {
+            var selectedTransaction = $(this).val();
+            if (selectedTransaction === 'Transfer') {
+                $('#to_account_group').show();
+            } else {
+                $('#to_account_group').hide();
+            }
+        });
+
+        $('#transaction_name').change(function() {
+            var selectedTransaction = $(this).val();
+            if (selectedTransaction === 'Expenditure' || selectedTransaction === 'Cash Payment' || selectedTransaction === 'Others') {
+                $('#source_group').show();
+            } else {
+                $('#source_group').hide();
+            }
+        });
+    });
+</script>
 @endsection

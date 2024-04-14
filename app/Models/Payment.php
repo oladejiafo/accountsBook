@@ -17,4 +17,10 @@ class Payment extends Model
     {
         return $this->morphTo();
     }
+    
+    // Define the saleBill relationship
+    public function saleBill()
+    {
+        return $this->belongsTo(SaleBill::class, 'invoice_id');
+    }    
 }

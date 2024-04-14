@@ -31,6 +31,7 @@
         <thead class="thead-dark align-middle">
             <tr>
                 <th>Date</th>
+                <th>Name</th>
                 <th>Type</th>
                 <th>Account Type</th>
                 <th>Details</th>
@@ -42,6 +43,7 @@
             @foreach($transactions as $transaction)
             <tr> 
                 <td>{{ $transaction->date }}</td>
+                <td>{{ $transaction->transaction_name }}</td>
                 <td>{{ $transaction->type }}</td>
                 <td>{{ optional($transaction->account)->category ?? '' }}</td>
                 <td>{{ $transaction->description }}</td>

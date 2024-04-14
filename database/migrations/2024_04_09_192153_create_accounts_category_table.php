@@ -16,6 +16,7 @@ class CreateAccountsCategoryTable extends Migration
         Schema::create('accounts_category', function (Blueprint $table) {
             $table->id();
             $table->string('category')->unique();
+            $table->enum('type' , ['Income' , 'Expense', 'Equity','Asset','Liability'])->default('Income');
             $table->timestamps();
         });
     }

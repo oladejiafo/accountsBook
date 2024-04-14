@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\SaleBill;
+use App\Models\PurchaseBill;
+use App\Models\Payment;
 use App\Models\Transaction;
 use App\Models\Deposit;
 use App\Models\Withdrawal;
@@ -198,6 +201,27 @@ class AccountsController extends Controller
         return view('accounts.transactions.create', compact('accounts'));
     }
 
+    public function getAccountClassifications(Request $request)
+    {
+        $selectedType = $request->selectedType;
+        $companyId = auth()->user()->company_id;
+    
+        // Query the database to get account classifications based on the selected type
+        $accounts = ChartOfAccount::where('company_id', $companyId)
+            ->where('type', $selectedType)
+            ->orderBy('category')
+            ->get();
+    
+        // Generate options for the account classification dropdown
+        $options = '<option value="" disabled selected>Select Account Type</option>';
+        foreach ($accounts as $account) {
+            $options .= '<option value="'.$account->id.'">'.$account->category.'</option>';
+        }
+    
+        // Return options as JSON response
+        return response()->json($options);
+    }
+
     public function transactionsStore(Request $request)
     {
         // Check authentication and company identification
@@ -213,6 +237,10 @@ class AccountsController extends Controller
             'date' => 'required|date',
             'amount' => 'required|numeric',
             'description' => 'nullable|string',
+            'transaction_name' =>  'nullable|string',
+            'to_account_id' =>  'nullable',
+            'source' =>  'nullable|string', 
+            'status' =>  'nullable|string',
         ]);
 
         $validatedData['company_id'] = auth()->user()->company_id;
@@ -242,7 +270,6 @@ class AccountsController extends Controller
         if (!auth()->check() || !auth()->user()->company_id) {
             return redirect()->route('login')->with('error', 'Unauthorized access.');
         }      
-    // dd($transaction);
         // Validate the incoming request data
         $validatedData = $request->validate([
             'type' => 'required',
@@ -250,6 +277,10 @@ class AccountsController extends Controller
             'date' => 'required|date',
             'amount' => 'required|numeric',
             'description' => 'nullable|string',
+            'transaction_name' =>  'nullable|string',
+            'to_account_id' =>  'nullable',
+            'source' =>  'nullable|string', 
+            'status' =>  'nullable|string',
         ]);
     
         // Ensure the company_id is set correctly
@@ -290,10 +321,11 @@ class AccountsController extends Controller
         $companyId = auth()->user()->company_id;
 
         $query = $request->input('search');
-        $deposits = Deposit::query();
+        $deposits = Transaction::query();
 
         if ($query) {
             $deposits->where('company_id', $companyId)
+                ->where('transaction_name','=', 'Deposit')
                 ->where(function ($queryBuilder) use ($query) {
                     $queryBuilder->where('type', 'like', '%' . $query . '%')
                         ->orWhere('date', 'like', '%' . $query . '%')
@@ -303,7 +335,7 @@ class AccountsController extends Controller
                 });
         } else {
             // Continue chaining methods on the $chartOfAccounts query builder instance
-            $deposits->where('company_id', $companyId);
+            $deposits->where('company_id', $companyId)->where('transaction_name','=', 'Deposit');
         }
 
         // Execute the query and fetch the results
@@ -340,11 +372,16 @@ class AccountsController extends Controller
             'date' => 'required|date',
             'amount' => 'required|numeric',
             'description' => 'nullable|string',
+            // 'transaction_name' =>  'nullable|string',
+            'to_account_id' =>  'nullable',
+            'source' =>  'nullable|string', 
+            'status' =>  'nullable|string',
         ]);
 
         $validatedData['company_id'] = auth()->user()->company_id;
+        $validatedData['transaction_name'] = 'Deposit';
 
-        Deposit::create($validatedData);
+        Transaction::create($validatedData);
 
         return redirect()->route('deposits.index')->with('success', 'deposit created successfully.');
     }
@@ -358,7 +395,7 @@ class AccountsController extends Controller
         $companyId = auth()->user()->company_id;
         // where('company_id', $companyId)->
 
-        $deposit = Deposit::where('company_id', $companyId)->findOrFail($id);
+        $deposit = Transaction::where('company_id', $companyId)->findOrFail($id);
         $accounts = ChartOfAccount::where('company_id', $companyId)->orderBy('category')->get();
         return view('accounts.deposits.edit', compact('deposit','accounts'));
     }
@@ -369,7 +406,7 @@ class AccountsController extends Controller
         if (!auth()->check() || !auth()->user()->company_id) {
             return redirect()->route('login')->with('error', 'Unauthorized access.');
         }      
-    // dd($deposit);
+
         // Validate the incoming request data
         $validatedData = $request->validate([
             'type' => 'required',
@@ -377,12 +414,17 @@ class AccountsController extends Controller
             'date' => 'required|date',
             'amount' => 'required|numeric',
             'description' => 'nullable|string',
+            // 'transaction_name' =>  'nullable|string',
+            'to_account_id' =>  'nullable',
+            'source' =>  'nullable|string', 
+            'status' =>  'nullable|string',
         ]);
     
         // Ensure the company_id is set correctly
         $validatedData['company_id'] = auth()->user()->company_id;
-    
-        $deposit = Deposit::findOrFail($id);
+        $validatedData['transaction_name'] = 'Deposit';
+        
+        $deposit = Transaction::where('company_id', auth()->user()->company_id)->findOrFail($id);
         $deposit->update($validatedData);
     
         // Redirect back to the index page with a success message
@@ -397,7 +439,7 @@ class AccountsController extends Controller
         }      
     
         // Load the deposit and ensure it belongs to the authenticated user's company
-        $deposit = Deposit::where('company_id', auth()->user()->company_id)->findOrFail($id);
+        $deposit = Transaction::where('company_id', auth()->user()->company_id)->findOrFail($id);
     
         // Delete the deposit
         $deposit->delete();
@@ -407,8 +449,7 @@ class AccountsController extends Controller
     }
     
 
-    //Withdrawa Module
-
+    //Withdrawals Module
     public function withdrawalsIndex(Request $request)
     {
         // Check authentication and company identification
@@ -418,10 +459,11 @@ class AccountsController extends Controller
         $companyId = auth()->user()->company_id;
 
         $query = $request->input('search');
-        $withdrawals = Withdrawal::query();
+        $withdrawals = Transaction::query();
 
         if ($query) {
             $withdrawals->where('company_id', $companyId)
+                ->where('transaction_name','=', 'Withdrawal')
                 ->where(function ($queryBuilder) use ($query) {
                     $queryBuilder->where('type', 'like', '%' . $query . '%')
                         ->orWhere('date', 'like', '%' . $query . '%')
@@ -431,7 +473,7 @@ class AccountsController extends Controller
                 });
         } else {
             // Continue chaining methods on the $chartOfAccounts query builder instance
-            $withdrawals->where('company_id', $companyId);
+            $withdrawals->where('company_id', $companyId)->where('transaction_name','=', 'Withdrawal');
         }
 
         // Execute the query and fetch the results
@@ -468,11 +510,16 @@ class AccountsController extends Controller
             'date' => 'required|date',
             'amount' => 'required|numeric',
             'description' => 'nullable|string',
+            // 'transaction_name' =>  'nullable|string',
+            'to_account_id' =>  'nullable',
+            'source' =>  'nullable|string', 
+            'status' =>  'nullable|string',
         ]);
 
         $validatedData['company_id'] = auth()->user()->company_id;
+        $validatedData['transaction_name'] = 'Withdrawal';
 
-        Withdrawal::create($validatedData);
+        Transaction::create($validatedData);
 
         return redirect()->route('withdrawals.index')->with('success', 'withdrawal created successfully.');
     }
@@ -486,7 +533,7 @@ class AccountsController extends Controller
         $companyId = auth()->user()->company_id;
         // where('company_id', $companyId)->
 
-        $withdrawal = Withdrawal::where('company_id', $companyId)->findOrFail($id);
+        $withdrawal = Transaction::where('company_id', $companyId)->findOrFail($id);
         $accounts = ChartOfAccount::where('company_id', $companyId)->orderBy('category')->get();
         return view('accounts.withdrawals.edit', compact('withdrawal','accounts'));
     }
@@ -497,7 +544,7 @@ class AccountsController extends Controller
         if (!auth()->check() || !auth()->user()->company_id) {
             return redirect()->route('login')->with('error', 'Unauthorized access.');
         }      
-    // dd($withdrawal);
+
         // Validate the incoming request data
         $validatedData = $request->validate([
             'type' => 'required',
@@ -505,12 +552,17 @@ class AccountsController extends Controller
             'date' => 'required|date',
             'amount' => 'required|numeric',
             'description' => 'nullable|string',
+            // 'transaction_name' =>  'nullable|string',
+            'to_account_id' =>  'nullable',
+            'source' =>  'nullable|string', 
+            'status' =>  'nullable|string',
         ]);
     
         // Ensure the company_id is set correctly
         $validatedData['company_id'] = auth()->user()->company_id;
-    
-        $withdrawal = Withdrawal::findOrFail($id);
+        $validatedData['transaction_name'] = 'Withdrawal';
+        
+        $withdrawal = Transaction::where('company_id', auth()->user()->company_id)->findOrFail($id);
         $withdrawal->update($validatedData);
     
         // Redirect back to the index page with a success message
@@ -525,7 +577,7 @@ class AccountsController extends Controller
         }      
     
         // Load the withdrawal and ensure it belongs to the authenticated user's company
-        $withdrawal = Withdrawal::where('company_id', auth()->user()->company_id)->findOrFail($id);
+        $withdrawal = Transaction::where('company_id', auth()->user()->company_id)->findOrFail($id);
     
         // Delete the withdrawal
         $withdrawal->delete();
@@ -534,7 +586,7 @@ class AccountsController extends Controller
         return redirect()->route('withdrawals.index')->with('success', 'withdrawal deleted successfully.');
     }
 
-    //Transfer Module
+    //Transfers Module
     public function transfersIndex(Request $request)
     {
         // Check authentication and company identification
@@ -544,10 +596,11 @@ class AccountsController extends Controller
         $companyId = auth()->user()->company_id;
 
         $query = $request->input('search');
-        $transfers = Transfer::query();
+        $transfers = Transaction::query();
 
         if ($query) {
             $transfers->where('company_id', $companyId)
+                ->where('transaction_name','=', 'Transfer')
                 ->where(function ($queryBuilder) use ($query) {
                     $queryBuilder->where('type', 'like', '%' . $query . '%')
                         ->orWhere('date', 'like', '%' . $query . '%')
@@ -557,7 +610,7 @@ class AccountsController extends Controller
                 });
         } else {
             // Continue chaining methods on the $chartOfAccounts query builder instance
-            $transfers->where('company_id', $companyId);
+            $transfers->where('company_id', $companyId)->where('transaction_name','=', 'Transfer');
         }
 
         // Execute the query and fetch the results
@@ -591,14 +644,20 @@ class AccountsController extends Controller
         $validatedData = $request->validate([
             'type' => 'required',
             'account_id' => 'required',
+            'to_account_id' => 'nullable',
             'date' => 'required|date',
             'amount' => 'required|numeric',
             'description' => 'nullable|string',
+            // 'transaction_name' =>  'nullable|string',
+            'to_account_id' =>  'nullable',
+            'source' =>  'nullable|string', 
+            'status' =>  'nullable|string',
         ]);
 
         $validatedData['company_id'] = auth()->user()->company_id;
+        $validatedData['transaction_name'] = 'Transfer';
 
-        Transfer::create($validatedData);
+        Transaction::create($validatedData);
 
         return redirect()->route('transfers.index')->with('success', 'transfer created successfully.');
     }
@@ -612,7 +671,7 @@ class AccountsController extends Controller
         $companyId = auth()->user()->company_id;
         // where('company_id', $companyId)->
 
-        $transfer = Transfer::where('company_id', $companyId)->findOrFail($id);
+        $transfer = Transaction::where('company_id', $companyId)->findOrFail($id);
         $accounts = ChartOfAccount::where('company_id', $companyId)->orderBy('category')->get();
         return view('accounts.transfers.edit', compact('transfer','accounts'));
     }
@@ -623,20 +682,26 @@ class AccountsController extends Controller
         if (!auth()->check() || !auth()->user()->company_id) {
             return redirect()->route('login')->with('error', 'Unauthorized access.');
         }      
-    // dd($transfer);
+
         // Validate the incoming request data
         $validatedData = $request->validate([
             'type' => 'required',
             'account_id' => 'required',
+	    'to_account_id' => 'nullable',
             'date' => 'required|date',
             'amount' => 'required|numeric',
             'description' => 'nullable|string',
+            // 'transaction_name' =>  'nullable|string',
+            'to_account_id' =>  'nullable',
+            'source' =>  'nullable|string', 
+            'status' =>  'nullable|string',
         ]);
     
         // Ensure the company_id is set correctly
         $validatedData['company_id'] = auth()->user()->company_id;
-    
-        $transfer = Transfer::findOrFail($id);
+        $validatedData['transaction_name'] = 'Transfer';
+        
+        $transfer = Transaction::where('company_id', auth()->user()->company_id)->findOrFail($id);
         $transfer->update($validatedData);
     
         // Redirect back to the index page with a success message
@@ -651,7 +716,7 @@ class AccountsController extends Controller
         }      
     
         // Load the transfer and ensure it belongs to the authenticated user's company
-        $transfer = Transfer::where('company_id', auth()->user()->company_id)->findOrFail($id);
+        $transfer = Transaction::where('company_id', auth()->user()->company_id)->findOrFail($id);
     
         // Delete the transfer
         $transfer->delete();
@@ -659,7 +724,7 @@ class AccountsController extends Controller
         // Redirect back to the index page with a success message
         return redirect()->route('transfers.index')->with('success', 'transfer deleted successfully.');
     }
-
+    
 
     // Accounts Receivable Module
     public function accountsReceivableIndex()
@@ -915,6 +980,10 @@ class AccountsController extends Controller
 
     public function Reconsindex()
     {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }      
         $companyId = auth()->user()->company_id;
 
         // Retrieve transactions from various tables based on company_id
@@ -924,20 +993,45 @@ class AccountsController extends Controller
         $withdrawals = Withdrawal::where('company_id', $companyId)->get();
         $transfers = Transfer::where('company_id', $companyId)->get();
         $transactions = Transaction::where('company_id', $companyId)->get();
-        // Include other relevant tables
 
-        return view('accounts.banking.reconcilliation', compact('withdrawals', 'transfers', 'deposits','transactions'));
+        $bankTransactions = BankTransaction::where('company_id', $companyId)->get();
+        // Include other relevant tables
+        $accountingTransactions = $deposits->merge($withdrawals)->merge($transfers)->merge($transactions)->unique();
+    
+        return view('accounts.banking.reconcilliation', compact('withdrawals', 'transfers', 'deposits','transactions','bankTransactions', 'accountingTransactions'));
     }
 
     public function matchTransactions(Request $request)
     {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }      
+        $companyId = auth()->user()->company_id;
         // Retrieve data from the form submission
         $bankTransactionId = $request->input('bank_transaction');
         $accountingTransactionId = $request->input('account_transaction');
 
         // Fetch the selected bank transaction and accounting transaction from the database
-        $bankTransaction = BankTransaction::findOrFail($bankTransactionId);
-        $accountingTransaction = Transaction::findOrFail($accountingTransactionId);
+        $bankTransaction = BankTransaction::where('company_id', $companyId)->findOrFail($bankTransactionId);
+        $accountingTransaction = Transaction::where('company_id', $companyId)->findOrFail($accountingTransactionId);
+
+        // Fetch the accounting transaction from the relevant table based on its type
+        switch ($bankTransaction->type) {
+            case 'payment':
+                $accountingTransaction = Payment::where('company_id', $companyId)->findOrFail($accountingTransactionId);
+                break;
+            case 'sale':
+                $accountingTransaction = SaleBill::where('company_id', $companyId)->findOrFail($accountingTransactionId);
+                break;
+            case 'purchase':
+                $accountingTransaction = PurchaseBill::where('company_id', $companyId)->findOrFail($accountingTransactionId);
+                break;
+            // Add cases for other types as needed
+            default:
+                $accountingTransaction = Transaction::where('company_id', $companyId)->findOrFail($accountingTransactionId);
+                break;
+        }
 
         // Perform matching logic here
         // Example: Compare amount, date, and description to determine if they match

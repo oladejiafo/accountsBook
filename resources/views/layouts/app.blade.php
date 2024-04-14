@@ -159,16 +159,15 @@
                         <li>
                             <a href="#customersSubmenu" data-toggle="collapse" class="dropdown-toggle sidebar-text right-arrow sidebar-button"><i class="fas fa-users fa-fw"></i> Customers</a>
                             <ul class="collapse list-unstyled" id="customersSubmenu">
-                                <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('new-stock') }}"><i class="fas fa-dot-circle  fa-fw"></i> Add New Customer</a> </li>
-                                <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('inventory') }}"><i class="fas fa-dot-circle  fa-fw"></i> List Customers</a> </li>
-                                <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('inventory') }}"><i class="fas fa-dot-circle  fa-fw"></i> Payments</a> </li>
+                                <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('customers.index') }}"><i class="fas fa-dot-circle  fa-fw"></i> List Customers</a> </li>
+                                <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('payments.index') }}"><i class="fas fa-dot-circle  fa-fw"></i> Payments</a> </li>
                             </ul>
                         </li>
                         <li>
-                            <a href="#saleSubmenu" data-toggle="collapse" class="dropdown-toggle sidebar-text right-arrow sidebar-button"><i class="fas fa-dollar-sign  fa-fw"></i> Sales</a>
+                            <a href="#saleSubmenu" data-toggle="collapse" class="dropdown-toggle sidebar-text right-arrow sidebar-button"><i class="fas fa-dollar-sign  fa-fw"></i> Sales/Returns</a>
                             <ul class="collapse list-unstyled" id="saleSubmenu">
-                                <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('sales.create') }}"><i class="fas fa-dot-circle  fa-fw"></i> New Sale</a> </li>
-                                <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('sales.index') }}"><i class="fas fa-dot-circle  fa-fw"></i> Sales/Orders</a> </li>
+                                <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('sales.index') }}"><i class="fas fa-dot-circle  fa-fw"></i> Sales Order</a> </li>
+                                <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('returns.show') }}"><i class="fas fa-dot-circle  fa-fw"></i> Sales Returns</a> </li>
                             </ul>
                         </li>
                     </ul>
