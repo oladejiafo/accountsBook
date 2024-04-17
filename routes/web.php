@@ -50,9 +50,16 @@ Route::post('sales/store', [TransactionsController::class, 'salesStore'])->name(
 Route::delete('sales/{sale}', [TransactionsController::class, 'salesDestroy'])->name('sales.destroy');
 Route::get('/bill/{id}', [TransactionsController::class, 'salesShow'])->name('sales.show');
 
+Route::get('/sales/{id}/edit', [TransactionsController::class, 'salesEdit'])->name('sales.edit');
+Route::put('/sales/{id}', [TransactionsController::class, 'salesUpdate'])->name('sales.update');
+
 //Returns
 Route::get('/returns', [TransactionsController::class, 'showReturnsForm'])->name('returns.show');
 Route::post('/returns', [TransactionsController::class, 'processReturn'])->name('returns.process');
+Route::get('/autocomplete/customers', [TransactionsController::class, 'returnCustomers'])->name('autocomplete.customers');
+// Route::get('/fetchCustomerTransactions', [TransactionsController::class, 'fetchCustomerTransactions'])->name('fetchCustomerTransactions');
+Route::get('/fetch-customer-transactions', [TransactionsController::class, 'fetchCustomerTransactions'])->name('fetchCustomerTransactions');
+
 
 // Define similar routes for other actions
 
@@ -82,10 +89,12 @@ Route::prefix('customers')->group(function () {
     Route::put('/{customer}/update', [TransactionsController::class, 'customersUpdate'])->name('customers.update');
     Route::delete('/{customer}', [TransactionsController::class, 'customersDestroy'])->name('customers.destroy');
 });
+Route::get('/fetch-customer-details',[TransactionsController::class, 'fetchCustomerDetails'])->name('fetchCustomerDetails');
+
 
 //Payments
 Route::get('/payments', [TransactionsController::class, 'paymentsIndex'])->name('payments.index');
-Route::get('/payments/create', [TransactionsController::class, 'paymentsCreate'])->name('payments.create');
+Route::get('/payments/create/{saleId?}', [TransactionsController::class, 'paymentsCreate'])->name('payments.create');
 Route::post('/payments', [TransactionsController::class, 'paymentsStore'])->name('payments.store');
 Route::get('/payments/{payment}/edit', [TransactionsController::class, 'paymentsEdit'])->name('payments.edit');
 Route::put('/payments/{payment}', [TransactionsController::class, 'paymentsUpdate'])->name('payments.update');

@@ -31,10 +31,10 @@
                         @endforeach
                     </select>            
                 </div>
-                <div class="form-group">
+                {{-- <div class="form-group">
                     <label for="name">Name:</label>
                     <input type="text" class="form-control" id="name" name="name" required>
-                </div>
+                </div> --}}
                 <div class="form-group">
                     <label for="code">Code:</label>
                     <input type="text" class="form-control" id="code" name="code" required>

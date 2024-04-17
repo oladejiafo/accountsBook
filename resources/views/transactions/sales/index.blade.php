@@ -37,13 +37,16 @@
                 <td class="align-middle"> <p>{{ $sale->payment_status }}</p> </td>
                 <td class="align-middle"> 
                     @if ($sale->payment_status === 'PENDING')
-                        <a href="{{ route('payments.create', $sale) }}" class="btn btn-info btn-sm">Pay Now</a> 
+                        <a href="{{ route('payments.create', $sale->id) }}" class="btn btn-info btn-sm">Pay Now</a> 
                     @endif
                     @if ($sale->payment_status === 'PAID')
                         <a href="{{ route('sales.show', $sale) }}" class="btn btn-success btn-sm">View Bill</a> 
                     @endif
+                    <!-- Add the edit link here -->
+                    <a href="{{ route('sales.edit', $sale->id) }}" class="btn btn-primary btn-sm">Edit Sale</a>
                     <a href="{{ route('sales.destroy', $sale->id) }}" class="btn btn-danger btn-sm">Delete Bill</a> 
                 </td>
+                
             </tr>
             @endforeach    
         </tbody>        

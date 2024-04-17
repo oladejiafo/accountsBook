@@ -23,6 +23,9 @@ class ReturnTransaction extends Model
         'shipping_cost',
         'notes',
         'company_id',
+        'customer_id', // Added field for customer ID
+        'approval_required', // Added field for approval requirement
+        'exchange', // Added field for refund/exchange option
     ];
     
     public function customer()

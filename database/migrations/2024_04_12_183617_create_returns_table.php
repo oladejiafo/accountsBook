@@ -12,6 +12,8 @@ class CreateReturnsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('customer_id');
             $table->unsignedBigInteger('company_id'); // Added company_id
+            $table->boolean('approval_required')->default(0);
+            $table->string('exchange')->nullable(); 
             $table->string('return_authorization_number')->nullable();
             $table->date('return_date');
             $table->string('reason_for_return')->nullable(); // Reason for return

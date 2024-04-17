@@ -20,23 +20,23 @@
 
             <div class="form-group">
                 <label for="name" class="panel-body-text">Customer Name:</label>
-                <input type="text" name="name" id="name" class="form-control" autocomplete="on" required>              
+                <input type="text" name="name" id="name" class="form-control" required>              
             </div>
 
             <div class="form-row">
                 <div class="form-group col-md-6"> 
                     <label for="phone" class="panel-body-text">Phone No:</label>
-                    <input type="tel" name="phone" id="phone" class="form-control" readonly="readonly" maxlength="10" pattern="[0-9]{10}" title="Numbers only" required>
+                    <input type="tel" name="phone" id="phone" class="form-control" maxlength="10" pattern="[0-9]{10}" title="Numbers only" required>
                 </div>
                 <div class="form-group col-md-6">              
                     <label for="email" class="panel-body-text">Email:</label>
-                    <input type="email" name="email" id="email" readonly="readonly" class="form-control">
+                    <input type="email" name="email" id="email" class="form-control">
                 </div>
             </div>
 
             <div class="form-group">
                 <label for="address" class="panel-body-text">Address:</label>
-                <textarea name="address" id="address" class="form-control" readonly="readonly" rows="4"></textarea>
+                <textarea name="address" id="address" class="form-control" rows="4"></textarea>
             </div>
             {{-- <div class="form-group">
                 <label for="gstin" class="panel-body-text">GSTIN No:</label>
@@ -133,37 +133,7 @@
                 updateUnitPriceAndTotalAmount($(this).closest('.form-row').find('.stock_name'));
             });
 
-            // Function to update customer details
-            function updateCustomerDetails(customer) {
-                $('#phone').val(customer.phone);
-                $('#email').val(customer.email);
-                $('#address').val(customer.address);
-            }
-
-            // Function to fetch customer details based on input text
-            $('#name').on('input', function() {
-                var customerName = $(this).val();
-                if (customerName.length >= 3) {
-                    $.ajax({
-                        url: '{{ route("fetchCustomerDetails") }}',
-                        method: 'GET',
-                        data: {
-                            name: customerName
-                        },
-                        success: function(response) {
-                            // Update customer details fields
-                            updateCustomerDetails(response);
-                        },
-                        error: function(xhr, status, error) {
-                            console.error(error);
-                            // Handle errors or display a message to the user
-                        }
-                    });
-                }
-            });
         });
-
-       // Function to add and remove item rows
        function updateElementIndex(el, prefix, ndx) {
            var id_regex = new RegExp('(' + prefix + '-\\d+)');
            var replacement = prefix + '-' + ndx;
@@ -172,10 +142,12 @@
            if (el.name) el.name = el.name.replace(id_regex, replacement);
        }
        
+       //stores the total no of item forms
        var total = 1;
 
        function cloneMore(selector, prefix) {
            var newElement = $(selector).clone(true);
+           //var total = $('#id_' + prefix + '-TOTAL_FORMS').val();
            newElement.find(':input:not([type=button]):not([type=submit]):not([type=reset])').each(function() {
                var name = $(this).attr('name')
                if(name) {
@@ -199,6 +171,7 @@
        }
        
        function deleteForm(prefix, btn) {
+           //var total = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
            if (total > 1){
                btn.closest('.form-row').remove();
                var forms = $('.form-row');

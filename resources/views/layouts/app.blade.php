@@ -130,7 +130,7 @@
                         <li>
                             <a href="#inventorySubmenu" data-toggle="collapse" class="dropdown-toggle sidebar-text right-arrow sidebar-button"><i class="fas fa-boxes  fa-fw"></i> Inventory</a>
                             <ul class="collapse list-unstyled" id="inventorySubmenu">
-                                <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('new-stock') }}"><i class="fas fa-dot-circle  fa-fw"></i> Add New</a> </li>
+                                <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('new-stock') }}"><i class="fas fa-dot-circle  fa-fw"></i> Add New Stock</a> </li>
                                 <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('inventory') }}"><i class="fas fa-dot-circle  fa-fw"></i> Inventory List</a> </li>
                             </ul>
                         </li>
@@ -273,27 +273,29 @@
         });
     </script>
 
-    <script>
-        // Timeout duration in minutes (should match Laravel session lifetime)
-        const timeoutDuration = 120;
-        
-        // Calculate timeout in milliseconds
-        const timeoutMs = timeoutDuration * 60 * 1000;
-        
-        // Set timeout to show a prompt before the session expires
-        const sessionTimeout = setTimeout(function() {
-            // Display a modal, redirect to login page, or show a message to the user
-            alert('Your session is about to expire. Please save your work.');
+<script>
+    // Timeout duration in minutes (should match Laravel session lifetime)
+    const timeoutDuration = 120;
+    
+    // Calculate timeout in milliseconds
+    const timeoutMs = timeoutDuration * 60 * 1000;
+    
+    // Set timeout to redirect to the login page after the session expires
+    const sessionTimeout = setTimeout(function() {
+        // Redirect to the login page
+        window.location.href = '/login';
+    }, timeoutMs);
+    
+    // Reset the timeout if the user interacts with the page
+    document.addEventListener('mousemove', function() {
+        clearTimeout(sessionTimeout);
+        sessionTimeout = setTimeout(function() {
+            // Redirect to the login page
+            window.location.href = '/login';
         }, timeoutMs);
-        
-        // Reset the timeout if the user interacts with the page
-        document.addEventListener('mousemove', function() {
-            clearTimeout(sessionTimeout);
-            sessionTimeout = setTimeout(function() {
-                alert('Your session is about to expire. Please save your work.');
-            }, timeoutMs);
-        });
-    </script>
+    });
+</script>
+
     
 </body>
 </html>

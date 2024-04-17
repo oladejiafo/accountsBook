@@ -143,7 +143,12 @@
                             @enderror
                         </div>                                                
 
-                        <button type="submit" class="btn btn-primary">Create Customer</button>
+                        <div class="align-middle">
+                            <br>
+                            <button type="submit" class="btn btn-success">Create Customer</button>
+                            <button type="button" class="btn btn-danger" onclick="resetForm()">Reset</button>
+                            <a href="{{ route('customers.index') }}" class="btn btn-secondary">Cancel</a>                        
+                        </div>
                     </form>
                 </div>
             </div>

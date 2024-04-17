@@ -785,7 +785,7 @@ class AccountsController extends Controller
             'code' => 'required',
             'type' => 'required',
             'category' => 'required',
-            'name' => 'required',
+            // 'name' => 'required',
             // Add more validation rules as needed
         ]);
 
@@ -795,7 +795,7 @@ class AccountsController extends Controller
             'code' => $request->code,
             'type' => $request->type,
             'category' => $request->category,
-            'name' => $request->name,
+            // 'name' => $request->name,
             'company_id' => $companyId,
         ]);
 
@@ -831,7 +831,7 @@ class AccountsController extends Controller
             'code' => 'required',
             'type' => 'required',
             'category' => 'required',
-            'name' => 'required',
+            // 'name' => 'required',
             // Add more validation rules as needed
         ]);
 
@@ -844,7 +844,7 @@ class AccountsController extends Controller
             'code' => $request->code,
             'type' => $request->type,
             'category' => $request->category,
-            'name' => $request->name,
+            // 'name' => $request->name,
             // Update other fields as needed
         ]);
 

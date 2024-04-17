@@ -5,7 +5,8 @@
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header row">
+                
+                <div class="row card-header">
                     <div class="col-md-6"  style="color: #4e4e4e; font-style: bold; font-size: 3rem;">Customers</div>
                     <div class="col-md-6">
                         <div style="float:right;" class="d-flex justify-content-end mt-3">
@@ -15,6 +16,18 @@
                         </div>
                     </div>
                 </div>
+
+                <div style="border-bottom: 1px solid white;"></div>
+                <form method="GET" action="{{ route('customers.index') }}">
+                    <div class="input-group search">
+                        <input type="text" name="search" class="form-control textinput" placeholder="Search for customers">
+                        <div class="input-group-append">
+                        <button type="submit" class="btn btn-pink">Search</button>
+                        </div>
+                    </div>
+                </form>
+                <br>
+
                 <div class="card-body">
                     <table class="table">
                         <thead>
@@ -32,7 +45,7 @@
                                 <td>{{ $customer->email }}</td>
                                 <td>{{ $customer->phone }}</td>
                                 <td>
-                                    <a href="{{ route('customers.edit', $customer->id) }}" class="btn btn-primary btn-sm">Edit</a>
+                                    <a href="{{ route('customers.edit', $customer->id) }}" class="btn btn-info btn-sm">Edit</a>
                                     <form action="{{ route('customers.destroy', $customer->id) }}" method="POST" style="display: inline;">
                                         @csrf
                                         @method('DELETE')
@@ -47,5 +60,10 @@
             </div>
         </div>
     </div>
+    @if ($customers->isNotEmpty())
+        <div class="pagination">
+            {{ $customers->links() }}
+        </div>
+    @endif
 </div>
 @endsection

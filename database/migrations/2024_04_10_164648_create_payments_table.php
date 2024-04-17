@@ -17,18 +17,32 @@ class CreatePaymentsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('company_id');
             $table->unsignedBigInteger('customer_id')->nullable();
-            $table->string('description');
-            $table->decimal('amount', 10, 2);
+            $table->unsignedBigInteger('sales_id')->nullable();
+            $table->unsignedBigInteger('stock_id')->nullable();
+            $table->string('invoice_number')->nullable();
             $table->unsignedBigInteger('invoice_id')->nullable();
+            $table->unsignedBigInteger('bank_id')->nullable();
+            $table->string('bank_reference_number')->nullable();
+            $table->string('payment_type')->nullable();
+            $table->decimal('payable_amount', 10, 2)->nullable();
+            $table->decimal('paid_amount', 10, 2)->nullable();
+            $table->decimal('remaining_amount', 10, 2)->nullable();
+            $table->date('payment_date')->nullable();
+            $table->string('payment_status')->default('PENDING');
+            $table->boolean('payment_verified_by_cfo')->nullable();
+            $table->string('payment_method')->nullable(); // Fixed typo here
+            $table->text('remark');
             $table->string('recipient_type');
-            $table->date('date');
-            // Add other payment related fields as needed
             $table->timestamps();
         
             $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('set null');
-            // $table->foreign('invoice_id')->references('id')->on('invoices')->onDelete('set null');
+            $table->foreign('sales_id')->references('id')->on('sales')->onDelete('set null');
+            $table->foreign('stock_id')->references('id')->on('stocks')->onDelete('set null');
+            $table->foreign('bank_id')->references('id')->on('banks')->onDelete('set null');
+            $table->foreign('payment_verified_by_cfo')->references('id')->on('employees')->onDelete('set null');
         });
+        
     }
 
     /**

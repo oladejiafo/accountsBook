@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="container">
-    <h1  style="color: black">Edit Chart of Account</h1>
+    <h1   style="color: #4e4e4e; font-style: bold; font-size: 3rem;">Edit Chart of Account</h1>
     <form action="{{ route('chartOfAccounts.update', $chartOfAccount->id) }}" method="POST">
         @csrf
         @method('PUT')
@@ -28,10 +28,10 @@
                 @endforeach
             </select>            
         </div>
-        <div class="form-group">
+        {{-- <div class="form-group">
             <label for="name">Name:</label>
             <input type="text" class="form-control" id="name" name="name" value="{{ $chartOfAccount->name }}" required>
-        </div>
+        </div> --}}
         <div class="form-group">
             <label for="code">Code:</label>
             <input type="text" class="form-control" id="code" name="code" value="{{ $chartOfAccount->code }}" required>

@@ -37,7 +37,7 @@
                 @if ($purchase->supplier->is_deleted)
                 {{ $purchase->supplier }}<br>
                 @else
-                <a href="{{ route('supplier', $purchase->supplier->name) }}">{{ $purchase->supplier->name }}</a><br>
+                <a href="{{ route('supplier', $purchase->supplier->id) }}">{{ $purchase->supplier->name }}</a><br>
                 @endif
                 <small style="color: #909494">Ph No : {{ $purchase->supplier->phone }}</small>
             </td>

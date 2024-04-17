@@ -64,7 +64,7 @@
         <thead class="thead-dark align-middle">
             <tr>
                 <th>Code</th>
-                <th>Name</th>
+                {{-- <th>Name</th> --}}
                 <th>Account Type</th>
                 <th>Account Category</th>
                 <th>Actions</th>
@@ -74,7 +74,7 @@
             @foreach($chartOfAccounts as $account)
             <tr> 
                 <td>{{ $account->code }}</td>
-                <td>{{ $account->name }}</td>
+                {{-- <td>{{ $account->name }}</td> --}}
                 <td>{{ optional($account->types)->category ?? $account->type }}</td>
                 <td>{{ $account->category }}</td>
                 <td>

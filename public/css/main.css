@@ -518,3 +518,31 @@
     border-radius: 50%;
   }
   
+
+  .btn-toggle {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+    padding: 0;
+    overflow: hidden;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.btn-toggle .handle {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 24px;
+    height: 24px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 24px;
+    transition: transform 0.3s ease;
+}
+
+.btn-toggle[aria-pressed="true"] .handle {
+    transform: translateX(26px);
+}

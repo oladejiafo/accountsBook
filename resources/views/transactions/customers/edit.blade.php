@@ -140,8 +140,11 @@
                     @enderror
                 </div>
 
-                <div class="form-group">
-                    <button type="submit" class="btn btn-primary">Update Customer</button>
+                <div class="align-middle">
+                    <br>
+                    <button type="submit" class="btn btn-success">Update Customer</button>
+                    <a href="{{ route('customers.destroy', $customer->id) }}" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this record?')">Delete</a>
+                    <a href="{{ route('customers.index') }}" class="btn btn-secondary">Cancel</a>
                 </div>
             </form>
         </div>
