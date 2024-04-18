@@ -25,10 +25,11 @@ class ChartImportClass implements ToModel, WithHeadingRow
             'code' => 'required',
             'category' => 'required',
             'type' => 'required',
-            'name' => 'required',
-            'description' => 'required',
         ];
 
+        if (!empty($row['description'])) {
+            $rules['description'] = 'required';
+        }
         // Validate the row data
         $validator = Validator::make($row, $rules);
 

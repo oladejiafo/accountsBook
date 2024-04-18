@@ -17,14 +17,11 @@
                         <div class="form-group">
                             <label for="transaction_name">Transaction Name:</label>
                             <select class="form-control" id="transaction_name" name="transaction_name" required>
-                                <option value="Deposit" {{ $transaction->transaction_name == 'Deposit' ? 'selected' : '' }}>Deposit</option>
-                                <option value="Expenditure" {{ $transaction->transaction_name == 'Expenditure' ? 'selected' : '' }}>Expenditure</option>
-                                <option value="Withdrawal" {{ $transaction->transaction_name == 'Withdrawal' ? 'selected' : '' }}>Withdrawal</option>
-                                <option value="Refund" {{ $transaction->transaction_name == 'Refund' ? 'selected' : '' }}>Refund</option>
-                                <option value="Transfer" {{ $transaction->transaction_name == 'Transfer' ? 'selected' : '' }}>Transfer</option>
-                                <option value="Cash Payment" {{ $transaction->transaction_name == 'Cash Payment' ? 'selected' : '' }}>Cash Payment</option>
-                                <option value="Others" {{ $transaction->transaction_name == 'Others' ? 'selected' : '' }}>Others</option>
+                                @foreach($transactionTypes as $type)
+                                    <option value="{{ $type->name }}" {{ $transaction->transaction_name == $type->name ? 'selected' : '' }}>{{ $type->name }}</option>
+                                @endforeach
                             </select>
+                            
                         </div>
                     </div>
                     <div class="col">
@@ -43,16 +40,16 @@
                 <div class="form-group">
                     <label for="account_id">Account Classification:</label>
                     <select class="form-control" id="account_id" name="account_id" required>
-                        @foreach ($accounts->unique('category') as $account)
-                            <option value="{{ $account->id }}" {{ $transaction->account_id == $account->id ? 'selected' : '' }}>{{ $account->category }}</option>
+                        @foreach ($accounts->unique('description') as $account)
+                            <option value="{{ $account->id }}" {{ $transaction->account_id == $account->id ? 'selected' : '' }}>{{ $account->code }} - {{ $account->description  }}</option>
                         @endforeach
                     </select> 
                 </div>
                 <div class="form-group"  id="to_account_group" style="display: none;">
                     <label for="to_account_id">Account Transfered To:</label>
                     <select class="form-control" id="to_account_id" name="to_account_id">
-                        @foreach ($accounts->unique('category') as $account)
-                            <option value="{{ $account->id }}">{{ $account->category }}</option>
+                        @foreach ($accounts->unique('description') as $account)
+                            <option value="{{ $account->id }}">{{ $account->code }} - {{ $account->description  }}</option>
                         @endforeach
                     </select> 
                 </div>

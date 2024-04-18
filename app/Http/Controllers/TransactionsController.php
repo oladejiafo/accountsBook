@@ -17,6 +17,7 @@ use App\Models\ReturnProduct;
 use App\Models\Customer;
 use App\Models\Payment;
 use App\Models\Bank;
+use App\Models\TransactionType;
 
 use App\Notifications\ReturnProcessedNotification;  
 use App\Notifications\ReturnApprovalNotification;
@@ -199,6 +200,20 @@ class TransactionsController extends Controller
         $saleBillDetails->total = $item['quantity'] * $stock->price;
 
         $saleBillDetails->save();
+
+        // Create transaction entries based on transaction mapping
+        $salesMapping = TransactionAccountMapping::where('transaction_type', 'sales')
+        ->where('company_id', $companyId)
+        ->get();
+
+        foreach ($salesMapping as $mapping) {
+            $transaction = new Transaction();
+            $transaction->account_id = $mapping->account_id;
+            $transaction->amount = $saleBillDetails->total;
+            $transaction->type = $mapping->is_credit ? 'credit' : 'debit';
+            $transaction->company_id = $companyId;
+            $transaction->save();
+        }
 
         return redirect()->route('sales.show', $sale->id)->with('success', 'Sale created successfully.');
     }

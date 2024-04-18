@@ -27,8 +27,8 @@
                 <div class="form-group">
                     <label for="account_id">Account Classification:</label>
                     <select class="form-control" id="account_id" name="account_id" required>
-                        @foreach ($accounts->unique('category') as $account)
-                            <option value="{{ $account->id }}" {{ $deposit->account_id == $account->id ? 'selected' : '' }}>{{ $account->category }}</option>
+                        @foreach ($accounts->unique('description') as $account)
+                            <option value="{{ $account->id }}" {{ $deposit->account_id == $account->id ? 'selected' : '' }}>{{ $account->code }} - {{ $account->description }}</option>
                         @endforeach
                     </select> 
                 </div>

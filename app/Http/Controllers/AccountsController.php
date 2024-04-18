@@ -15,7 +15,8 @@ use App\Models\ChartOfAccount;
 use App\Models\AccountsReceivable;
 use App\Models\AccountsPayable;
 use App\Models\AccountsCategory;
-
+use App\Models\TransactionAccountMapping;
+use App\Models\TransactionType;
 use App\Models\BankTransaction;
 use App\Models\Reconcilliation;
 
@@ -92,68 +93,117 @@ class AccountsController extends Controller
             'Alert: Accounts receivable aging report indicates overdue payments.',
         ];
     }
-    
-    // Ledger Module
-    public function ledgerIndex()
+
+    public function ledgerIndex(Request $request)
     {
         // Check authentication and company identification
         if (!auth()->check() || !auth()->user()->company_id) {
             return redirect()->route('login')->with('error', 'Unauthorized access.');
         }      
         $companyId = auth()->user()->company_id;
-        // where('company_id', $companyId)->
 
-        $ledgerEntries = GeneralLedger::where('company_id', $companyId)->get();
-        return view('accounts.ledgers.index', compact('ledgerEntries'));
-    }
+        // Fetch account categories
+        $accountCategories = AccountsCategory::all(); // Assuming AccountCategory is your model for account categories
 
-    public function ledgerCreate()
-    {
-        return view('ledger.create');
-    }
+        // Initialize variables
+        $keyword = $request->input('keyword');
+        $searchAccount = $request->input('search_account');
+        $searchDate = $request->input('search_date');
 
-    public function ledgerStore(Request $request)
-    {
-        // Validate request
-        $request->validate([
-            // Define validation rules here
-        ]);
+        // Start building the query
+        $transactionsQuery = Transaction::where('company_id', $companyId);
 
-        // Create new ledger entry
-        Ledger::create([
-            // Assign request data to ledger fields
-        ]);
+        // Apply filters based on form inputs
+        if ($keyword) {
+            $transactionsQuery->where(function ($query) use ($keyword) {
+                $query->where('type', 'like', '%' . $keyword . '%')
+                    ->orWhere('description', 'like', '%' . $keyword . '%')
+                    ->orWhere('date', 'like', '%' . $keyword . '%');
+            });
+        }
 
-        return redirect()->route('ledger.index')->with('success', 'Ledger entry created successfully.');
-    }
+        if ($searchAccount && $searchAccount != 'all') {
+            $transactionsQuery->whereHas('account', function ($accountQuery) use ($searchAccount) {
+                // dd($searchAccount);
+                $accountQuery->where(function ($query) use ($searchAccount) {
+                    $query->where('type', 'like', '%' . $searchAccount . '%')
+                          ->orWhere('category', 'like', '%' . $searchAccount . '%');
+                });
+            });
+        }
+        
+        $tday = date(now());  // Today's Date
+        if ($searchDate && $searchDate != 'all') {
+            switch ($searchDate) {
+                case 'today':
+                    $transactionsQuery->where('date', $tday);
+                    break;
+                case 'last_7_days':
+                    $transactionsQuery->whereBetween('date', [now()->subDays(7), now()]);
+                    break;
+                case 'last_30_days':
+                    $transactionsQuery->whereBetween('date', [now()->subDays(30), now()]);
+                    break;
+                case 'last_60_days':
+                    $transactionsQuery->whereBetween('date', [now()->subDays(60), now()]);
+                    break;
+                case 'last_90_days':
+                    $transactionsQuery->whereBetween('date', [now()->subDays(90), now()]);
+                    break;
+                case 'current_month':
+                    $transactionsQuery->whereMonth('date', now()->month);
+                    break;
+                case 'last_month':
+                    $transactionsQuery->whereMonth('date', now()->subMonth()->month);
+                    break;
+                case 'last_3_months':
+                    $transactionsQuery->whereBetween('date', [now()->subMonths(3), now()]);
+                    break;
+                default:
+                    // Retrieve all records
+                    break;
+            }            
+        }
 
-    public function ledgerEdit($id)
-    {
-        $ledgerEntry = Ledger::findOrFail($id);
-        return view('ledger.edit', compact('ledgerEntry'));
-    }
+        // Execute the query and get the results
+        // $transactions = $transactionsQuery->get();
+        $transactions = $transactionsQuery->paginate(30);
+        // dd($transactions);
+        $totalDebit = 0;
+        $totalCredit = 0;
 
-    public function ledgerUpdate(Request $request, $id)
-    {
-        // Validate request
-        $request->validate([
-            // Define validation rules here
-        ]);
+        // Calculate starting balance based on transactions
+        $startingBalance = 0;
 
-        // Update ledger entry
-        $ledgerEntry = Ledger::findOrFail($id);
-        $ledgerEntry->update([
-            // Assign request data to ledger fields
-        ]);
+        foreach ($transactions as $transaction) {
+            // Determine transaction type and account category (case-insensitive)
+            $transactionType = strtolower($transaction->type);
+            $accountCategory = strtolower(optional($transaction->account)->category);
 
-        return redirect()->route('ledger.index')->with('success', 'Ledger entry updated successfully.');
-    }
+            // Increment total debit and total credit based on transaction type and account category
+            if (in_array($transactionType, ['income', 'asset']) || in_array($accountCategory, ['income', 'asset'])) {
+                $totalDebit += abs($transaction->amount);
+            } elseif (in_array($transactionType, ['expense', 'liability', 'equity']) || in_array($accountCategory, ['expense', 'liability', 'equity'])) {
+                $totalCredit += abs($transaction->amount);
+            }
+        
+            // Adjust starting balance based on transaction amount and account category
+            if ($transaction->account) {
+                if (strtolower($transaction->type) === 'income' || strtolower($transaction->type) === 'equity' || strtolower($transaction->account->category) === 'income' || strtolower($transaction->account->category) === 'equity') {
+                    $startingBalance += $transaction->amount;
+                } elseif (strtolower($transaction->type) === 'expense' || strtolower($transaction->type) === 'asset' || strtolower($transaction->account->category) === 'expense' || strtolower($transaction->account->category) === 'asset') {
+                    $startingBalance -= $transaction->amount;
+                } elseif (strtolower($transaction->type) === 'liability' || strtolower($transaction->account->category) === 'liability') {
+                    $startingBalance += $transaction->amount;
+                }
+            }
+        }
 
-    public function ledgerDestroy($id)
-    {
-        $ledgerEntry = Ledger::findOrFail($id);
-        $ledgerEntry->delete();
-        return redirect()->route('ledger.index')->with('success', 'Ledger entry deleted successfully.');
+        // Calculate total adjusted balance
+        $totalAdjustedBalance = $startingBalance + $transactions->sum('amount');
+
+        // Return the view with the transactions, account categories, and calculated values
+        return view('accounts.ledgers.index', compact('transactions', 'accountCategories', 'totalDebit', 'totalCredit', 'totalAdjustedBalance','startingBalance'));
     }
 
     // Transactions Module
@@ -197,7 +247,7 @@ class AccountsController extends Controller
         $companyId = auth()->user()->company_id;
         // where('company_id', $companyId)->
 
-        $accounts = ChartOfAccount::where('company_id', $companyId)->orderBy('category')->get();
+        $accounts = ChartOfAccount::where('company_id', $companyId)->orderBy('code')->get();
         return view('accounts.transactions.create', compact('accounts'));
     }
 
@@ -209,13 +259,13 @@ class AccountsController extends Controller
         // Query the database to get account classifications based on the selected type
         $accounts = ChartOfAccount::where('company_id', $companyId)
             ->where('type', $selectedType)
-            ->orderBy('category')
+            ->orderBy('code')
             ->get();
     
         // Generate options for the account classification dropdown
         $options = '<option value="" disabled selected>Select Account Type</option>';
         foreach ($accounts as $account) {
-            $options .= '<option value="'.$account->id.'">'.$account->category.'</option>';
+            $options .= '<option value="'.$account->id.'">'.$account->code. ' - ' .$account->description .'</option>';
         }
     
         // Return options as JSON response
@@ -286,7 +336,7 @@ class AccountsController extends Controller
         // Ensure the company_id is set correctly
         $validatedData['company_id'] = auth()->user()->company_id;
     
-        $transaction = Transaction::findOrFail($id);
+        $transaction = Transaction::where('company_id', $companyId)->findOrFail($id);
         $transaction->update($validatedData);
     
         // Redirect back to the index page with a success message
@@ -628,8 +678,9 @@ class AccountsController extends Controller
         $companyId = auth()->user()->company_id;
         // where('company_id', $companyId)->
 
+        $transactionTypes = TransactionType::where('company_id', $companyId)->get();
         $accounts = ChartOfAccount::where('company_id', $companyId)->orderBy('category')->get();
-        return view('accounts.transfers.create', compact('accounts'));
+        return view('accounts.transfers.create', compact('accounts','transactionTypes'));
     }
 
     public function transfersStore(Request $request)
@@ -670,10 +721,10 @@ class AccountsController extends Controller
         }      
         $companyId = auth()->user()->company_id;
         // where('company_id', $companyId)->
-
+        $transactionTypes = TransactionType::where('company_id', $companyId)->get();
         $transfer = Transaction::where('company_id', $companyId)->findOrFail($id);
         $accounts = ChartOfAccount::where('company_id', $companyId)->orderBy('category')->get();
-        return view('accounts.transfers.edit', compact('transfer','accounts'));
+        return view('accounts.transfers.edit', compact('transfer','accounts','transactionTypes'));
     }
 
     public function transfersUpdate(Request $request, $id)
@@ -989,16 +1040,16 @@ class AccountsController extends Controller
         // Retrieve transactions from various tables based on company_id
         // $invoices = Invoice::where('company_id', $companyId)->get();
         // $payments = Payment::where('company_id', $companyId)->get();
-        $deposits = Deposit::where('company_id', $companyId)->get();
-        $withdrawals = Withdrawal::where('company_id', $companyId)->get();
-        $transfers = Transfer::where('company_id', $companyId)->get();
+        // $deposits = Deposit::where('company_id', $companyId)->get();
+        // $withdrawals = Withdrawal::where('company_id', $companyId)->get();
+        // $transfers = Transfer::where('company_id', $companyId)->get();
         $transactions = Transaction::where('company_id', $companyId)->get();
 
         $bankTransactions = BankTransaction::where('company_id', $companyId)->get();
         // Include other relevant tables
-        $accountingTransactions = $deposits->merge($withdrawals)->merge($transfers)->merge($transactions)->unique();
+        $accountingTransactions = $transactions->unique();
     
-        return view('accounts.banking.reconcilliation', compact('withdrawals', 'transfers', 'deposits','transactions','bankTransactions', 'accountingTransactions'));
+        return view('accounts.banking.reconcilliation', compact('transactions','bankTransactions', 'accountingTransactions'));
     }
 
     public function matchTransactions(Request $request)
@@ -1061,5 +1112,113 @@ class AccountsController extends Controller
         } else {
             return false;
         }
+    }
+
+    //Mappings
+
+    public function transactionAccountMappingIndex()
+    {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }      
+        $companyId = auth()->user()->company_id;
+        //where('company_id', $companyId)->
+        
+        $transactionTypes = TransactionType::where('company_id', $companyId)->get();
+        $mappings = TransactionAccountMapping::where('company_id', $companyId)->get();
+        $chartOfAccounts = ChartOfAccount::where('company_id', $companyId)->get();
+        return view('accounts.chart_of_accounts.transaction-account-mapping', compact('mappings','chartOfAccounts','transactionTypes'));
+    }
+
+    public function transactionAccountMappingCreate()
+    {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }      
+        $companyId = auth()->user()->company_id;
+        //where('company_id', $companyId)->
+        
+        $transactionTypes = TransactionType::where('company_id', $companyId)->get();
+        $mappings = TransactionAccountMapping::where('company_id', $companyId)->get();
+        $chartOfAccounts = ChartOfAccount::where('company_id', $companyId)->get();
+        return view('accounts.chart_of_accounts.transaction-account-mapping', compact('mappings','chartOfAccounts','transactionTypes'));
+    }
+
+    public function transactionAccountMappingStore(Request $request)
+    {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }      
+        $companyId = auth()->user()->company_id;
+        //where('company_id', $companyId)->
+        
+        // Validate incoming request
+        $validatedData = $request->validate([
+            'transaction_type' => 'required',
+            'account_id' => 'required',
+            'is_credit' => 'required',
+        ]);
+        $validatedData['company_id'] = auth()->user()->company_id;
+        // Create new mapping
+        TransactionAccountMapping::create($validatedData);
+
+        return redirect()->route('transaction-account-mapping.index')->with('success', 'Mapping created successfully.');
+    }
+
+    public function transactionAccountMappingEdit($id)
+    {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }      
+        $companyId = auth()->user()->company_id;
+        //where('company_id', $companyId)->
+
+        $transactionTypes = TransactionType::where('company_id', $companyId)->get();
+        $mapped = TransactionAccountMapping::where('company_id', $companyId)->findOrFail($id);
+        $mappings = TransactionAccountMapping::where('company_id', $companyId)->get();
+        $chartOfAccounts = ChartOfAccount::where('company_id', $companyId)->get();
+        return view('accounts.chart_of_accounts.transaction-account-mapping', compact('mappings','chartOfAccounts','transactionTypes','mapped'));
+    }
+
+    public function transactionAccountMappingUpdate(Request $request, $id)
+    {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }      
+        $companyId = auth()->user()->company_id;
+        //where('company_id', $companyId)->
+
+       // Validate incoming request
+       $validatedData = $request->validate([
+        'transaction_type' => 'required',
+        'account_id' => 'required',
+        'is_credit' => 'required',
+        ]);
+        $validatedData['company_id'] = auth()->user()->company_id;
+        // Find and update the mapping
+        $mapping = TransactionAccountMapping::findOrFail($id);
+        $mapping->update($validatedData);
+
+        return redirect()->route('transaction-account-mapping.index')->with('success', 'Mapping updated successfully.');
+    }
+
+    public function transactionAccountMappingDestroy($id)
+    {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }      
+        $companyId = auth()->user()->company_id;
+        //where('company_id', $companyId)->
+          // Find and delete the mapping
+          $mapping = TransactionAccountMapping::where('company_id', $companyId)->findOrFail($id);
+          $mapping->delete();
+  
+          return redirect()->route('transaction-account-mapping.index')->with('success', 'Mapping deleted successfully.');
     }
 }

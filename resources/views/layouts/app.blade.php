@@ -103,6 +103,8 @@
                             <ul class="collapse list-unstyled" id="chartSubmenu">
                                 <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('chartOfAccounts') }}"><i class="fas fa-dot-circle  fa-fw"></i> Charts of Account</a> </li>
                                 <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('chartOfAccounts.create') }}"><i class="fas fa-dot-circle  fa-fw"></i> Create A New Chart of Account</a> </li>
+                                
+                                <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('transaction-account-mapping.index') }}"><i class="fas fa-dot-circle  fa-fw"></i> Transaction-Account Mapping</a> </li>
                             </ul>
                         </li>
                         <li>

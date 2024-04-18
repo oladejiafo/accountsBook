@@ -9,7 +9,7 @@ class ChartOfAccount extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['company_id', 'category', 'type', 'code', 'parent_account_id'];
+    protected $fillable = ['company_id', 'category', 'type', 'code', 'parent_account_id','description','name'];
 
     public function company()
     {

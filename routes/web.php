@@ -108,11 +108,6 @@ Route::get('/account/dashboard', [AccountsController::class, 'dashboard'])->name
 
 Route::prefix('ledger')->group(function () {
     Route::get('/', [AccountsController::class, 'ledgerIndex'])->name('ledger.index');
-    Route::get('/create', [AccountsController::class, 'ledgerCreate'])->name('ledger.create');
-    Route::post('/store', [AccountsController::class, 'ledgerStore'])->name('ledger.store');
-    Route::get('/edit/{id}', [AccountsController::class, 'ledgerEdit'])->name('ledger.edit');
-    Route::put('/update/{id}', [AccountsController::class, 'ledgerUpdate'])->name('ledger.update');
-    Route::delete('/delete/{id}', [AccountsController::class, 'ledgerDestroy'])->name('ledger.destroy');
 });
 
 Route::prefix('transactions')->group(function () {
@@ -164,6 +159,16 @@ Route::post('/chart-of-accounts/store', [AccountsController::class, 'storeChartO
 Route::get('/chart-of-accounts/edit/{id}', [AccountsController::class, 'editChartOfAccount'])->name('chartOfAccounts.edit');
 Route::put('/chart-of-accounts/update/{id}', [AccountsController::class, 'updateChartOfAccount'])->name('chartOfAccounts.update');
 Route::get('/chart-of-accounts/delete/{id}', [AccountsController::class, 'deleteChartOfAccount'])->name('chartOfAccounts.destroy');
+
+//transaction-account-mapping
+Route::prefix('transaction-account-mapping')->group(function () {
+    Route::get('/', [AccountsController::class, 'transactionAccountMappingIndex'])->name('transaction-account-mapping.index');
+    Route::get('/create', [AccountsController::class, 'transactionAccountMappingCreate'])->name('transaction-account-mapping.create');
+    Route::post('/', [AccountsController::class, 'transactionAccountMappingStore'])->name('transaction-account-mapping.store');
+    Route::get('/{id}/edit', [AccountsController::class, 'transactionAccountMappingEdit'])->name('transaction-account-mapping.edit');
+    Route::put('/{id}', [AccountsController::class, 'transactionAccountMappingUpdate'])->name('transaction-account-mapping.update');
+    Route::delete('/{id}', [AccountsController::class, 'transactionAccountMappingDestroy'])->name('transaction-account-mapping.destroy');
+});
 
 //bank feeds
 Route::group(['middleware' => 'auth'], function () {

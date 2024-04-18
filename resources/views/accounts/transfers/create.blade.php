@@ -29,8 +29,8 @@
                     <label for="account_id">Account Classification:</label>
                     <select class="form-control" id="account_id" name="account_id" required>
                         <option value="" disabled selected>Select Account Type</option>
-                        @foreach ($accounts->unique('category') as $account)
-                            <option value="{{ $account->id }}">{{ $account->category }}</option>
+                        @foreach ($accounts->unique('description') as $account)
+                            <option value="{{ $account->id }}">{{ $account->code }} - {{ $account->description  }}</option>
                         @endforeach
                     </select> 
                 </div>
@@ -38,8 +38,8 @@
                     <label for="to_account_id">Account Transfered To:</label>
                     <select class="form-control" id="to_account_id" name="to_account_id">
                         <option value="" disabled selected>Select Account Type</option>
-                        @foreach ($accounts->unique('category') as $account)
-                            <option value="{{ $account->id }}">{{ $account->category }}</option>
+                        @foreach ($accounts->unique('description') as $account)
+                            <option value="{{ $account->id }}">{{ $account->code }} - {{ $account->description  }}</option>
                         @endforeach
                     </select> 
                 </div>

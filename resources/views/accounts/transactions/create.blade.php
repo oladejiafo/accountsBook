@@ -18,13 +18,9 @@
                             <label for="transaction_name">Transaction Name:</label>
                             <select class="form-control" id="transaction_name" name="transaction_name" required>
                                 <option value="" selected disabled hidden>Select Transaction Name</option>
-                                <option value="Deposit">Deposit</option>
-                                <option value="Expenditure">Expenditure</option>
-                                <option value="Withdrawal">Withdrawal</option>
-                                <option value="Transfer">Transfer</option>
-                                <option value="Refund">Refund</option>
-                                <option value="Supplier Payment">Supplier Payment</option>
-                                <option value="Others">Others</option>
+                                @foreach($transactionTypes as $type)
+                                    <option value="{{ $type->name }}">{{ $type->name }}</option>
+                                @endforeach
                             </select>
                         </div>
                     </div>
@@ -46,8 +42,8 @@
                     <label for="account_id">Account Classification:</label>
                     <select class="form-control" id="account_id" name="account_id" required>
                         <option value="" disabled selected>Select Account Type</option>
-                        @foreach ($accounts->unique('category') as $account)
-                            <option value="{{ $account->id }}">{{ $account->category }}</option>
+                        @foreach ($accounts->unique('description ') as $account)
+                            <option value="{{ $account->id }}">{{ $account->code }} - {{ $account->description }}</option>
                         @endforeach
                     </select> 
                 </div>
@@ -55,10 +51,10 @@
                     <label for="to_account_id">Account Transfered To:</label>
                     <select class="form-control" id="to_account_id" name="to_account_id">
                         <option value="" disabled selected>Select Account Type</option>
-                        @foreach ($accounts->unique('category') as $account)
-                            <option value="{{ $account->id }}">{{ $account->category }}</option>
+                        @foreach ($accounts->unique('description ') as $account)
+                            <option value="{{ $account->id }}">{{ $account->code }} - {{ $account->description  }}</option>
                         @endforeach
-                    </select> 
+                    </select>
                 </div>
                 <div class="form-row">
                     <div class="col">
