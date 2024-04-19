@@ -17,7 +17,10 @@ use App\Models\ReturnProduct;
 use App\Models\Customer;
 use App\Models\Payment;
 use App\Models\Bank;
+use App\Models\Transaction;
 use App\Models\TransactionType;
+use App\Models\TransactionAccountMapping;
+use App\Models\ChartOfAccount;
 
 use App\Notifications\ReturnProcessedNotification;  
 use App\Notifications\ReturnApprovalNotification;
@@ -166,6 +169,7 @@ class TransactionsController extends Controller
         // Store the sale
         $sale = new SaleBill($request->except('items'));
         $sale->company_id = auth()->user()->company_id ?? 1;
+        $sale->paid_at = date(now());
         $sale->save();
 
         // Store sale items
@@ -200,20 +204,47 @@ class TransactionsController extends Controller
         $saleBillDetails->total = $item['quantity'] * $stock->price;
 
         $saleBillDetails->save();
-
-        // Create transaction entries based on transaction mapping
+        
+        // Create transaction entries based on transaction mapping for sales
         $salesMapping = TransactionAccountMapping::where('transaction_type', 'sales')
-        ->where('company_id', $companyId)
-        ->get();
+            ->where('company_id', $companyId)
+            ->get();
 
         foreach ($salesMapping as $mapping) {
-            $transaction = new Transaction();
-            $transaction->account_id = $mapping->account_id;
-            $transaction->amount = $saleBillDetails->total;
-            $transaction->type = $mapping->is_credit ? 'credit' : 'debit';
-            $transaction->company_id = $companyId;
-            $transaction->save();
+            // Retrieve the accounts associated with the mapping
+            $debitAccount = ChartOfAccount::where('company_id', $companyId)
+                ->where('id', $mapping->debit_account_id)
+                ->first();
+
+            $creditAccount = ChartOfAccount::where('company_id', $companyId)
+                ->where('id', $mapping->credit_account_id)
+                ->first();
+
+            if ($debitAccount && $creditAccount) {
+                // Create debit transaction entry
+                $debitTransaction = new Transaction();
+                $debitTransaction->account_id = $mapping->debit_account_id;
+                $debitTransaction->amount = $saleBillDetails->total;
+                $debitTransaction->type = $debitAccount->type; 
+                $debitTransaction->date = date('Y-m-d');
+                $debitTransaction->company_id = $companyId;
+                $debitTransaction->name = "Sales";
+                $debitTransaction->description = "Sales transaction from customer";
+                $debitTransaction->save();
+
+                // Create credit transaction entry
+                $creditTransaction = new Transaction();
+                $creditTransaction->account_id = $mapping->credit_account_id;
+                $creditTransaction->amount = $saleBillDetails->total;
+                $creditTransaction->type = $creditAccount->type; 
+                $creditTransaction->date = date('Y-m-d');
+                $creditTransaction->company_id = $companyId;
+                $creditTransaction->name = "Sales";
+                $creditTransaction->description = "Sales transaction from customer";
+                $creditTransaction->save();
+            }
         }
+
 
         return redirect()->route('sales.show', $sale->id)->with('success', 'Sale created successfully.');
     }

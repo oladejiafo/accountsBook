@@ -8,19 +8,29 @@ use Illuminate\Database\Eloquent\Model;
 class TransactionAccountMapping extends Model
 {
     use HasFactory;
-    
     protected $fillable = [
         'transaction_type',
-        'account_id',
+        'debit_account_id',
+        'credit_account_id',
         'is_credit',
         'company_id',
     ];
 
-    public function account()
+    public function debitAccount()
     {
-        return $this->belongsTo(ChartOfAccount::class, 'account_id');
+        return $this->belongsTo(ChartOfAccount::class, 'debit_account_id');
     }
 
+    public function creditAccount()
+    {
+        return $this->belongsTo(ChartOfAccount::class, 'credit_account_id');
+    }
+
+    public function transactionType()
+    {
+        return $this->belongsTo(TransactionType::class, 'transaction_type');
+    }
+    
     public function company()
     {
         return $this->belongsTo(Company::class, 'company_id');

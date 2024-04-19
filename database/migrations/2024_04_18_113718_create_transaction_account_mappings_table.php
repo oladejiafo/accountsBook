@@ -16,7 +16,8 @@ class CreateTransactionAccountMappingsTable extends Migration
         Schema::create('transaction_account_mappings', function (Blueprint $table) {
             $table->id();
             $table->string('transaction_type');
-            $table->foreignId('account_id')->constrained('chart_of_accounts');
+            $table->foreignId('debit_account_id')->nullable()->constrained('chart_of_accounts');
+            $table->foreignId('credit_account_id')->nullable()->constrained('chart_of_accounts');
             $table->boolean('is_credit');
             $table->foreignId('company_id')->constrained('companies');
             $table->timestamps();

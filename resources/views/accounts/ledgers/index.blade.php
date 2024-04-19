@@ -119,23 +119,19 @@
                 <td>{{ $transaction->id }}</td>
                 <td>{{ $transaction->description }}</td>
                 <td>
-                    @if(strtolower($transaction->type) === 'income' || strtolower(optional($transaction->account)->category) === 'income')
-                        {{ number_format($transaction->amount, 2) }} {{-- Display as credit --}}
-                    @elseif(strtolower($transaction->type) === 'asset' || strtolower(optional($transaction->account)->category) === 'asset')
-                        0.00 {{-- Display as debit --}}
-                    @elseif(strtolower($transaction->type) === 'expense' || strtolower(optional($transaction->account)->category) === 'expense')
-                        {{ number_format($transaction->amount, 2) }} {{-- Display as debit --}}
+                    @if(strtolower($transaction->type) === 'asset' || strtolower($transaction->type) === 'expense')
+                        {{ number_format($transaction->amount, 2) }}
+                    @elseif(strtolower($transaction->type) === 'income' || strtolower($transaction->type) === 'liability' || strtolower($transaction->type) === 'equity')
+                        0.00 
                     @else
                         0.00
                     @endif
                 </td>
                 <td>
-                    @if(strtolower($transaction->type) === 'expense' || strtolower(optional($transaction->account)->category) === 'expense')
-                        {{ number_format($transaction->amount, 2) }} {{-- Display as debit --}}
-                    @elseif(strtolower($transaction->type) === 'liability' || strtolower(optional($transaction->account)->category) === 'liability')
-                        {{ number_format($transaction->amount, 2) }} {{-- Display as credit --}}
-                    @elseif(strtolower($transaction->type) === 'equity' || strtolower(optional($transaction->account)->category) === 'equity')
-                        {{ number_format($transaction->amount, 2) }} {{-- Display as credit --}}
+                    @if(strtolower($transaction->type) === 'income' || strtolower($transaction->type) === 'liability' || strtolower($transaction->type) === 'equity')
+                        {{ number_format($transaction->amount, 2) }} 
+                    @elseif(strtolower($transaction->type) === 'asset' || strtolower($transaction->type) === 'expense')
+                        0.00 
                     @else
                         0.00
                     @endif

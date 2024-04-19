@@ -19,7 +19,7 @@
 
 </style>
 <div class="container">
-    <h1 style="color: black">Dashboard</h1>
+    <h1  style="color: #4e4e4e; font-style: bold; font-size: 3rem;">Dashboard</h1>
 
     <!-- Overview Section -->
     <div class="card mb-4">
@@ -89,12 +89,11 @@
     <div class="card mb-4">
         <div class="card-header">Financial Charts</div>
         <div class="card-body">
-            <!-- Add financial charts here -->
+            <!-- Income and Expenses Chart -->
             <canvas id="incomeExpenseChart"></canvas>
         </div>
-
-    
     </div>
+
 
     <!-- Alerts Section -->
     <div class="card mb-4">
@@ -114,6 +113,29 @@
 
 <!-- Loading Chart JS -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Get the canvas element
+        var ctx = document.getElementById('incomeExpenseChart').getContext('2d');
+        
+        // Create the chart
+        var incomeExpenseChart = new Chart(ctx, {
+            type: 'bar',
+            data: {!! json_encode($incomeExpensesData) !!}, // Pass the data from the controller
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+    });
+</script>
+
+{{-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     // Chart configuration and data
     var ctx = document.getElementById('incomeExpenseChart').getContext('2d');
@@ -145,6 +167,6 @@
             }
         }
     });
-</script>
+</script> --}}
 
 @endsection

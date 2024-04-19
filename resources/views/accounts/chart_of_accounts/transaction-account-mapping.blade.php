@@ -31,21 +31,22 @@
                                         </span>
                                     @enderror
                                 </div>
-                            </div>                            
+                            </div>                   
 
+                            <!-- Debit Account -->
                             <div class="form-group row">
-                                <label for="account_id" class="col-md-4 col-form-label text-md-right">Account</label>
-
+                                <label for="transaction_type" class="col-md-4 col-form-label text-md-right">Debit Account Type</label>
+                            
                                 <div class="col-md-6">
-                                    <select id="account_id" class="form-control @error('account_id') is-invalid @enderror" name="account_id" required autocomplete="account_id">
+                                    <select id="debit_account_id" class="form-control @error('debit_account_id') is-invalid @enderror" name="debit_account_id" required autocomplete="debit_account_id">
                                         @if(!isset($mapped))
-                                            <option value="" selected disabled>-- Select Account --</option>
+                                            <option value="" selected disabled>-- Select Debit Account --</option>
                                         @endif
                                         @foreach($chartOfAccounts as $account)
-                                            <option value="{{ $account->id }}" {{ isset($mapped) && $mapped->account_id == $account->id ? 'selected' : '' }}>{{ $account->description }}</option>
+                                            <option value="{{ $account->id }}" {{ isset($mapped) && $mapped->debit_account_id == $account->id ? 'selected' : '' }}>{{ $account->description }}</option>
                                         @endforeach
-                                    </select>  
-                                    @error('account_id')
+                                    </select>
+                                    @error('debit_account_id')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
                                         </span>
@@ -53,7 +54,28 @@
                                 </div>
                             </div>
 
+                            <!-- Credit Account -->
                             <div class="form-group row">
+                                <label for="transaction_type" class="col-md-4 col-form-label text-md-right">Credit Account Type</label>
+                            
+                                <div class="col-md-6">
+                                    <select id="credit_account_id" class="form-control @error('credit_account_id') is-invalid @enderror" name="credit_account_id" required autocomplete="credit_account_id">
+                                        @if(!isset($mapped))
+                                            <option value="" selected disabled>-- Select Credit Account --</option>
+                                        @endif
+                                        @foreach($chartOfAccounts as $account)
+                                            <option value="{{ $account->id }}" {{ isset($mapped) && $mapped->credit_account_id == $account->id ? 'selected' : '' }}>{{ $account->description }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('credit_account_id')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            {{-- <div class="form-group row">
                                 <label for="is_credit" class="col-md-4 col-form-label text-md-right">Credit?</label>
                                 <div class="col-md-6">
                                     <input id="is_credit" type="checkbox" class="form-control @error('is_credit') is-invalid @enderror" name="is_credit" value="1" autocomplete="is_credit" {{ isset($mapped) ? ($mapped->is_credit ? 'checked' : '') : '' }}>
@@ -63,7 +85,7 @@
                                         </span>
                                     @enderror
                                 </div>
-                            </div>                            
+                            </div>                             --}}
 
                             <div class="form-group row mb-0">
                                 <div class="col-md-6 offset-md-4 justify-content-end">
@@ -81,17 +103,18 @@
                                 <thead>
                                     <tr>
                                         <th>Transaction Type</th>
-                                        <th>Account</th>
-                                        <th>Credit?</th>
+                                        <th>Debit Account</th>
+                                        <th>Credit Account</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach($mappings as $mapping)
                                         <tr>
-                                            <td>{{ $mapping->transaction_type }}</td>
-                                            <td>{{ $mapping->account->description }}</td>
-                                            <td>{{ $mapping->is_credit ? 'Yes' : 'No' }}</td>
+                                            <td>{{ $mapping->transactionType->name }}</td>
+                                            <td>{{ $mapping->debitAccount ? $mapping->debitAccount->description : 'N/A' }}</td>
+                                            <td>{{ $mapping->creditAccount ? $mapping->creditAccount->description : 'N/A' }}</td>
+                                            {{-- <td>{{ $mapping->is_credit ? 'Yes' : 'No' }}</td> --}}
                                             <td>
                                                 <!-- Edit Button -->
                                                 <a href="{{ route('transaction-account-mapping.edit', $mapping->id) }}" class="btn btn-info">Edit</a>

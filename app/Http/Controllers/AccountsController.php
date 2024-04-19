@@ -25,7 +25,7 @@ use App\Imports\BankImportClass;
 
 use Maatwebsite\Excel\Facades\Excel;
 // use Spatie\SimpleExcel\SimpleExcelReader;
-// use Excel;
+use Carbon\Carbon;
 
 
 class AccountsController extends Controller
@@ -48,15 +48,105 @@ class AccountsController extends Controller
         // Get any relevant alerts
         $alerts = $this->getAlerts();
     
-        // Pass data to the dashboard view
-        return view('accounts.dashboard', [
-            'income' => $income,
-            'expenses' => $expenses,
-            'cashFlow' => $cashFlow,
-            'accountBalances' => $accountBalances,
-            'alerts' => $alerts,
-        ]);
-        // return view('accounts.dashboard');
+        // // Pass data to the dashboard view
+        // return view('accounts.dashboard', [
+        //     'income' => $income,
+        //     'expenses' => $expenses,
+        //     'cashFlow' => $cashFlow,
+        //     'accountBalances' => $accountBalances,
+        //     'alerts' => $alerts,
+        // ]);
+
+        // Calculate income
+        $income = Transaction::where('type', 'income')->sum('amount');
+        
+        // Calculate expenses
+        $expenses = Transaction::where('type', 'expense')->sum('amount');
+        
+        // Calculate cash flow
+        $cashFlow = $income - $expenses;
+        
+        // Calculate account balances
+        $accountBalances = [
+            'assets' => Transaction::where('type', 'asset')->sum('amount'),
+            'liabilities' => Transaction::where('type', 'liability')->sum('amount'),
+            'equity' => Transaction::where('type', 'equity')->sum('amount'),
+        ];
+
+        // // Fetch data for each month
+        // $months = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
+
+        // $incomeData = [];
+        // $expenseData = [];
+
+        // foreach ($months as $month) {
+        //     $income = Transaction::where('type', 'income')
+        //         ->whereMonth('created_at', '=', date('m', strtotime($month)))
+        //         ->sum('amount');
+            
+        //     $expenses = Transaction::where('type', 'expense')
+        //         ->whereMonth('created_at', '=', date('m', strtotime($month)))
+        //         ->sum('amount');
+
+        //     $incomeData[] = $income;
+        //     $expenseData[] = $expenses;
+        // }
+
+        // Fetch data for each month
+        $months = [];
+        $currentMonth = Carbon::now()->startOfMonth();
+
+        for ($i = 0; $i < 12; $i++) {
+            $months[] = $currentMonth->format('F Y');
+            $currentMonth = $currentMonth->subMonth();
+        }
+        $currentMonth = Carbon::now()->startOfMonth(); 
+        // Add line breaks to the labels
+        $monthsWithLineBreaks = array_map(function ($month) {
+            return str_replace(' ', "\n", $month);
+        }, $months);
+        // dd($monthsWithLineBreaks);
+        $incomeData = [];
+        $expenseData = [];
+
+        foreach ($months as $month) {
+            $incomez = Transaction::where('type', 'income')
+                ->whereYear('created_at', $currentMonth->year)
+                ->whereMonth('created_at', $currentMonth->month)
+                ->sum('amount');
+                
+            $expensez = Transaction::where('type', 'expense')
+                ->whereYear('created_at', $currentMonth->year)
+                ->whereMonth('created_at', $currentMonth->month)
+                ->sum('amount');
+
+            $incomeData[] = $incomez;
+            $expenseData[] = $expensez;
+
+            $currentMonth = $currentMonth->subMonth();
+        }
+        // Construct the $incomeExpensesData array
+        $incomeExpensesData = [
+            'labels' => $months,
+            'datasets' => [
+                [
+                    'label' => 'Income',
+                    'data' => $incomeData,
+                    'backgroundColor' => 'rgba(54, 162, 235, 0.5)',
+                    'borderColor' => 'rgba(54, 162, 235, 1)',
+                    'borderWidth' => 1
+                ],
+                [
+                    'label' => 'Expenses',
+                    'data' => $expenseData,
+                    'backgroundColor' => 'rgba(255, 99, 132, 0.5)',
+                    'borderColor' => 'rgba(255, 99, 132, 1)',
+                    'borderWidth' => 1
+                ]
+            ]
+        ];
+
+        return view('accounts.dashboard', compact('income', 'expenses', 'cashFlow', 'accountBalances','alerts','incomeExpensesData'));
     }
     
     // Method to get income (example, replace with actual logic)
@@ -166,9 +256,8 @@ class AccountsController extends Controller
         }
 
         // Execute the query and get the results
-        // $transactions = $transactionsQuery->get();
         $transactions = $transactionsQuery->paginate(30);
-        // dd($transactions);
+
         $totalDebit = 0;
         $totalCredit = 0;
 
@@ -181,11 +270,11 @@ class AccountsController extends Controller
             $accountCategory = strtolower(optional($transaction->account)->category);
 
             // Increment total debit and total credit based on transaction type and account category
-            if (in_array($transactionType, ['income', 'asset']) || in_array($accountCategory, ['income', 'asset'])) {
-                $totalDebit += abs($transaction->amount);
-            } elseif (in_array($transactionType, ['expense', 'liability', 'equity']) || in_array($accountCategory, ['expense', 'liability', 'equity'])) {
+            if (in_array($transactionType, ['income', 'liability', 'equity']) || in_array($accountCategory, ['income', 'liability', 'equity'])) {
                 $totalCredit += abs($transaction->amount);
-            }
+            } elseif (in_array($transactionType, ['expense', 'asset']) || in_array($accountCategory, ['expense', 'asset'])) {
+                $totalDebit += abs($transaction->amount);
+            }            
         
             // Adjust starting balance based on transaction amount and account category
             if ($transaction->account) {
@@ -246,9 +335,9 @@ class AccountsController extends Controller
         }      
         $companyId = auth()->user()->company_id;
         // where('company_id', $companyId)->
-
+        $transactionTypes = TransactionType::where('company_id', $companyId)->get();
         $accounts = ChartOfAccount::where('company_id', $companyId)->orderBy('code')->get();
-        return view('accounts.transactions.create', compact('accounts'));
+        return view('accounts.transactions.create', compact('accounts','transactionTypes'));
     }
 
     public function getAccountClassifications(Request $request)
@@ -308,10 +397,10 @@ class AccountsController extends Controller
         }      
         $companyId = auth()->user()->company_id;
         // where('company_id', $companyId)->
-
+        $transactionTypes = TransactionType::where('company_id', $companyId)->get();
         $transaction = Transaction::where('company_id', $companyId)->findOrFail($id);
         $accounts = ChartOfAccount::where('company_id', $companyId)->orderBy('category')->get();
-        return view('accounts.transactions.edit', compact('transaction','accounts'));
+        return view('accounts.transactions.edit', compact('transaction','accounts','transactionTypes'));
     }
 
     public function transactionsUpdate(Request $request, $id)
@@ -1115,7 +1204,6 @@ class AccountsController extends Controller
     }
 
     //Mappings
-
     public function transactionAccountMappingIndex()
     {
         // Check authentication and company identification
@@ -1158,8 +1246,8 @@ class AccountsController extends Controller
         // Validate incoming request
         $validatedData = $request->validate([
             'transaction_type' => 'required',
-            'account_id' => 'required',
-            'is_credit' => 'required',
+            'debit_account_id' => 'required',
+            'credit_account_id' => 'required',
         ]);
         $validatedData['company_id'] = auth()->user()->company_id;
         // Create new mapping
@@ -1196,12 +1284,12 @@ class AccountsController extends Controller
        // Validate incoming request
        $validatedData = $request->validate([
         'transaction_type' => 'required',
-        'account_id' => 'required',
-        'is_credit' => 'required',
+        'debit_account_id' => 'required',
+        'credit_account_id' => 'required',
         ]);
         $validatedData['company_id'] = auth()->user()->company_id;
         // Find and update the mapping
-        $mapping = TransactionAccountMapping::findOrFail($id);
+        $mapping = TransactionAccountMapping::where('company_id', $companyId)->findOrFail($id);
         $mapping->update($validatedData);
 
         return redirect()->route('transaction-account-mapping.index')->with('success', 'Mapping updated successfully.');
@@ -1216,9 +1304,9 @@ class AccountsController extends Controller
         $companyId = auth()->user()->company_id;
         //where('company_id', $companyId)->
           // Find and delete the mapping
-          $mapping = TransactionAccountMapping::where('company_id', $companyId)->findOrFail($id);
-          $mapping->delete();
-  
-          return redirect()->route('transaction-account-mapping.index')->with('success', 'Mapping deleted successfully.');
+        $mapping = TransactionAccountMapping::where('company_id', $companyId)->findOrFail($id);
+        $mapping->delete();
+
+        return redirect()->route('transaction-account-mapping.index')->with('success', 'Mapping deleted successfully.');
     }
 }

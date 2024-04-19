@@ -50,11 +50,11 @@
                 <td>{{ $transaction->description }}</td>
                 <td>{{ number_format($transaction->amount,2) }}</td>
                 <td>
-                    <a href="{{ route('transactions.edit', $transaction->id) }}" class="btn btn-sm btn-info">Edit Transaction</a>
+                    <a href="{{ route('transactions.edit', $transaction->id) }}" class="btn btn-sm btn-info">Edit</a>
                     <form action="{{ route('transactions.destroy', $transaction->id) }}" method="POST" style="display: inline-block;">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this record?')">Delete Transaction</button>
+                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this record?')">Delete</button>
                     </form>
                 </td>
             </tr>
