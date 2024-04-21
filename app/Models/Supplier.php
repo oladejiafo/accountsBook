@@ -12,8 +12,18 @@ class Supplier extends Model
     protected $fillable = [
         'name',
         'email',
+        'phone',
+        'address',
+        'company_id',
+        'gstin',
+        'contact_person',
+        'is_deleted',
     ];
     
     protected $hidden = [];
-    
+
+    public function purchases()
+    {
+        return $this->hasMany(PurchaseBill::class, 'supplier_id');
+    }
 }

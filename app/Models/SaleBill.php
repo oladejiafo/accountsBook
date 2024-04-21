@@ -17,6 +17,9 @@ class SaleBill extends Model
         'email',
         'gstin',
         'company_id',
+        'customer_id',
+        'paid_at',
+        'payment_status',
     ];
 
     public function saleBillDetails()
@@ -40,5 +43,11 @@ class SaleBill extends Model
     public function saleItems()
     {
         return $this->hasMany(SaleItem::class, 'billno', 'id');
+    }
+
+    // Define the payments relationship
+    public function payments()
+    {
+        return $this->hasMany(Payment::class, 'invoice_id');
     }
 }

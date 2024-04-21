@@ -7,12 +7,6 @@
    
     <div style="color:#464646; font-style: bold; font-size: 3rem; border-bottom: 1px solid #464646;">
         <span>Welcome,  @auth {{ auth()->user()->name }} @else Guest @endauth </span>
-        {{-- @if($companyName)
-        <span >
-            Company Name: {{ $companyName }}
-        </span>
-        @endif --}}
-
     </div>
 
  
@@ -30,7 +24,7 @@
             <a href="{{ route('sales.create') }}" class="btn btn-success btn-lg btn-block btn-huge">Add New Sales</a>
         </div>
         <div class="col-md-6">
-            <a href="{% url 'select-supplier' %}" class="btn btn-success btn-lg btn-block btn-huge">Add New Purchases</a>
+            <a href="{{ route('select-supplier') }}" class="btn btn-success btn-lg btn-block btn-huge">Add New Purchases</a>
         </div>
     </div>
     
@@ -46,29 +40,40 @@
                         <br><div style="border-bottom: 0.5px solid #4e6570"></div><br>
                     @endif
                     <div class="row">               
-                        <div class="col-md-9"> 
+                        <div class="col-md-8">
                             Bill No: #{{ $item->id }} <br> 
                             Purchased by <b>{{ $item->name }}</b> <br>
                             <small><i>{{ $item->created_at->format('F j, Y') }}</i></small>
                         </div>
-                        <div class="col-md-2"> <br>  {{ $defaultCurrency }}{{ number_format($item->totalprice, 2) }} <br> <a href="{{ route('sales.show', $item->id) }}">View Bill</a> </div>
+                        <div class="col-md-3"> 
+                            <br>  {{ $defaultCurrency }}{{ number_format($item->totalprice, 2) }} 
+                            <br> <a href="{{ route('sales.show', $item->id) }}">View Bill</a> 
+                        </div>
                     </div>
                 @endforeach
             </div>
 
             <div class="col-md-6">
                 <div style="color: #4e6570; font-style: bold; font-size: 1.3em; border-bottom: 2px solid #4e6570">Recent Purchases</div><br>
-                @foreach($purchases as $item)
+                @foreach($purchases as $p_item)
                     @if (!$loop->first)
                         <br><div style="border-bottom: 0.5px solid #4e6570"></div><br>
+                  
                     @endif
                     <div class="row">               
-                        <div class="col-md-9"> 
-                            Bill No: #{{ $item->id }} <br> 
-                            Purchased from <b>{{ $item->supplier->name }}</b> <br>
-                            <small><i>{{ $item->created_at->format('F j, Y') }}</i></small>
+                        <div class="col-md-8">
+                            Bill No: #{{ $p_item->id }} <br> 
+                            Purchased from <b>{{ $p_item->supplier->name }}</b> <br>
+                            <small><i>{{ $p_item->created_at->format('F j, Y') }}</i></small>
                         </div>
-                        <div class="col-md-2"> <br>{{ $defaultCurrency }}{{ number_format($item->totalprice, 2) }} <br> <a href="{{ route('purchase.bill', $item->id) }}">View Bill</a> </div>
+                        <div class="col-md-3"> 
+                            <br>{{ $defaultCurrency }}
+                            @foreach($p_item->items as $item)
+                                {{ number_format($item->totalprice, 2)}}
+                            @endforeach
+                            {{-- {{ number_format($p_item->totalprice, 2) }}  --}}
+                            <br> <a href="{{ route('purchase.show', $p_item->id) }}">View Bill</a> 
+                        </div>
                     </div>
                 @endforeach
             </div>

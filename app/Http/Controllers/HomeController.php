@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\Stock;
 use App\Models\Company;
 use App\Models\SaleBill;
-use App\Models\Purchase;
+use App\Models\PurchaseBill;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -56,11 +56,11 @@ class HomeController extends Controller
             ->take(3)
             ->get();
 
-        $purchases = Purchase::where('company_id', $companyId)
+        $purchases = PurchaseBill::where('company_id', $companyId)
             ->orderByDesc('created_at')
             ->take(3)
             ->get();
-        
+        // dd($purchases,$sales);
         return view('home.home', compact('labels', 'data','catt', 'sales', 'purchases', 'companyName'));
     }
 
