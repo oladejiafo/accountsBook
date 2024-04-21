@@ -20,7 +20,6 @@ class CreateExpensesTable extends Migration
             $table->string('description');
             $table->decimal('amount', 10, 2);
             $table->string('category')->nullable();
-            $table->date('date')->nullable();
             $table->timestamps();
 
             $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
