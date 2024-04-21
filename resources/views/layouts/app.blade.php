@@ -92,12 +92,17 @@
                         <li>
                             <a href="#taxSubmenu" data-toggle="collapse" class="dropdown-toggle sidebar-text right-arrow sidebar-button"><i class="fas fa-money-bill-wave fa-fw"></i> Taxes</a>
                             <ul class="collapse list-unstyled" id="taxSubmenu">
-                                <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('new-stock') }}"><i class="fas fa-dot-circle  fa-fw"></i> Sales Tax</a> </li>
-                                <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('inventory') }}"><i class="fas fa-dot-circle  fa-fw"></i> Payroll Tax</a> </li>
-                                <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('inventory') }}"><i class="fas fa-dot-circle  fa-fw"></i> Income Tax</a> </li>
-                                <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('inventory') }}"><i class="fas fa-dot-circle  fa-fw"></i> Tax Forms</a> </li>
+                                <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('tax-rates.index') }}"><i class="fas fa-dot-circle  fa-fw"></i> Tax Rates</a> </li>
+                                <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('tax-authorities.index') }}"><i class="fas fa-dot-circle  fa-fw"></i> Tax Authorities</a> </li>
+                                <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('tax-codes.index') }}"><i class="fas fa-dot-circle  fa-fw"></i> Tax Codes</a> </li>
+                                <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('tax-transactions.index') }}"><i class="fas fa-dot-circle  fa-fw"></i> Tax Transactions</a> </li>
+                                <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('tax-forms.index') }}"><i class="fas fa-dot-circle  fa-fw"></i> Tax Forms</a> </li>
+                                <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('tax-payments.index') }}"><i class="fas fa-dot-circle  fa-fw"></i> Tax Payments</a> </li>
+                                <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('tax-settings.index') }}"><i class="fas fa-dot-circle  fa-fw"></i> Tax Settings</a> </li>
+                                <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('tax-exemptions.index') }}"><i class="fas fa-dot-circle  fa-fw"></i> Tax Exemptions</a> </li>
                             </ul>
                         </li>
+                        
                         <li>
                             <a href="#chartSubmenu" data-toggle="collapse" class="dropdown-toggle sidebar-text right-arrow sidebar-button"><i class="fas fa-chart-bar"></i> Chart of Accounts</a>
                             <ul class="collapse list-unstyled" id="chartSubmenu">

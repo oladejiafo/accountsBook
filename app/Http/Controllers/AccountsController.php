@@ -20,6 +20,8 @@ use App\Models\TransactionType;
 use App\Models\BankTransaction;
 use App\Models\Reconcilliation;
 
+use App\Models\TaxRate;
+
 use App\Imports\ChartImportClass;
 use App\Imports\BankImportClass;
 
@@ -1308,5 +1310,98 @@ class AccountsController extends Controller
         $mapping->delete();
 
         return redirect()->route('transaction-account-mapping.index')->with('success', 'Mapping deleted successfully.');
+    }
+
+    // Tax Rates
+    public function taxRatesIndex()
+    {
+        $tab = request()->query('tab');
+        $taxRates = TaxRate::all();
+        return view('accounts.tax.ratesIndex', compact('taxRates', 'tab'));
+    }
+
+    public function taxRatesCreate()
+    {
+        $tab = request()->query('tab');
+
+        return view('accounts.tax.ratesCreate', compact('tab'));
+    }
+
+    public function taxRatesStore(Request $request)
+    {
+        // Validate the request
+        $validatedData = $request->validate([
+            'name' => 'required',
+            'rate' => 'required|numeric',
+            'position' => 'nullable',
+            'min_earnings' => 'nullable|numeric',
+            'max_earnings' => 'nullable|numeric',
+            // Add more validation rules as needed
+        ]);
+
+        // Merge the company_id into the request data
+        $validatedData['company_id'] = auth()->user()->company_id;
+
+        // Create a new tax rate
+        TaxRate::create($validatedData);
+
+        // Determine the tab value
+        $tab = $request->query('tab');
+
+        // Redirect back to the index page with the appropriate tab selected
+        if ($tab && ($tab == 'Employee')) {
+            return redirect()->route('tax-rates.index', ['tab' => 'Employee'])->with('success', 'Tax rate created successfully.');
+        } else {
+            return redirect()->route('tax-rates.index')->with('success', 'Tax rate created successfully.');
+        }
+            // return redirect()->route('tax-rates.index')->with('success', 'Tax rate created successfully.');
+    }
+
+    public function taxRatesEdit($id)
+    {
+        $tab = request()->query('tab');
+
+        $taxRate = TaxRate::findOrFail($id);
+        return view('accounts.tax.ratesEdit', compact('taxRate','tab'));
+    }
+
+    public function taxRatesUpdate(Request $request, $id)
+    {
+        // Validate the request
+        $validatedData = $request->validate([
+            'name' => 'required',
+            'rate' => 'required|numeric',
+            'position' => 'nullable',
+            'min_earnings' => 'nullable|numeric',
+            'max_earnings' => 'nullable|numeric',
+        ]);
+
+        // Merge the company_id into the request data
+        $validatedData['company_id'] = auth()->user()->company_id;
+        // Find the tax rate
+        $taxRate = TaxRate::findOrFail($id);
+
+        // Update the tax rate
+        $taxRate->update($validatedData);
+        // Determine the tab value
+        $tab = $request->query('tab');
+
+        // Redirect back to the index page with the appropriate tab selected
+        if ($tab && ($tab == 'Employee')) {
+            return redirect()->route('tax-rates.index', compact('tab'))->with('success', 'Tax rate updated successfully.');
+        } else {
+            return redirect()->route('tax-rates.index')->with('success', 'Tax rate updated successfully.');
+        }
+    }
+
+    public function taxRatesDestroy($id)
+    {
+        // Find the tax rate
+        $taxRate = TaxRate::findOrFail($id);
+
+        // Delete the tax rate
+        $taxRate->delete();
+
+        return redirect()->route('tax-rates.index')->with('success', 'Tax rate deleted successfully.');
     }
 }
