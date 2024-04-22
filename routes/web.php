@@ -31,9 +31,14 @@ Route::post('/register/company', [RegisteredUserController::class, 'createCompan
 
 require __DIR__.'/auth.php';
 
-Route::get('/', [HomeController::class, 'index'])->name('home');
+######### DASHBOARDS
+Route::get('/inventoryInsights', [HomeController::class, 'index'])->name('home');
+
+Route::get('/dashboard', [AccountsController::class, 'dashboard'])->name('account.dashboard');
+
 
 Route::get('/about', [HomeController::class, 'about'])->name('about');
+
 
 ############ INVENTORY AND STOCKS
 Route::get('/inventory', [StockController::class, 'index'])->name('inventory');
@@ -103,9 +108,6 @@ Route::delete('/payments/{payment}', [TransactionsController::class, 'paymentsDe
 Route::get('/get-stock-details/{stock}', [TransactionsController::class, 'getStockDetails'])->name('stocks.details');
 
 ############# ACCOUNTS 
-
-Route::get('/account/dashboard', [AccountsController::class, 'dashboard'])->name('account.dashboard');
-
 Route::prefix('ledger')->group(function () {
     Route::get('/', [AccountsController::class, 'ledgerIndex'])->name('ledger.index');
 });

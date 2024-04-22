@@ -1,12 +1,13 @@
 @extends('layouts.app')
 
-@section('title', 'Home')
+@section('title', 'Dashboard')
 
 @section('content')
 <div>
    
     <div style="color:#464646; font-style: bold; font-size: 3rem; border-bottom: 1px solid #464646;">
-        <span>Welcome,  @auth {{ auth()->user()->name }} @else Guest @endauth </span>
+        {{-- <span>Welcome,  @auth {{ auth()->user()->name }} @else Guest @endauth </span> --}}
+        <h1 style="color: #4e4e4e; font-style: bold; font-size: 3rem;">Dashboard: <span style="font-size: smaller">Inventory Insights</span></h1>
     </div>
 
  

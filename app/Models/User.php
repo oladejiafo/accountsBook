@@ -21,6 +21,10 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'otp_expire_at',
+        'otp',
+        'company_id',
+
     ];
 
     /**
@@ -40,5 +44,6 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'otp_expire_at' => 'datetime',
     ];
 }

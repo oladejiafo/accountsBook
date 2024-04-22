@@ -61,7 +61,7 @@ class HomeController extends Controller
             ->take(3)
             ->get();
         // dd($purchases,$sales);
-        return view('home.home', compact('labels', 'data','catt', 'sales', 'purchases', 'companyName'));
+        return view('home.inventoryInsights', compact('labels', 'data','catt', 'sales', 'purchases', 'companyName'));
     }
 
     public function about()

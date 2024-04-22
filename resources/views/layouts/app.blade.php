@@ -53,7 +53,7 @@
         <nav id="sidebar">
 
             <div class="sidebar-header">
-                <a class="navbar-brand titlefont mr-1" href="{{ route('home') }}">
+                <a class="navbar-brand titlefont mr-1" href="{{ route('account.dashboard') }}">
                     <div class="logo-wrapper">
                         <img src="{{ asset('images/afriledger_logo_white.png') }}" class="logo" alt="Logo">
                     </div>

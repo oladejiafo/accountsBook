@@ -436,7 +436,7 @@
   }
   
   .btn {
-    border-radius: 5px !important;
+    border-radius: .5rem !important;
   }
 
   .btn-info {

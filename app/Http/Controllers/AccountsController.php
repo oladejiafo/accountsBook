@@ -148,7 +148,7 @@ class AccountsController extends Controller
             ]
         ];
 
-        return view('accounts.dashboard', compact('income', 'expenses', 'cashFlow', 'accountBalances','alerts','incomeExpensesData'));
+        return view('home.dashboard', compact('income', 'expenses', 'cashFlow', 'accountBalances','alerts','incomeExpensesData'));
     }
     
     // Method to get income (example, replace with actual logic)
