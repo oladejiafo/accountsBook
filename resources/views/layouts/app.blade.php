@@ -53,14 +53,14 @@
         <nav id="sidebar">
 
             <div class="sidebar-header">
-                <a class="navbar-brand titlefont mr-4" href="{{ route('home') }}">
+                <a class="navbar-brand titlefont mr-1" href="{{ route('home') }}">
                     <div class="logo-wrapper">
                         <img src="{{ asset('images/afriledger_logo_white.png') }}" class="logo" alt="Logo">
                     </div>
                 </a>
                 @if(isset($companyName))
-                    <div class="navbar-brandc coyfont mr-4 text-center">
-                        [ {{ $companyName }} ]
+                    <div class="navbar-brandc coyfont mr-1 text-center">
+                        {{ $companyName }}
                     </div>
                 @endif  
             </div>

@@ -155,6 +155,57 @@ class TransactionsController extends Controller
 
         $saleBillDetails->save();
     
+        // Retrieve the existing transaction entries for sales
+        $existingEntries = Transaction::where('name', 'Sales')
+            ->where('company_id', $companyId)
+            ->where('type', 'sales') // Assuming 'sales' is the type for sales transactions
+            ->get();
+
+        // // Delete the existing transaction entries
+        // foreach ($existingEntries as $entry) {
+        //     $entry->delete();
+        // }
+
+        // Recreate the transaction entries based on the updated sales mapping
+        $updatedSalesMapping = TransactionAccountMapping::where('transaction_type', 'sales')
+            ->where('company_id', $companyId)
+            ->get();
+
+        foreach ($updatedSalesMapping as $mapping) {
+            // Retrieve the accounts associated with the updated mapping
+            $debitAccount = ChartOfAccount::where('company_id', $companyId)
+                ->where('id', $mapping->debit_account_id)
+                ->first();
+
+            $creditAccount = ChartOfAccount::where('company_id', $companyId)
+                ->where('id', $mapping->credit_account_id)
+                ->first();
+
+            if ($debitAccount && $creditAccount) {
+                // Create debit transaction entry
+                $debitTransaction = new Transaction();
+                $debitTransaction->account_id = $mapping->debit_account_id;
+                $debitTransaction->amount = $saleBillDetails->total;
+                $debitTransaction->type = $debitAccount->type; 
+                $debitTransaction->date = date('Y-m-d');
+                $debitTransaction->company_id = $companyId;
+                $debitTransaction->name = "Sales";
+                $debitTransaction->description = "Sales transaction from customer";
+                $debitTransaction->save();
+
+                // Create credit transaction entry
+                $creditTransaction = new Transaction();
+                $creditTransaction->account_id = $mapping->credit_account_id;
+                $creditTransaction->amount = $saleBillDetails->total;
+                $creditTransaction->type = $creditAccount->type; 
+                $creditTransaction->date = date('Y-m-d');
+                $creditTransaction->company_id = $companyId;
+                $creditTransaction->name = "Sales";
+                $creditTransaction->description = "Sales transaction from customer";
+                $creditTransaction->save();
+            }
+        }
+                
         // Redirect the user to the sales index page or show a success message
         return redirect()->route('transactions.sales.index')->with('success', 'Sale updated successfully');
     }
@@ -204,7 +255,7 @@ class TransactionsController extends Controller
         $saleBillDetails->total = $item['quantity'] * $stock->price;
 
         $saleBillDetails->save();
-        
+
         // Create transaction entries based on transaction mapping for sales
         $salesMapping = TransactionAccountMapping::where('transaction_type', 'sales')
             ->where('company_id', $companyId)
@@ -244,7 +295,6 @@ class TransactionsController extends Controller
                 $creditTransaction->save();
             }
         }
-
 
         return redirect()->route('sales.show', $sale->id)->with('success', 'Sale created successfully.');
     }
