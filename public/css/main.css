@@ -25,6 +25,8 @@
   body,
   html {
     height: 100%;
+    font-size: 0.9em;
+    background-color: #f6fbff;
     /* background-color: #000000; */
   }
   
@@ -433,6 +435,10 @@
     box-shadow: 0 2px 7px #4e6570;
   }
   
+  .btn {
+    border-radius: 5px !important;
+  }
+
   .btn-info {
     background-color: #4e6570;
     color: #fff;

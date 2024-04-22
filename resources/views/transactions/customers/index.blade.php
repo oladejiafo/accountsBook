@@ -29,8 +29,8 @@
                 <br>
 
                 <div class="card-body">
-                    <table class="table">
-                        <thead>
+                    <table class="table table-css table-bordered table-hover">
+                        <thead class="thead-dark align-middle">
                             <tr>
                                 <th>Name</th>
                                 <th>Email</th>

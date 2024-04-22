@@ -11,7 +11,6 @@
     <br>
 
     <table class="table table-css table-bordered table-hover"> 
-            
         <thead class="thead-dark align-middle">
             <tr>
                 <th width="8%">Bill No.</th>

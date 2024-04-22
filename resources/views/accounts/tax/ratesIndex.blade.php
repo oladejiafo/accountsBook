@@ -34,8 +34,8 @@
                                 <!-- Content for Business Taxes tab -->
                                 <a href="{{ route('tax-rates.create', ['tab' => 'Business']) }}" class="btn btn-success mb-3 ml-auto justify-content-end" style="float:right;">Create Business Tax Rate</a>
 
-                                <table class="table">
-                                    <thead>
+                                <table class="table table-css table-bordered table-hover">
+                                    <thead class="thead-dark align-middle">
                                         <tr>
                                             <th>Tax Name</th>
                                             <th>Tax Rate</th>

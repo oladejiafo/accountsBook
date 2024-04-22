@@ -27,8 +27,8 @@
         <br>
 
         <div class="card-body">
-            <table class="table">
-                <thead>
+            <table class="table table-css table-bordered table-hover">
+                <thead class="thead-dark align-middle">
                     <tr>
                         <th width="10%">Payment ID</th>
                         <th width="20%">Customer</th>

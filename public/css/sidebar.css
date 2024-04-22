@@ -4,6 +4,11 @@
   color: inherit;
   text-decoration: none;
   transition: all 0.3s;
+  font-size: 1.1em !important;
+}
+
+.sidebar-text:hover{
+ opacity: .7;
 }
 
 #wrapper {
@@ -27,8 +32,9 @@
 }
 
 #scrollable-menu {
-  overflow-x: auto; /* Enable horizontal scrolling for the menu */
+  overflow-x: auto;
   white-space: nowrap; /* Prevent menu items from wrapping to the next line */
+  /* overflow: hidden; */
 }
 
 
@@ -39,6 +45,9 @@
 .sidebar-header {
   padding: 20px;
   background: #607d8b;
+  /* position: fixed; */
+  /* overflow: hidden; */
+  /* z-index: 50; */
 }
 
 .sidebar-components {
@@ -75,6 +84,7 @@ a.right-arrow[data-toggle="collapse"] {
 }
 
 .sidebar-subitem {
+  /* font-size: 0.9em !important; */
   font-size: 0.9em !important;
   padding-left: 30px !important;
   background: #3c515a;

@@ -66,12 +66,23 @@
             </div>
             
             <ul class="list-unstyled sidebar-components" id="scrollable-menu">
+                <!-- Grouping for Dashboards -->
+                <li>
+                    <span class="sidebar-textx sidebar-button coyfont mr-4 mt-2">DASHBOARDS</span>
+                    <ul class="list-unstyled">
+                        <li><a class="sidebar-text sidebar-button" href="{{ route('account.dashboard') }}"><i class="fas fa-tachometer-alt  fa-fw"></i> Accounts Insights</a></li>
+                        <li><a class="sidebar-text sidebar-button" href="{{ route('home') }}"><i class="fas fa-chart-line fa-fw"></i> Inventory Insights</a></li>
+                        {{-- <li><a class="sidebar-text sidebar-button" href="#"><i class="fas fa-chart-line fa-fw"></i> Sales Insights</a></li>
+                        <li><a class="sidebar-text sidebar-button" href="#"><i class="fas fa-chart-line fa-fw"></i> Payments Insights</a></li>
+                        <li><a class="sidebar-text sidebar-button" href="#"><i class="fas fa-chart-line fa-fw"></i> Assets Insights</a></li>
+                        <li><a class="sidebar-text sidebar-button" href="#"><i class="fas fa-chart-line fa-fw"></i> Employee Insights</a></li> --}}
+                    </ul>
+                </li>
                 <!-- Grouping for Accounts -->
                 <li>
                     <span class="sidebar-textx sidebar-button coyfont mr-4 mt-0">ACCOUNTS</span>
                     <ul class="list-unstyled">
                         <!-- Sub-items for Accounting modules and sub-modules -->
-                        <li><a class="sidebar-text sidebar-button" href="{{ route('account.dashboard') }}"><i class="fas fa-tachometer-alt  fa-fw"></i> Dashboard</a></li>
                         <li>
                             <a href="#accountTransactionsSubmenu" data-toggle="collapse" class="dropdown-toggle sidebar-text right-arrow sidebar-button"><i class="fas fa-book fa-fw"></i> Ledgers</a>
                             <ul class="collapse list-unstyled" id="accountTransactionsSubmenu">
@@ -130,10 +141,6 @@
                 <li>
                     <span class="sidebar-textx sidebar-button  coyfont mr-4 mt-2">INVENTORIES</span>
                     <ul class="list-unstyled">
-                        <li> 
-                            <a class="sidebar-text sidebar-button" href="{{ route('home') }}"><i class="fas fa-chart-line fa-fw"></i> Inventory Insights</a>
-                        </li>
-                        
                         <li>
                             <a href="#inventorySubmenu" data-toggle="collapse" class="dropdown-toggle sidebar-text right-arrow sidebar-button"><i class="fas fa-boxes  fa-fw"></i> Inventory</a>
                             <ul class="collapse list-unstyled" id="inventorySubmenu">
