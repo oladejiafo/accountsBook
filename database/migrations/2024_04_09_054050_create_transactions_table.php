@@ -27,6 +27,7 @@ class CreateTransactionsTable extends Migration
             $table->string('status')->nullable();
             $table->string('source')->nullable();
             $table->unsignedBigInteger('bank_id')->nullable();
+            $table->unsignedBigInteger('reference_number')->nullable();
             $table->unsignedBigInteger('from_account_id')->nullable();
             $table->unsignedBigInteger('to_account_id')->nullable();
 

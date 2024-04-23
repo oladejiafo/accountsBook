@@ -293,10 +293,314 @@ class AccountsController extends Controller
         // Calculate total adjusted balance
         $totalAdjustedBalance = $startingBalance + $transactions->sum('amount');
 
+        $ttype = null;
+
         // Return the view with the transactions, account categories, and calculated values
-        return view('accounts.ledgers.index', compact('transactions', 'accountCategories', 'totalDebit', 'totalCredit', 'totalAdjustedBalance','startingBalance'));
+        return view('accounts.ledgers.index', compact('transactions', 'accountCategories', 'totalDebit', 'totalCredit', 'totalAdjustedBalance','startingBalance','ttype'));
     }
 
+    public function generalLedger(Request $request)
+    {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }      
+        $companyId = auth()->user()->company_id;
+
+        
+        // Fetch account categories
+        $accountCategories = AccountsCategory::all(); // Assuming AccountCategory is your model for account categories
+
+        // Initialize variables
+        $keyword = $request->input('keyword');
+        $searchAccount = $request->input('search_account');
+        $searchDate = $request->input('search_date');
+
+        // Start building the query
+        $transactionsQuery = Transaction::where('company_id', $companyId);
+
+        // Apply filters based on form inputs
+        if ($keyword) {
+            $transactionsQuery->where(function ($query) use ($keyword) {
+                $query->where('type', 'like', '%' . $keyword . '%')
+                    ->orWhere('description', 'like', '%' . $keyword . '%')
+                    ->orWhere('date', 'like', '%' . $keyword . '%');
+            });
+        }
+
+        // if ($searchAccount && $searchAccount != 'all') {
+        //     $transactionsQuery->whereHas('account', function ($accountQuery) use ($searchAccount) {
+        //         // dd($searchAccount);
+        //         $accountQuery->where(function ($query) use ($searchAccount) {
+        //             $query->where('type', 'like', '%' . $searchAccount . '%')
+        //                   ->orWhere('category', 'like', '%' . $searchAccount . '%');
+        //         });
+        //     });
+        // }
+        
+        $tday = date(now());  // Today's Date
+        if ($searchDate && $searchDate != 'all') {
+            switch ($searchDate) {
+                case 'today':
+                    $transactionsQuery->where('date', $tday);
+                    break;
+                case 'last_7_days':
+                    $transactionsQuery->whereBetween('date', [now()->subDays(7), now()]);
+                    break;
+                case 'last_30_days':
+                    $transactionsQuery->whereBetween('date', [now()->subDays(30), now()]);
+                    break;
+                case 'last_60_days':
+                    $transactionsQuery->whereBetween('date', [now()->subDays(60), now()]);
+                    break;
+                case 'last_90_days':
+                    $transactionsQuery->whereBetween('date', [now()->subDays(90), now()]);
+                    break;
+                case 'current_month':
+                    $transactionsQuery->whereMonth('date', now()->month);
+                    break;
+                case 'last_month':
+                    $transactionsQuery->whereMonth('date', now()->subMonth()->month);
+                    break;
+                case 'last_3_months':
+                    $transactionsQuery->whereBetween('date', [now()->subMonths(3), now()]);
+                    break;
+                default:
+                    // Retrieve all records
+                    break;
+            }            
+        }
+
+        // Execute the query and get the results
+        $transactions = $transactionsQuery->paginate(30);
+
+        $totalDebit = 0;
+        $totalCredit = 0;
+
+        // Calculate starting balance based on transactions
+        $startingBalance = 0;
+
+        foreach ($transactions as $transaction) {
+            // Determine transaction type and account category (case-insensitive)
+            $transactionType = strtolower($transaction->type);
+            $accountCategory = strtolower(optional($transaction->account)->category);
+
+            // Increment total debit and total credit based on transaction type and account category
+            if (in_array($transactionType, ['income', 'liability', 'equity']) || in_array($accountCategory, ['income', 'liability', 'equity'])) {
+                $totalCredit += abs($transaction->amount);
+            } elseif (in_array($transactionType, ['expense', 'asset']) || in_array($accountCategory, ['expense', 'asset'])) {
+                $totalDebit += abs($transaction->amount);
+            }            
+        
+            // Adjust starting balance based on transaction amount and account category
+            if ($transaction->account) {
+                if (strtolower($transaction->type) === 'income' || strtolower($transaction->type) === 'equity' || strtolower($transaction->account->category) === 'income' || strtolower($transaction->account->category) === 'equity') {
+                    $startingBalance += $transaction->amount;
+                } elseif (strtolower($transaction->type) === 'expense' || strtolower($transaction->type) === 'asset' || strtolower($transaction->account->category) === 'expense' || strtolower($transaction->account->category) === 'asset') {
+                    $startingBalance -= $transaction->amount;
+                } elseif (strtolower($transaction->type) === 'liability' || strtolower($transaction->account->category) === 'liability') {
+                    $startingBalance += $transaction->amount;
+                }
+            }
+        }
+
+        $ttype = "General Ledger"; 
+        // Calculate total adjusted balance
+        $totalAdjustedBalance = $startingBalance + $transactions->sum('amount');
+
+        // Return the view with the transactions, account categories, and calculated values
+        return view('accounts.ledgers.index', compact('transactions', 'accountCategories', 'totalDebit', 'totalCredit', 'totalAdjustedBalance','startingBalance','ttype'));
+    }
+
+    public function accountsReceivable(Request $request)
+    {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }      
+        $companyId = auth()->user()->company_id;
+    
+        // Fetch account categories
+        $accountCategories = AccountsCategory::all(); // Assuming AccountCategory is your model for account categories
+    
+        // Initialize variables
+        $keyword = $request->input('keyword');
+        $searchAccount = "Account Receivable"; //$request->input('search_account');
+        $searchDate = $request->input('search_date');
+    
+        // Start building the query
+        $transactionsQuery = Transaction::where('company_id', $companyId)->where('type', 'income');
+    
+        // Apply filters based on form inputs
+        if ($keyword) {
+            $transactionsQuery->where(function ($query) use ($keyword) {
+                $query->where('description', 'like', '%' . $keyword . '%')
+                    ->orWhere('date', 'like', '%' . $keyword . '%');
+            });
+        }
+    
+        // if ($searchAccount && $searchAccount != 'all') {
+        //     $transactionsQuery->whereHas('account', function ($accountQuery) use ($searchAccount) {
+        //         // dd($searchAccount);
+        //         $accountQuery->where(function ($query) use ($searchAccount) {
+        //             $query->where('type', 'like', '%' . $searchAccount . '%');
+        //         });
+        //     });
+        // }
+        
+        $tday = date(now());  // Today's Date
+        if ($searchDate && $searchDate != 'all') {
+            switch ($searchDate) {
+                case 'today':
+                    $transactionsQuery->where('date', $tday);
+                    break;
+                case 'last_7_days':
+                    $transactionsQuery->whereBetween('date', [now()->subDays(7), now()]);
+                    break;
+                case 'last_30_days':
+                    $transactionsQuery->whereBetween('date', [now()->subDays(30), now()]);
+                    break;
+                case 'last_60_days':
+                    $transactionsQuery->whereBetween('date', [now()->subDays(60), now()]);
+                    break;
+                case 'last_90_days':
+                    $transactionsQuery->whereBetween('date', [now()->subDays(90), now()]);
+                    break;
+                case 'current_month':
+                    $transactionsQuery->whereMonth('date', now()->month);
+                    break;
+                case 'last_month':
+                    $transactionsQuery->whereMonth('date', now()->subMonth()->month);
+                    break;
+                case 'last_3_months':
+                    $transactionsQuery->whereBetween('date', [now()->subMonths(3), now()]);
+                    break;
+                default:
+                    // Retrieve all records
+                    break;
+            }            
+        }
+    
+        // Execute the query and get the results
+        $transactions = $transactionsQuery->paginate(30);
+    
+        $totalDebit = 0;
+        $totalCredit = 0;
+    
+        // Calculate starting balance based on transactions
+        $startingBalance = 0;
+    
+        foreach ($transactions as $transaction) {
+            // Increment total credit based on transaction amount
+            $totalCredit += abs($transaction->amount);
+    
+            // Adjust starting balance based on transaction amount
+            $startingBalance += $transaction->amount;
+        }
+    
+        // Calculate total adjusted balance
+        $totalAdjustedBalance = $startingBalance;
+        $ttype = "Account Receivable";
+    
+        // Return the view with the transactions, account categories, and calculated values
+        return view('accounts.ledgers.index', compact('transactions', 'accountCategories', 'totalDebit', 'totalCredit', 'totalAdjustedBalance','startingBalance','ttype'));
+    }
+    
+    public function accountsPayable(Request $request)
+    {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }      
+        $companyId = auth()->user()->company_id;
+    
+        // Fetch account categories
+        $accountCategories = AccountsCategory::all(); // Assuming AccountCategory is your model for account categories
+
+        // Initialize variables
+        $keyword = $request->input('keyword');
+        $searchAccount = "Accounts Payable"; //$request->input('search_account');
+        $searchDate = $request->input('search_date');
+    
+        // Start building the query
+        $transactionsQuery = Transaction::where('company_id', $companyId)->where('type', 'expense');
+    
+        // Apply filters based on form inputs
+        if ($keyword) {
+            $transactionsQuery->where(function ($query) use ($keyword) {
+                $query->where('description', 'like', '%' . $keyword . '%')
+                    ->orWhere('date', 'like', '%' . $keyword . '%');
+            });
+        }
+    
+        // if ($searchAccount && $searchAccount != 'all') {
+        //     $transactionsQuery->whereHas('account', function ($accountQuery) use ($searchAccount) {
+        //         // dd($searchAccount);
+        //         $accountQuery->where(function ($query) use ($searchAccount) {
+        //             $query->where('type', 'like', '%' . $searchAccount . '%');
+        //         });
+        //     });
+        // }
+        
+        $tday = date(now());  // Today's Date
+        if ($searchDate && $searchDate != 'all') {
+            switch ($searchDate) {
+                case 'today':
+                    $transactionsQuery->where('date', $tday);
+                    break;
+                case 'last_7_days':
+                    $transactionsQuery->whereBetween('date', [now()->subDays(7), now()]);
+                    break;
+                case 'last_30_days':
+                    $transactionsQuery->whereBetween('date', [now()->subDays(30), now()]);
+                    break;
+                case 'last_60_days':
+                    $transactionsQuery->whereBetween('date', [now()->subDays(60), now()]);
+                    break;
+                case 'last_90_days':
+                    $transactionsQuery->whereBetween('date', [now()->subDays(90), now()]);
+                    break;
+                case 'current_month':
+                    $transactionsQuery->whereMonth('date', now()->month);
+                    break;
+                case 'last_month':
+                    $transactionsQuery->whereMonth('date', now()->subMonth()->month);
+                    break;
+                case 'last_3_months':
+                    $transactionsQuery->whereBetween('date', [now()->subMonths(3), now()]);
+                    break;
+                default:
+                    // Retrieve all records
+                    break;
+            }            
+        }
+    
+        // Execute the query and get the results
+        $transactions = $transactionsQuery->paginate(30);
+    
+        $totalDebit = 0;
+        $totalCredit = 0;
+    
+        // Calculate starting balance based on transactions
+        $startingBalance = 0;
+    
+        foreach ($transactions as $transaction) {
+            // Increment total debit based on transaction amount
+            $totalDebit += abs($transaction->amount);
+    
+            // Adjust starting balance based on transaction amount
+            $startingBalance += $transaction->amount;
+        }
+    
+        // Calculate total adjusted balance
+        $totalAdjustedBalance = $startingBalance;
+
+        $ttype = "Account Payable";
+    
+        // Return the view with the transactions, account categories, and calculated values
+        return view('accounts.ledgers.index', compact('transactions', 'accountCategories', 'totalDebit', 'totalCredit', 'totalAdjustedBalance','startingBalance','ttype'));
+    }
+    
     // Transactions Module
     public function transactionsIndex(Request $request)
     {
@@ -379,6 +683,7 @@ class AccountsController extends Controller
             'amount' => 'required|numeric',
             'description' => 'nullable|string',
             'transaction_name' =>  'nullable|string',
+            'reference_number' => 'nullable|string',
             'to_account_id' =>  'nullable',
             'source' =>  'nullable|string', 
             'status' =>  'nullable|string',
@@ -387,6 +692,51 @@ class AccountsController extends Controller
         $validatedData['company_id'] = auth()->user()->company_id;
 
         Transaction::create($validatedData);
+
+        
+        // Create transaction entries based on transaction mapping for sales
+        $transactionMapping = TransactionAccountMapping::where('transaction_type', $request->transaction_name)
+            ->where('company_id', $companyId)
+            ->get();
+
+        foreach ($transactionMapping as $mapping) {
+            // Retrieve the accounts associated with the mapping
+            $debitAccount = ChartOfAccount::where('company_id', $companyId)
+                ->where('id', $mapping->debit_account_id)
+                ->first();
+
+            $creditAccount = ChartOfAccount::where('company_id', $companyId)
+                ->where('id', $mapping->credit_account_id)
+                ->first();
+
+            if ($debitAccount && $creditAccount) {
+                if ($creditAccount->account_id ==  $request->account_id) {
+                    // Create debit transaction entry
+                    $debitTransaction = new Transaction();
+                    $debitTransaction->reference_number = $request->reference_number;
+                    $debitTransaction->account_id = $mapping->debit_account_id;
+                    $debitTransaction->amount = $request->amount;
+                    $debitTransaction->type = $debitAccount->type; 
+                    $debitTransaction->date = $request->date;
+                    $debitTransaction->company_id = $companyId;
+                    $debitTransaction->name = $request->transaction_name;
+                    $debitTransaction->description = $request->description;
+                    $debitTransaction->save();
+                } elseif ($debitAccount->account_id ==  $request->account_id) {
+                    // Create credit transaction entry
+                    $creditTransaction = new Transaction();
+                    $creditTransaction->reference_number = $request->reference_number;
+                    $creditTransaction->account_id = $mapping->credit_account_id;
+                    $creditTransaction->amount = $request->amount;
+                    $creditTransaction->type = $creditAccount->type; 
+                    $creditTransaction->date = $request->date;
+                    $creditTransaction->company_id = $companyId;
+                    $creditTransaction->name = $request->transaction_name;
+                    $creditTransaction->description = $request->description;
+                    $creditTransaction->save();
+                }
+            }
+        }
 
         return redirect()->route('transactions.index')->with('success', 'Transaction created successfully.');
     }

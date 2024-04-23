@@ -31,13 +31,6 @@
   transition: all 0.3s;
 }
 
-#scrollable-menu {
-  overflow-x: auto;
-  white-space: nowrap; /* Prevent menu items from wrapping to the next line */
-  /* overflow: hidden; */
-}
-
-
 .sidebar.active {
   margin-left: -250px;
 }
@@ -112,6 +105,32 @@ a.nav-button {
   position: absolute;
   min-width: 250px;
   max-width: 250px;
+}
+
+/* Fixed sidebar header */
+.sidebar-header {
+  position: fixed;
+  top: 0;
+  z-index: 999; 
+  padding: 15px; 
+}
+
+#scrollable-menu {
+  margin-top: 35%;
+  white-space: nowrap; 
+  /* max-height: calc(100vh - 100px);  */
+  /* overflow-y: auto; */
+}
+
+/* #sidebar, */
+#scrollable-menu {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+}
+
+/* #sidebar::-webkit-scrollbar, */
+#scrollable-menu::-webkit-scrollbar {
+  display: none;
 }
 
 /* ---------------------------------------------------

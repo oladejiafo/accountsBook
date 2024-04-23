@@ -29,6 +29,7 @@ class PasswordResetLinkController extends Controller
      */
     public function create()
     {
+        // dd($request);
         return view('auth.forgot-password');
     }
 
@@ -63,8 +64,8 @@ class PasswordResetLinkController extends Controller
                 ]);
     
             Mail::to($email)->send(new ResetPassword($token));
-    
-            return view('auth.reset-password', compact('email'));
+ 
+            return view('auth.reset-password', compact('email', 'token'));
         }
     }
     

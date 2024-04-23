@@ -18,7 +18,7 @@
                     <div class="input-group search">
                         <input type="text" name="search" class="form-control textinput" placeholder="Search by stock name">
                         <div class="input-group-append">
-                           <button type="submit" class="btn btn-pink">Search</button>
+                           <button type="submit" class="btn btn-pink" style="border-radius:0 .5rem .5rem 0 !important">Search</button>
                         </div>
                     </div>
                 </form>

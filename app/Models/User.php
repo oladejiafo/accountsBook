@@ -24,7 +24,8 @@ class User extends Authenticatable
         'otp_expire_at',
         'otp',
         'company_id',
-
+        'remember_token',
+        'token',
     ];
 
     /**

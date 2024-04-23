@@ -158,7 +158,8 @@ class TransactionsController extends Controller
         // Retrieve the existing transaction entries for sales
         $existingEntries = Transaction::where('name', 'Sales')
             ->where('company_id', $companyId)
-            ->where('type', 'sales') // Assuming 'sales' is the type for sales transactions
+            ->where('type', 'Sales')
+            ->where('reference_number',$sale->id)
             ->get();
 
         // // Delete the existing transaction entries
@@ -167,7 +168,7 @@ class TransactionsController extends Controller
         // }
 
         // Recreate the transaction entries based on the updated sales mapping
-        $updatedSalesMapping = TransactionAccountMapping::where('transaction_type', 'sales')
+        $updatedSalesMapping = TransactionAccountMapping::where('transaction_type', 'Sales')
             ->where('company_id', $companyId)
             ->get();
 
@@ -184,6 +185,7 @@ class TransactionsController extends Controller
             if ($debitAccount && $creditAccount) {
                 // Create debit transaction entry
                 $debitTransaction = new Transaction();
+                $debitTransaction->reference_number = $sale->id;
                 $debitTransaction->account_id = $mapping->debit_account_id;
                 $debitTransaction->amount = $saleBillDetails->total;
                 $debitTransaction->type = $debitAccount->type; 
@@ -191,10 +193,11 @@ class TransactionsController extends Controller
                 $debitTransaction->company_id = $companyId;
                 $debitTransaction->name = "Sales";
                 $debitTransaction->description = "Sales transaction from customer";
-                $debitTransaction->save();
+                $debitTransaction->update();
 
                 // Create credit transaction entry
                 $creditTransaction = new Transaction();
+                $creditTransaction->reference_number = $sale->id;
                 $creditTransaction->account_id = $mapping->credit_account_id;
                 $creditTransaction->amount = $saleBillDetails->total;
                 $creditTransaction->type = $creditAccount->type; 
@@ -202,7 +205,7 @@ class TransactionsController extends Controller
                 $creditTransaction->company_id = $companyId;
                 $creditTransaction->name = "Sales";
                 $creditTransaction->description = "Sales transaction from customer";
-                $creditTransaction->save();
+                $creditTransaction->update();
             }
         }
                 
@@ -274,6 +277,7 @@ class TransactionsController extends Controller
             if ($debitAccount && $creditAccount) {
                 // Create debit transaction entry
                 $debitTransaction = new Transaction();
+                $debitTransaction->reference_number = $sale->id;
                 $debitTransaction->account_id = $mapping->debit_account_id;
                 $debitTransaction->amount = $saleBillDetails->total;
                 $debitTransaction->type = $debitAccount->type; 
@@ -285,6 +289,7 @@ class TransactionsController extends Controller
 
                 // Create credit transaction entry
                 $creditTransaction = new Transaction();
+                $creditTransaction->reference_number = $sale->id;
                 $creditTransaction->account_id = $mapping->credit_account_id;
                 $creditTransaction->amount = $saleBillDetails->total;
                 $creditTransaction->type = $creditAccount->type; 
@@ -667,6 +672,48 @@ class TransactionsController extends Controller
         $purchaseBillDetails->total = $item['quantity'] * $stock->price;
 
         $purchaseBillDetails->save();
+
+        // Create transaction entries based on transaction mapping for sales
+        $purchaseMapping = TransactionAccountMapping::where('transaction_type', 'Purchase')
+            ->where('company_id', $companyId)
+            ->get();
+
+        foreach ($purchaseMapping as $mapping) {
+            // Retrieve the accounts associated with the mapping
+            $debitAccount = ChartOfAccount::where('company_id', $companyId)
+                ->where('id', $mapping->debit_account_id)
+                ->first();
+
+            $creditAccount = ChartOfAccount::where('company_id', $companyId)
+                ->where('id', $mapping->credit_account_id)
+                ->first();
+
+            if ($debitAccount && $creditAccount) {
+                // Create debit transaction entry
+                $debitTransaction = new Transaction();
+                $debitTransaction->reference_number = $purchase->id;
+                $debitTransaction->account_id = $mapping->debit_account_id;
+                $debitTransaction->amount = $purchaseBillDetails->total;
+                $debitTransaction->type = $debitAccount->type; 
+                $debitTransaction->date = date('Y-m-d');
+                $debitTransaction->company_id = $companyId;
+                $debitTransaction->name = "Purchase";
+                $debitTransaction->description = "Purchase transaction from supplier";
+                $debitTransaction->save();
+
+                // Create credit transaction entry
+                $creditTransaction = new Transaction();
+                $creditTransaction->reference_number = $purchase->id;
+                $creditTransaction->account_id = $mapping->credit_account_id;
+                $creditTransaction->amount = $purchaseBillDetails->total;
+                $creditTransaction->type = $creditAccount->type; 
+                $creditTransaction->date = date('Y-m-d');
+                $creditTransaction->company_id = $companyId;
+                $creditTransaction->name = "Purchase";
+                $creditTransaction->description = "Purchase transaction from supplier";
+                $creditTransaction->save();
+            }
+        }
 
         return redirect()->route('purchase.show', $purchase->id)->with('success', 'Purchase created successfully.');
         // return redirect()->route('purchase.index')->with('success', 'Purchase added successfully');

@@ -110,6 +110,10 @@ Route::get('/get-stock-details/{stock}', [TransactionsController::class, 'getSto
 ############# ACCOUNTS 
 Route::prefix('ledger')->group(function () {
     Route::get('/', [AccountsController::class, 'ledgerIndex'])->name('ledger.index');
+    Route::get('/general', [AccountsController::class, 'generalLedger'])->name('ledger.general_ledger');
+    Route::get('/accounts-receivable', [AccountsController::class, 'accountsReceivable'])->name('ledger.accounts_receivable_ledger');
+    Route::get('/accounts-payable', [AccountsController::class, 'accountsPayable'])->name('ledger.accounts_payable_ledger');
+    
 });
 
 Route::prefix('transactions')->group(function () {

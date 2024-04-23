@@ -88,9 +88,10 @@
                             <ul class="collapse list-unstyled" id="accountTransactionsSubmenu">
                                 {{-- <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('new-stock') }}"><i class="fas fa-dot-circle  fa-fw"></i> Add New Ledger</a> </li> --}}
                                 <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('ledger.index') }}"><i class="fas fa-dot-circle  fa-fw"></i> List All Ledgers</a> </li>
-                                <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('inventory') }}"><i class="fas fa-dot-circle  fa-fw"></i> General Ledger</a> </li>
-                                <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('inventory') }}"><i class="fas fa-dot-circle  fa-fw"></i> Accounts Receivable Ledger</a> </li>
-                                <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('inventory') }}"><i class="fas fa-dot-circle  fa-fw"></i> Accounts Payable Ledger</a> </li>
+                                <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('ledger.general_ledger') }}"><i class="fas fa-dot-circle  fa-fw"></i> General Ledger</a> </li>
+                                <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('ledger.accounts_receivable_ledger') }}"><i class="fas fa-dot-circle fa-fw"></i> Accounts Receivable Ledger</a></li>
+                                <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('ledger.accounts_payable_ledger') }}"><i class="fas fa-dot-circle fa-fw"></i> Accounts Payable Ledger</a></li>
+                                
                             </ul>
                         </li>
                         <li>

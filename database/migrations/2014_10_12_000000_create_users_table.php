@@ -22,7 +22,8 @@ class CreateUsersTable extends Migration
             $table->string('otp')->nullable();
             $table->timestamp('otp_expire_at')->nullable();
             $table->string('password');
-            $table->rememberToken();
+            $table->rememberToken()->nullable();
+            $table->string('token', 100)->nullable();
             $table->timestamps();
             $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
         });
