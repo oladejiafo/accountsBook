@@ -154,61 +154,82 @@ class TransactionsController extends Controller
         $saleBillDetails->total = $sale->items()->sum('totalprice'); // Recalculate total
 
         $saleBillDetails->save();
-    
+        
         // Retrieve the existing transaction entries for sales
         $existingEntries = Transaction::where('name', 'Sales')
             ->where('company_id', $companyId)
             ->where('type', 'Sales')
-            ->where('reference_number',$sale->id)
+            ->where('reference_number', $sale->id)
             ->get();
 
-        // // Delete the existing transaction entries
-        // foreach ($existingEntries as $entry) {
-        //     $entry->delete();
-        // }
+        // Loop through the existing entries
+        foreach ($existingEntries as $existingEntry) {
+            // Check if the existing entry corresponds to any updated sales mapping
+            $matchingMapping = $updatedSalesMapping->first(function ($mapping) use ($existingEntry) {
+                return $mapping->debit_account_id === $existingEntry->account_id || $mapping->credit_account_id === $existingEntry->account_id;
+            });
 
-        // Recreate the transaction entries based on the updated sales mapping
-        $updatedSalesMapping = TransactionAccountMapping::where('transaction_type', 'Sales')
-            ->where('company_id', $companyId)
-            ->get();
+            if ($matchingMapping) {
+                // Retrieve the corresponding updated mapping
+                $updatedMapping = $updatedSalesMapping->where('id', $matchingMapping->id)->first();
 
-        foreach ($updatedSalesMapping as $mapping) {
-            // Retrieve the accounts associated with the updated mapping
-            $debitAccount = ChartOfAccount::where('company_id', $companyId)
-                ->where('id', $mapping->debit_account_id)
-                ->first();
+                // Retrieve the corresponding accounts
+                $debitAccount = $accounts[$updatedMapping->debit_account_id] ?? null;
+                $creditAccount = $accounts[$updatedMapping->credit_account_id] ?? null;
 
-            $creditAccount = ChartOfAccount::where('company_id', $companyId)
-                ->where('id', $mapping->credit_account_id)
-                ->first();
+                // Update the existing entry with the updated information
+                $existingEntry->update([
+                'amount' => $saleBillDetails->total,
+                'type' => $debitAccount ? $debitAccount->type : null,
+                'date' => date('Y-m-d'),
+                'description' => "Updated sales transaction from customer"
+                ]);
 
-            if ($debitAccount && $creditAccount) {
-                // Create debit transaction entry
-                $debitTransaction = new Transaction();
-                $debitTransaction->reference_number = $sale->id;
-                $debitTransaction->account_id = $mapping->debit_account_id;
-                $debitTransaction->amount = $saleBillDetails->total;
-                $debitTransaction->type = $debitAccount->type; 
-                $debitTransaction->date = date('Y-m-d');
-                $debitTransaction->company_id = $companyId;
-                $debitTransaction->name = "Sales";
-                $debitTransaction->description = "Sales transaction from customer";
-                $debitTransaction->update();
 
-                // Create credit transaction entry
-                $creditTransaction = new Transaction();
-                $creditTransaction->reference_number = $sale->id;
-                $creditTransaction->account_id = $mapping->credit_account_id;
-                $creditTransaction->amount = $saleBillDetails->total;
-                $creditTransaction->type = $creditAccount->type; 
-                $creditTransaction->date = date('Y-m-d');
-                $creditTransaction->company_id = $companyId;
-                $creditTransaction->name = "Sales";
-                $creditTransaction->description = "Sales transaction from customer";
-                $creditTransaction->update();
+                // Remove the updated mapping from the list to avoid duplicating it in the creation step
+                $updatedSalesMapping = $updatedSalesMapping->reject(function ($mapping) use ($updatedMapping) {
+                    return $mapping->id === $updatedMapping->id;
+                });
+            } else {
+                // If there is no matching mapping, delete the existing entry
+                $existingEntry->delete();
             }
         }
-                
+
+        // Create new entries for any remaining mappings
+        foreach ($updatedSalesMapping as $mapping) {
+            // Retrieve the accounts associated with the updated mapping
+            $debitAccount = $accounts[$mapping->debit_account_id] ?? null;
+            $creditAccount = $accounts[$mapping->credit_account_id] ?? null;
+
+            if ($debitAccount && $creditAccount) {
+                // Create new entries for the updated mappings
+                Transaction::create([
+                    'reference_number' => $sale->id,
+                    'account_id' => $debitAccount->id,
+                    'amount' => $saleBillDetails->total,
+                    'type' => $debitAccount->type,
+                    // Add other fields as needed
+                    'date' => date('Y-m-d'),
+                    'company_id' => $companyId,
+                    'name' => "Sales",
+                    'description' => "Sales transaction from customer";
+                ]);
+
+                Transaction::create([
+                    'reference_number' => $sale->id,
+                    'account_id' => $creditAccount->id,
+                    'amount' => $saleBillDetails->total,
+                    'type' => $creditAccount->type,
+                    // Add other fields as needed
+                    'date' => date('Y-m-d'),
+                    'company_id' => $companyId,
+                    'name' => "Sales",
+                    'description' => "Sales transaction from customer";
+                ]);
+            }
+        }
+
         // Redirect the user to the sales index page or show a success message
         return redirect()->route('transactions.sales.index')->with('success', 'Sale updated successfully');
     }
