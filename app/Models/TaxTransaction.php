@@ -45,4 +45,9 @@ class TaxTransaction extends Model
     {
         return $this->hasOne(TaxPayment::class);
     }    
+    // public function transactionType()
+    // {
+    //     return $this->belongsTo(TransactionType::class);
+    // }
+
 }

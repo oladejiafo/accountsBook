@@ -30,11 +30,13 @@
   color: #fff;
   transition: all 0.3s;
 }
-
+.sidebar-text{ margin-left: 5px;}
 .sidebar.active {
   margin-left: -250px;
 }
-
+#sidebar .logo{
+  max-width: 200px;
+}
 .sidebar-header {
   padding: 20px;
   background: #607d8b;
@@ -116,7 +118,7 @@ a.nav-button {
 }
 
 #scrollable-menu {
-  margin-top: 35%;
+  margin-top: 45%;
   white-space: nowrap; 
   /* max-height: calc(100vh - 100px);  */
   /* overflow-y: auto; */

@@ -9,7 +9,7 @@ class TaxPayment extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['amount', 'date', 'tax_type', 'reference', 'company_id'];
+    protected $fillable = ['amount', 'payment_date', 'tax_type', 'reference', 'company_id'];
 
     public function taxTransaction()
     {

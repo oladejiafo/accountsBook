@@ -9,7 +9,7 @@ class TaxSetting extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['setting_name', 'value', 'company_id'];
+    protected $fillable = ['name', 'value', 'company_id'];
 
     public function company()
     {

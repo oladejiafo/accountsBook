@@ -40,6 +40,7 @@ class TransactionsController extends Controller
             return redirect()->route('login')->with('error', 'Unauthorized access.');
         }
         $companyId = auth()->user()->company_id;
+        //where('company_id', $companyId)->
         $sales = SaleBill::where('company_id', $companyId)->with('saleItems')->orderBy('created_at', 'desc')->paginate(15);
 
         return view('transactions.sales.index', compact('sales'));
@@ -213,7 +214,7 @@ class TransactionsController extends Controller
                     'date' => date('Y-m-d'),
                     'company_id' => $companyId,
                     'name' => "Sales",
-                    'description' => "Sales transaction from customer";
+                    'description' => "Sales transaction from customer",
                 ]);
 
                 Transaction::create([
@@ -225,7 +226,7 @@ class TransactionsController extends Controller
                     'date' => date('Y-m-d'),
                     'company_id' => $companyId,
                     'name' => "Sales",
-                    'description' => "Sales transaction from customer";
+                    'description' => "Sales transaction from customer",
                 ]);
             }
         }
@@ -474,7 +475,7 @@ class TransactionsController extends Controller
     
             // Notify the approver here
             // Fetch all email addresses of users who have the authority to approve returns
-            $approversEmails = User::where('role', 'approver')->pluck('email')->toArray();
+            $approversEmails = User::where('company_id', $companyId)->where('role', 'approver')->pluck('email')->toArray();
     
             // Notify all the approvers
             \Mail::to($approversEmails)->send(new ReturnApprovalNotification($returnTransaction));
@@ -515,7 +516,7 @@ class TransactionsController extends Controller
             ]);
     
             // Notification logic goes here
-            $approversEmails = User::where('role', 'approver')->pluck('email')->toArray();
+            $approversEmails = User::where('company_id', $companyId)->where('role', 'approver')->pluck('email')->toArray();
             \Mail::to($approversEmails)->send(new ReturnProcessedNotification($returnTransaction));
     
             // Notify the customer
@@ -576,9 +577,16 @@ class TransactionsController extends Controller
     
     public function fetchCustomerTransactions(Request $request)
     {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }
+
+        $companyId = auth()->user()->company_id;
+        
         $customerName = $request->input('name');
     
-        $customers = Customer::where('name', 'LIKE', '%' . $customerName . '%')->get();
+        $customers = Customer::where('company_id', $companyId)->where('name', 'LIKE', '%' . $customerName . '%')->get();
 
         if ($customers->isNotEmpty()) {
             // If customers are found, retrieve their IDs and transactions
@@ -612,10 +620,17 @@ class TransactionsController extends Controller
 
     public function returnCustomers(Request $request)
     {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }
+
+        $companyId = auth()->user()->company_id;
+
         $term = $request->input('name');
 
         // Query the database to find customers whose names start with the given term
-        $customers = Customer::where('name', 'like', $term . '%')->limit(10)->get();
+        $customers = Customer::where('company_id', $companyId)->where('name', 'like', $term . '%')->limit(10)->get();
     
         // Prepare the data in the format required by the JavaScript code
         $formattedCustomers = $customers->map(function ($customer) {
@@ -904,8 +919,15 @@ class TransactionsController extends Controller
 
     public function fetchCustomerDetails(Request $request)
     {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }      
+        $companyId = auth()->user()->company_id;
+
+        //where('company_id', $companyId)->
         $customerName = $request->get('name');
-        $customers = Customer::where('name', 'like', '%' . $customerName . '%')->get();
+        $customers = Customer::where('company_id', $companyId)->where('name', 'like', '%' . $customerName . '%')->get();
     
         // Return the first matching customer (or null if none found)
         $customer = $customers->first();
@@ -1232,8 +1254,14 @@ class TransactionsController extends Controller
 
     public function getStockDetails(Request $request, Stock $stock)
     {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }
+        $companyId = auth()->user()->company_id;
+        //where('company_id', $companyId)->
         // Fetch the stock details
-        $stock = Stock::findOrFail($request->stock);
+        $stock = Stock::where('company_id', $companyId)->findOrFail($request->stock);
         
         // Return the stock details as JSON response
         return response()->json(['amount' => $stock->amount]);
