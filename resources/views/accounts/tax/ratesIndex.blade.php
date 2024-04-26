@@ -43,11 +43,11 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @if ($taxRates->isEmpty() && ($taxRate->name !== 'Income Tax' && $taxRate->name !== 'Employee Tax' && !Str::contains($taxRate->name, 'Income')))
+                                        @if (!isset($taxRates) || $taxRates->isEmpty())
                                             <p>No business tax rates found.</p>
                                         @else
                                             @foreach ($taxRates as $taxRate)
-                                                @if ($taxRate->name !== 'Income Tax' && $taxRate->name !== 'Employee Tax' && !Str::contains($taxRate->name, 'Income'))
+                                                @if (isset($taxRates) && $taxRate->name !== 'Income Tax' && $taxRate->name !== 'Employee Tax' && !Str::contains($taxRate->name, 'Income'))
                                                     <tr>
                                                         <td>{{ $taxRate->name }}</td>
                                                         <td>{{ $taxRate->rate }}</td>
@@ -82,11 +82,11 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @if ($taxRates->isEmpty() && ($taxRate->name == 'Income Tax' || $taxRate->name == 'Employee Tax' || Str::contains($taxRate->name, 'Income')))
+                                        @if (!isset($taxRates) || $taxRates->isEmpty())
                                             <p>No Employee Income tax rates found.</p>
                                         @else
                                             @foreach ($taxRates as $taxRate)
-                                                @if ($taxRate->name == 'Income Tax' || $taxRate->name == 'Employee Tax' || Str::contains($taxRate->name, 'Income'))
+                                                @if (isset($taxRates) && ($taxRate->name == 'Income Tax' || $taxRate->name == 'Employee Tax' || Str::contains($taxRate->name, 'Income')))
                                                     <tr>
                                                         <td>{{ $taxRate->name }}</td>
                                                         <td>{{ $taxRate->rate }}</td>
