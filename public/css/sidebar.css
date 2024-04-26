@@ -30,7 +30,7 @@
   color: #fff;
   transition: all 0.3s;
 }
-.sidebar-text{ margin-left: 5px;}
+.sidebar-text{ margin-left: .75rem;}
 .sidebar.active {
   margin-left: -250px;
 }
