@@ -40,6 +40,7 @@ class TransactionsController extends Controller
             return redirect()->route('login')->with('error', 'Unauthorized access.');
         }
         $companyId = auth()->user()->company_id;
+        //where('company_id', $companyId)->
         $sales = SaleBill::where('company_id', $companyId)->with('saleItems')->orderBy('created_at', 'desc')->paginate(15);
 
         return view('transactions.sales.index', compact('sales'));
@@ -154,7 +155,82 @@ class TransactionsController extends Controller
         $saleBillDetails->total = $sale->items()->sum('totalprice'); // Recalculate total
 
         $saleBillDetails->save();
-    
+        
+        // Retrieve the existing transaction entries for sales
+        $existingEntries = Transaction::where('name', 'Sales')
+            ->where('company_id', $companyId)
+            ->where('type', 'Sales')
+            ->where('reference_number', $sale->id)
+            ->get();
+
+        // Loop through the existing entries
+        foreach ($existingEntries as $existingEntry) {
+            // Check if the existing entry corresponds to any updated sales mapping
+            $matchingMapping = $updatedSalesMapping->first(function ($mapping) use ($existingEntry) {
+                return $mapping->debit_account_id === $existingEntry->account_id || $mapping->credit_account_id === $existingEntry->account_id;
+            });
+
+            if ($matchingMapping) {
+                // Retrieve the corresponding updated mapping
+                $updatedMapping = $updatedSalesMapping->where('id', $matchingMapping->id)->first();
+
+                // Retrieve the corresponding accounts
+                $debitAccount = $accounts[$updatedMapping->debit_account_id] ?? null;
+                $creditAccount = $accounts[$updatedMapping->credit_account_id] ?? null;
+
+                // Update the existing entry with the updated information
+                $existingEntry->update([
+                'amount' => $saleBillDetails->total,
+                'type' => $debitAccount ? $debitAccount->type : null,
+                'date' => date('Y-m-d'),
+                'description' => "Updated sales transaction from customer"
+                ]);
+
+
+                // Remove the updated mapping from the list to avoid duplicating it in the creation step
+                $updatedSalesMapping = $updatedSalesMapping->reject(function ($mapping) use ($updatedMapping) {
+                    return $mapping->id === $updatedMapping->id;
+                });
+            } else {
+                // If there is no matching mapping, delete the existing entry
+                $existingEntry->delete();
+            }
+        }
+
+        // Create new entries for any remaining mappings
+        foreach ($updatedSalesMapping as $mapping) {
+            // Retrieve the accounts associated with the updated mapping
+            $debitAccount = $accounts[$mapping->debit_account_id] ?? null;
+            $creditAccount = $accounts[$mapping->credit_account_id] ?? null;
+
+            if ($debitAccount && $creditAccount) {
+                // Create new entries for the updated mappings
+                Transaction::create([
+                    'reference_number' => $sale->id,
+                    'account_id' => $debitAccount->id,
+                    'amount' => $saleBillDetails->total,
+                    'type' => $debitAccount->type,
+                    // Add other fields as needed
+                    'date' => date('Y-m-d'),
+                    'company_id' => $companyId,
+                    'name' => "Sales",
+                    'description' => "Sales transaction from customer",
+                ]);
+
+                Transaction::create([
+                    'reference_number' => $sale->id,
+                    'account_id' => $creditAccount->id,
+                    'amount' => $saleBillDetails->total,
+                    'type' => $creditAccount->type,
+                    // Add other fields as needed
+                    'date' => date('Y-m-d'),
+                    'company_id' => $companyId,
+                    'name' => "Sales",
+                    'description' => "Sales transaction from customer",
+                ]);
+            }
+        }
+
         // Redirect the user to the sales index page or show a success message
         return redirect()->route('transactions.sales.index')->with('success', 'Sale updated successfully');
     }
@@ -204,7 +280,7 @@ class TransactionsController extends Controller
         $saleBillDetails->total = $item['quantity'] * $stock->price;
 
         $saleBillDetails->save();
-        
+
         // Create transaction entries based on transaction mapping for sales
         $salesMapping = TransactionAccountMapping::where('transaction_type', 'sales')
             ->where('company_id', $companyId)
@@ -223,6 +299,7 @@ class TransactionsController extends Controller
             if ($debitAccount && $creditAccount) {
                 // Create debit transaction entry
                 $debitTransaction = new Transaction();
+                $debitTransaction->reference_number = $sale->id;
                 $debitTransaction->account_id = $mapping->debit_account_id;
                 $debitTransaction->amount = $saleBillDetails->total;
                 $debitTransaction->type = $debitAccount->type; 
@@ -234,6 +311,7 @@ class TransactionsController extends Controller
 
                 // Create credit transaction entry
                 $creditTransaction = new Transaction();
+                $creditTransaction->reference_number = $sale->id;
                 $creditTransaction->account_id = $mapping->credit_account_id;
                 $creditTransaction->amount = $saleBillDetails->total;
                 $creditTransaction->type = $creditAccount->type; 
@@ -244,7 +322,6 @@ class TransactionsController extends Controller
                 $creditTransaction->save();
             }
         }
-
 
         return redirect()->route('sales.show', $sale->id)->with('success', 'Sale created successfully.');
     }
@@ -398,7 +475,7 @@ class TransactionsController extends Controller
     
             // Notify the approver here
             // Fetch all email addresses of users who have the authority to approve returns
-            $approversEmails = User::where('role', 'approver')->pluck('email')->toArray();
+            $approversEmails = User::where('company_id', $companyId)->where('role', 'approver')->pluck('email')->toArray();
     
             // Notify all the approvers
             \Mail::to($approversEmails)->send(new ReturnApprovalNotification($returnTransaction));
@@ -439,7 +516,7 @@ class TransactionsController extends Controller
             ]);
     
             // Notification logic goes here
-            $approversEmails = User::where('role', 'approver')->pluck('email')->toArray();
+            $approversEmails = User::where('company_id', $companyId)->where('role', 'approver')->pluck('email')->toArray();
             \Mail::to($approversEmails)->send(new ReturnProcessedNotification($returnTransaction));
     
             // Notify the customer
@@ -500,9 +577,16 @@ class TransactionsController extends Controller
     
     public function fetchCustomerTransactions(Request $request)
     {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }
+
+        $companyId = auth()->user()->company_id;
+        
         $customerName = $request->input('name');
     
-        $customers = Customer::where('name', 'LIKE', '%' . $customerName . '%')->get();
+        $customers = Customer::where('company_id', $companyId)->where('name', 'LIKE', '%' . $customerName . '%')->get();
 
         if ($customers->isNotEmpty()) {
             // If customers are found, retrieve their IDs and transactions
@@ -536,10 +620,17 @@ class TransactionsController extends Controller
 
     public function returnCustomers(Request $request)
     {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }
+
+        $companyId = auth()->user()->company_id;
+
         $term = $request->input('name');
 
         // Query the database to find customers whose names start with the given term
-        $customers = Customer::where('name', 'like', $term . '%')->limit(10)->get();
+        $customers = Customer::where('company_id', $companyId)->where('name', 'like', $term . '%')->limit(10)->get();
     
         // Prepare the data in the format required by the JavaScript code
         $formattedCustomers = $customers->map(function ($customer) {
@@ -617,6 +708,48 @@ class TransactionsController extends Controller
         $purchaseBillDetails->total = $item['quantity'] * $stock->price;
 
         $purchaseBillDetails->save();
+
+        // Create transaction entries based on transaction mapping for sales
+        $purchaseMapping = TransactionAccountMapping::where('transaction_type', 'Purchase')
+            ->where('company_id', $companyId)
+            ->get();
+
+        foreach ($purchaseMapping as $mapping) {
+            // Retrieve the accounts associated with the mapping
+            $debitAccount = ChartOfAccount::where('company_id', $companyId)
+                ->where('id', $mapping->debit_account_id)
+                ->first();
+
+            $creditAccount = ChartOfAccount::where('company_id', $companyId)
+                ->where('id', $mapping->credit_account_id)
+                ->first();
+
+            if ($debitAccount && $creditAccount) {
+                // Create debit transaction entry
+                $debitTransaction = new Transaction();
+                $debitTransaction->reference_number = $purchase->id;
+                $debitTransaction->account_id = $mapping->debit_account_id;
+                $debitTransaction->amount = $purchaseBillDetails->total;
+                $debitTransaction->type = $debitAccount->type; 
+                $debitTransaction->date = date('Y-m-d');
+                $debitTransaction->company_id = $companyId;
+                $debitTransaction->name = "Purchase";
+                $debitTransaction->description = "Purchase transaction from supplier";
+                $debitTransaction->save();
+
+                // Create credit transaction entry
+                $creditTransaction = new Transaction();
+                $creditTransaction->reference_number = $purchase->id;
+                $creditTransaction->account_id = $mapping->credit_account_id;
+                $creditTransaction->amount = $purchaseBillDetails->total;
+                $creditTransaction->type = $creditAccount->type; 
+                $creditTransaction->date = date('Y-m-d');
+                $creditTransaction->company_id = $companyId;
+                $creditTransaction->name = "Purchase";
+                $creditTransaction->description = "Purchase transaction from supplier";
+                $creditTransaction->save();
+            }
+        }
 
         return redirect()->route('purchase.show', $purchase->id)->with('success', 'Purchase created successfully.');
         // return redirect()->route('purchase.index')->with('success', 'Purchase added successfully');
@@ -786,8 +919,15 @@ class TransactionsController extends Controller
 
     public function fetchCustomerDetails(Request $request)
     {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }      
+        $companyId = auth()->user()->company_id;
+
+        //where('company_id', $companyId)->
         $customerName = $request->get('name');
-        $customers = Customer::where('name', 'like', '%' . $customerName . '%')->get();
+        $customers = Customer::where('company_id', $companyId)->where('name', 'like', '%' . $customerName . '%')->get();
     
         // Return the first matching customer (or null if none found)
         $customer = $customers->first();
@@ -1114,8 +1254,14 @@ class TransactionsController extends Controller
 
     public function getStockDetails(Request $request, Stock $stock)
     {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }
+        $companyId = auth()->user()->company_id;
+        //where('company_id', $companyId)->
         // Fetch the stock details
-        $stock = Stock::findOrFail($request->stock);
+        $stock = Stock::where('company_id', $companyId)->findOrFail($request->stock);
         
         // Return the stock details as JSON response
         return response()->json(['amount' => $stock->amount]);

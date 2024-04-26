@@ -4,32 +4,52 @@
 
 @section('content')
 <div class="container">
-    
     <div class="row">
         <div class="col-md-12" style="color: #4e4e4e; font-style: bold; font-size: 3rem;">
-            @if(request()->has('search_account') && request('search_account') != 'all')
-                {{ ucfirst(request('search_account')) }} Ledger
+            @if(isset($ttype))
+                @if($ttype == "Account Receivable")
+                    Accounts Receivable Ledger
+                @elseif($ttype == "Account Payable")
+                    Accounts Payable Ledger
+                @else
+                    General Ledger
+                @endif
             @else
-                General Ledger
+                @if(request()->has('search_account') && request('search_account') != 'all')
+                    {{ ucfirst(request('search_account')) }} Ledger
+                @else
+                    General Ledger
+                @endif
             @endif
         </div>
     </div>
     <br>
 
     <div style="border-bottom: 1px solid rgb(91, 89, 89);">
-        <form method="GET" action="{{ route('ledger.index') }}">
+
+        @if($ttype == 'General Ledger')
+            <form method="GET" action="{{ route('ledger.general_ledger') }}">
+        @elseif($ttype == 'Account Payable')
+            <form method="GET" action="{{ route('ledger.accounts_payable_ledger') }}">
+        @elseif($ttype == 'Account Receivable')
+            <form method="GET" action="{{ route('ledger.accounts_receivable_ledger') }}">
+        @else
+            <form method="GET" action="{{ route('ledger.index') }}">
+        @endif        
             <div class="form-row">
                 <div class="form-group col-md-4">
                     <input type="text" name="keyword" class="form-control" placeholder="Search... date, keywords etc">
                 </div>
-                <div class="form-group col-md-3">
-                    <select name="search_account" class="form-control">
-                        <option value="all">Select Account Type</option>
-                        @foreach($accountCategories as $category)
-                            <option value="{{ $category->category }}">{{ $category->category }}</option>
-                        @endforeach
-                    </select>
-                </div>
+                @if(!isset($ttype))
+                    <div class="form-group col-md-3">
+                        <select name="search_account" class="form-control">
+                            <option value="all">Select Account Type</option>
+                            @foreach($accountCategories as $category)
+                                <option value="{{ $category->category }}">{{ $category->category }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                @endif
                 <div class="form-group col-md-3">
                     <select name="search_date" class="form-control">
                         <option value="all">Select Duration</option>

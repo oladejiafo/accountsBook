@@ -47,8 +47,8 @@
             <!-- Display transactions from various tables -->
             <h3>Transactions</h3>
             <div class="table-responsive">
-                <table class="table">
-                    <thead>
+                <table class="table table-css table-bordered table-hover">
+                    <thead class="thead-dark align-middle">
                         <tr>
                             <th>Date</th>
                             <th>Type</th>

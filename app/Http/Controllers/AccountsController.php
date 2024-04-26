@@ -21,6 +21,11 @@ use App\Models\BankTransaction;
 use App\Models\Reconcilliation;
 
 use App\Models\TaxRate;
+use App\Models\TaxTransaction;
+use App\Models\TaxCode;
+use App\Models\TaxPayment;
+use App\Models\TaxSetting;
+use App\Models\TaxExemption;
 
 use App\Imports\ChartImportClass;
 use App\Imports\BankImportClass;
@@ -60,19 +65,19 @@ class AccountsController extends Controller
         // ]);
 
         // Calculate income
-        $income = Transaction::where('type', 'income')->sum('amount');
+        $income = Transaction::where('company_id', $companyId)->where('type', 'income')->sum('amount');
         
         // Calculate expenses
-        $expenses = Transaction::where('type', 'expense')->sum('amount');
+        $expenses = Transaction::where('company_id', $companyId)->where('type', 'expense')->sum('amount');
         
         // Calculate cash flow
         $cashFlow = $income - $expenses;
         
         // Calculate account balances
         $accountBalances = [
-            'assets' => Transaction::where('type', 'asset')->sum('amount'),
-            'liabilities' => Transaction::where('type', 'liability')->sum('amount'),
-            'equity' => Transaction::where('type', 'equity')->sum('amount'),
+            'assets' => Transaction::where('company_id', $companyId)->where('type', 'asset')->sum('amount'),
+            'liabilities' => Transaction::where('company_id', $companyId)->where('type', 'liability')->sum('amount'),
+            'equity' => Transaction::where('company_id', $companyId)->where('type', 'equity')->sum('amount'),
         ];
 
         // // Fetch data for each month
@@ -82,11 +87,11 @@ class AccountsController extends Controller
         // $expenseData = [];
 
         // foreach ($months as $month) {
-        //     $income = Transaction::where('type', 'income')
+        //     $income = Transaction::where('company_id', $companyId)->where('type', 'income')
         //         ->whereMonth('created_at', '=', date('m', strtotime($month)))
         //         ->sum('amount');
             
-        //     $expenses = Transaction::where('type', 'expense')
+        //     $expenses = Transaction::where('company_id', $companyId)->where('type', 'expense')
         //         ->whereMonth('created_at', '=', date('m', strtotime($month)))
         //         ->sum('amount');
 
@@ -112,12 +117,13 @@ class AccountsController extends Controller
         $expenseData = [];
 
         foreach ($months as $month) {
-            $incomez = Transaction::where('type', 'income')
+            $incomez = Transaction::where('company_id', $companyId)
+                ->where('type', 'income')
                 ->whereYear('created_at', $currentMonth->year)
                 ->whereMonth('created_at', $currentMonth->month)
                 ->sum('amount');
                 
-            $expensez = Transaction::where('type', 'expense')
+            $expensez = Transaction::where('company_id', $companyId)->where('type', 'expense')
                 ->whereYear('created_at', $currentMonth->year)
                 ->whereMonth('created_at', $currentMonth->month)
                 ->sum('amount');
@@ -148,7 +154,7 @@ class AccountsController extends Controller
             ]
         ];
 
-        return view('accounts.dashboard', compact('income', 'expenses', 'cashFlow', 'accountBalances','alerts','incomeExpensesData'));
+        return view('home.dashboard', compact('income', 'expenses', 'cashFlow', 'accountBalances','alerts','incomeExpensesData'));
     }
     
     // Method to get income (example, replace with actual logic)
@@ -293,10 +299,314 @@ class AccountsController extends Controller
         // Calculate total adjusted balance
         $totalAdjustedBalance = $startingBalance + $transactions->sum('amount');
 
+        $ttype = null;
+
         // Return the view with the transactions, account categories, and calculated values
-        return view('accounts.ledgers.index', compact('transactions', 'accountCategories', 'totalDebit', 'totalCredit', 'totalAdjustedBalance','startingBalance'));
+        return view('accounts.ledgers.index', compact('transactions', 'accountCategories', 'totalDebit', 'totalCredit', 'totalAdjustedBalance','startingBalance','ttype'));
     }
 
+    public function generalLedger(Request $request)
+    {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }      
+        $companyId = auth()->user()->company_id;
+
+        
+        // Fetch account categories
+        $accountCategories = AccountsCategory::all(); // Assuming AccountCategory is your model for account categories
+
+        // Initialize variables
+        $keyword = $request->input('keyword');
+        $searchAccount = $request->input('search_account');
+        $searchDate = $request->input('search_date');
+
+        // Start building the query
+        $transactionsQuery = Transaction::where('company_id', $companyId);
+
+        // Apply filters based on form inputs
+        if ($keyword) {
+            $transactionsQuery->where(function ($query) use ($keyword) {
+                $query->where('type', 'like', '%' . $keyword . '%')
+                    ->orWhere('description', 'like', '%' . $keyword . '%')
+                    ->orWhere('date', 'like', '%' . $keyword . '%');
+            });
+        }
+
+        // if ($searchAccount && $searchAccount != 'all') {
+        //     $transactionsQuery->whereHas('account', function ($accountQuery) use ($searchAccount) {
+        //         // dd($searchAccount);
+        //         $accountQuery->where(function ($query) use ($searchAccount) {
+        //             $query->where('type', 'like', '%' . $searchAccount . '%')
+        //                   ->orWhere('category', 'like', '%' . $searchAccount . '%');
+        //         });
+        //     });
+        // }
+        
+        $tday = date(now());  // Today's Date
+        if ($searchDate && $searchDate != 'all') {
+            switch ($searchDate) {
+                case 'today':
+                    $transactionsQuery->where('date', $tday);
+                    break;
+                case 'last_7_days':
+                    $transactionsQuery->whereBetween('date', [now()->subDays(7), now()]);
+                    break;
+                case 'last_30_days':
+                    $transactionsQuery->whereBetween('date', [now()->subDays(30), now()]);
+                    break;
+                case 'last_60_days':
+                    $transactionsQuery->whereBetween('date', [now()->subDays(60), now()]);
+                    break;
+                case 'last_90_days':
+                    $transactionsQuery->whereBetween('date', [now()->subDays(90), now()]);
+                    break;
+                case 'current_month':
+                    $transactionsQuery->whereMonth('date', now()->month);
+                    break;
+                case 'last_month':
+                    $transactionsQuery->whereMonth('date', now()->subMonth()->month);
+                    break;
+                case 'last_3_months':
+                    $transactionsQuery->whereBetween('date', [now()->subMonths(3), now()]);
+                    break;
+                default:
+                    // Retrieve all records
+                    break;
+            }            
+        }
+
+        // Execute the query and get the results
+        $transactions = $transactionsQuery->paginate(30);
+
+        $totalDebit = 0;
+        $totalCredit = 0;
+
+        // Calculate starting balance based on transactions
+        $startingBalance = 0;
+
+        foreach ($transactions as $transaction) {
+            // Determine transaction type and account category (case-insensitive)
+            $transactionType = strtolower($transaction->type);
+            $accountCategory = strtolower(optional($transaction->account)->category);
+
+            // Increment total debit and total credit based on transaction type and account category
+            if (in_array($transactionType, ['income', 'liability', 'equity']) || in_array($accountCategory, ['income', 'liability', 'equity'])) {
+                $totalCredit += abs($transaction->amount);
+            } elseif (in_array($transactionType, ['expense', 'asset']) || in_array($accountCategory, ['expense', 'asset'])) {
+                $totalDebit += abs($transaction->amount);
+            }            
+        
+            // Adjust starting balance based on transaction amount and account category
+            if ($transaction->account) {
+                if (strtolower($transaction->type) === 'income' || strtolower($transaction->type) === 'equity' || strtolower($transaction->account->category) === 'income' || strtolower($transaction->account->category) === 'equity') {
+                    $startingBalance += $transaction->amount;
+                } elseif (strtolower($transaction->type) === 'expense' || strtolower($transaction->type) === 'asset' || strtolower($transaction->account->category) === 'expense' || strtolower($transaction->account->category) === 'asset') {
+                    $startingBalance -= $transaction->amount;
+                } elseif (strtolower($transaction->type) === 'liability' || strtolower($transaction->account->category) === 'liability') {
+                    $startingBalance += $transaction->amount;
+                }
+            }
+        }
+
+        $ttype = "General Ledger"; 
+        // Calculate total adjusted balance
+        $totalAdjustedBalance = $startingBalance + $transactions->sum('amount');
+
+        // Return the view with the transactions, account categories, and calculated values
+        return view('accounts.ledgers.index', compact('transactions', 'accountCategories', 'totalDebit', 'totalCredit', 'totalAdjustedBalance','startingBalance','ttype'));
+    }
+
+    public function accountsReceivable(Request $request)
+    {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }      
+        $companyId = auth()->user()->company_id;
+    
+        // Fetch account categories
+        $accountCategories = AccountsCategory::all(); // Assuming AccountCategory is your model for account categories
+    
+        // Initialize variables
+        $keyword = $request->input('keyword');
+        $searchAccount = "Account Receivable"; //$request->input('search_account');
+        $searchDate = $request->input('search_date');
+    
+        // Start building the query
+        $transactionsQuery = Transaction::where('company_id', $companyId)->where('type', 'income');
+    
+        // Apply filters based on form inputs
+        if ($keyword) {
+            $transactionsQuery->where(function ($query) use ($keyword) {
+                $query->where('description', 'like', '%' . $keyword . '%')
+                    ->orWhere('date', 'like', '%' . $keyword . '%');
+            });
+        }
+    
+        // if ($searchAccount && $searchAccount != 'all') {
+        //     $transactionsQuery->whereHas('account', function ($accountQuery) use ($searchAccount) {
+        //         // dd($searchAccount);
+        //         $accountQuery->where(function ($query) use ($searchAccount) {
+        //             $query->where('type', 'like', '%' . $searchAccount . '%');
+        //         });
+        //     });
+        // }
+        
+        $tday = date(now());  // Today's Date
+        if ($searchDate && $searchDate != 'all') {
+            switch ($searchDate) {
+                case 'today':
+                    $transactionsQuery->where('date', $tday);
+                    break;
+                case 'last_7_days':
+                    $transactionsQuery->whereBetween('date', [now()->subDays(7), now()]);
+                    break;
+                case 'last_30_days':
+                    $transactionsQuery->whereBetween('date', [now()->subDays(30), now()]);
+                    break;
+                case 'last_60_days':
+                    $transactionsQuery->whereBetween('date', [now()->subDays(60), now()]);
+                    break;
+                case 'last_90_days':
+                    $transactionsQuery->whereBetween('date', [now()->subDays(90), now()]);
+                    break;
+                case 'current_month':
+                    $transactionsQuery->whereMonth('date', now()->month);
+                    break;
+                case 'last_month':
+                    $transactionsQuery->whereMonth('date', now()->subMonth()->month);
+                    break;
+                case 'last_3_months':
+                    $transactionsQuery->whereBetween('date', [now()->subMonths(3), now()]);
+                    break;
+                default:
+                    // Retrieve all records
+                    break;
+            }            
+        }
+    
+        // Execute the query and get the results
+        $transactions = $transactionsQuery->paginate(30);
+    
+        $totalDebit = 0;
+        $totalCredit = 0;
+    
+        // Calculate starting balance based on transactions
+        $startingBalance = 0;
+    
+        foreach ($transactions as $transaction) {
+            // Increment total credit based on transaction amount
+            $totalCredit += abs($transaction->amount);
+    
+            // Adjust starting balance based on transaction amount
+            $startingBalance += $transaction->amount;
+        }
+    
+        // Calculate total adjusted balance
+        $totalAdjustedBalance = $startingBalance;
+        $ttype = "Account Receivable";
+    
+        // Return the view with the transactions, account categories, and calculated values
+        return view('accounts.ledgers.index', compact('transactions', 'accountCategories', 'totalDebit', 'totalCredit', 'totalAdjustedBalance','startingBalance','ttype'));
+    }
+    
+    public function accountsPayable(Request $request)
+    {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }      
+        $companyId = auth()->user()->company_id;
+    
+        // Fetch account categories
+        $accountCategories = AccountsCategory::all(); // Assuming AccountCategory is your model for account categories
+
+        // Initialize variables
+        $keyword = $request->input('keyword');
+        $searchAccount = "Accounts Payable"; //$request->input('search_account');
+        $searchDate = $request->input('search_date');
+    
+        // Start building the query
+        $transactionsQuery = Transaction::where('company_id', $companyId)->where('type', 'expense');
+    
+        // Apply filters based on form inputs
+        if ($keyword) {
+            $transactionsQuery->where(function ($query) use ($keyword) {
+                $query->where('description', 'like', '%' . $keyword . '%')
+                    ->orWhere('date', 'like', '%' . $keyword . '%');
+            });
+        }
+    
+        // if ($searchAccount && $searchAccount != 'all') {
+        //     $transactionsQuery->whereHas('account', function ($accountQuery) use ($searchAccount) {
+        //         // dd($searchAccount);
+        //         $accountQuery->where(function ($query) use ($searchAccount) {
+        //             $query->where('type', 'like', '%' . $searchAccount . '%');
+        //         });
+        //     });
+        // }
+        
+        $tday = date(now());  // Today's Date
+        if ($searchDate && $searchDate != 'all') {
+            switch ($searchDate) {
+                case 'today':
+                    $transactionsQuery->where('date', $tday);
+                    break;
+                case 'last_7_days':
+                    $transactionsQuery->whereBetween('date', [now()->subDays(7), now()]);
+                    break;
+                case 'last_30_days':
+                    $transactionsQuery->whereBetween('date', [now()->subDays(30), now()]);
+                    break;
+                case 'last_60_days':
+                    $transactionsQuery->whereBetween('date', [now()->subDays(60), now()]);
+                    break;
+                case 'last_90_days':
+                    $transactionsQuery->whereBetween('date', [now()->subDays(90), now()]);
+                    break;
+                case 'current_month':
+                    $transactionsQuery->whereMonth('date', now()->month);
+                    break;
+                case 'last_month':
+                    $transactionsQuery->whereMonth('date', now()->subMonth()->month);
+                    break;
+                case 'last_3_months':
+                    $transactionsQuery->whereBetween('date', [now()->subMonths(3), now()]);
+                    break;
+                default:
+                    // Retrieve all records
+                    break;
+            }            
+        }
+    
+        // Execute the query and get the results
+        $transactions = $transactionsQuery->paginate(30);
+    
+        $totalDebit = 0;
+        $totalCredit = 0;
+    
+        // Calculate starting balance based on transactions
+        $startingBalance = 0;
+    
+        foreach ($transactions as $transaction) {
+            // Increment total debit based on transaction amount
+            $totalDebit += abs($transaction->amount);
+    
+            // Adjust starting balance based on transaction amount
+            $startingBalance += $transaction->amount;
+        }
+    
+        // Calculate total adjusted balance
+        $totalAdjustedBalance = $startingBalance;
+
+        $ttype = "Account Payable";
+    
+        // Return the view with the transactions, account categories, and calculated values
+        return view('accounts.ledgers.index', compact('transactions', 'accountCategories', 'totalDebit', 'totalCredit', 'totalAdjustedBalance','startingBalance','ttype'));
+    }
+    
     // Transactions Module
     public function transactionsIndex(Request $request)
     {
@@ -379,6 +689,7 @@ class AccountsController extends Controller
             'amount' => 'required|numeric',
             'description' => 'nullable|string',
             'transaction_name' =>  'nullable|string',
+            'reference_number' => 'nullable|string',
             'to_account_id' =>  'nullable',
             'source' =>  'nullable|string', 
             'status' =>  'nullable|string',
@@ -387,6 +698,51 @@ class AccountsController extends Controller
         $validatedData['company_id'] = auth()->user()->company_id;
 
         Transaction::create($validatedData);
+
+        
+        // Create transaction entries based on transaction mapping for sales
+        $transactionMapping = TransactionAccountMapping::where('transaction_type', $request->transaction_name)
+            ->where('company_id', $companyId)
+            ->get();
+
+        foreach ($transactionMapping as $mapping) {
+            // Retrieve the accounts associated with the mapping
+            $debitAccount = ChartOfAccount::where('company_id', $companyId)
+                ->where('id', $mapping->debit_account_id)
+                ->first();
+
+            $creditAccount = ChartOfAccount::where('company_id', $companyId)
+                ->where('id', $mapping->credit_account_id)
+                ->first();
+
+            if ($debitAccount && $creditAccount) {
+                if ($creditAccount->account_id ==  $request->account_id) {
+                    // Create debit transaction entry
+                    $debitTransaction = new Transaction();
+                    $debitTransaction->reference_number = $request->reference_number;
+                    $debitTransaction->account_id = $mapping->debit_account_id;
+                    $debitTransaction->amount = $request->amount;
+                    $debitTransaction->type = $debitAccount->type; 
+                    $debitTransaction->date = $request->date;
+                    $debitTransaction->company_id = $companyId;
+                    $debitTransaction->name = $request->transaction_name;
+                    $debitTransaction->description = $request->description;
+                    $debitTransaction->save();
+                } elseif ($debitAccount->account_id ==  $request->account_id) {
+                    // Create credit transaction entry
+                    $creditTransaction = new Transaction();
+                    $creditTransaction->reference_number = $request->reference_number;
+                    $creditTransaction->account_id = $mapping->credit_account_id;
+                    $creditTransaction->amount = $request->amount;
+                    $creditTransaction->type = $creditAccount->type; 
+                    $creditTransaction->date = $request->date;
+                    $creditTransaction->company_id = $companyId;
+                    $creditTransaction->name = $request->transaction_name;
+                    $creditTransaction->description = $request->description;
+                    $creditTransaction->save();
+                }
+            }
+        }
 
         return redirect()->route('transactions.index')->with('success', 'Transaction created successfully.');
     }
@@ -1315,13 +1671,27 @@ class AccountsController extends Controller
     // Tax Rates
     public function taxRatesIndex()
     {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }      
+        $companyId = auth()->user()->company_id;
+        //where('company_id', $companyId)->
+
         $tab = request()->query('tab');
-        $taxRates = TaxRate::all();
+        $taxRates = TaxRate::where('company_id', $companyId)->get();
         return view('accounts.tax.ratesIndex', compact('taxRates', 'tab'));
     }
 
     public function taxRatesCreate()
     {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }      
+        $companyId = auth()->user()->company_id;
+        //where('company_id', $companyId)->
+   
         $tab = request()->query('tab');
 
         return view('accounts.tax.ratesCreate', compact('tab'));
@@ -1329,6 +1699,13 @@ class AccountsController extends Controller
 
     public function taxRatesStore(Request $request)
     {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }      
+        $companyId = auth()->user()->company_id;
+        //where('company_id', $companyId)->
+   
         // Validate the request
         $validatedData = $request->validate([
             'name' => 'required',
@@ -1359,14 +1736,28 @@ class AccountsController extends Controller
 
     public function taxRatesEdit($id)
     {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }      
+        $companyId = auth()->user()->company_id;
+        //where('company_id', $companyId)->
+   
         $tab = request()->query('tab');
 
-        $taxRate = TaxRate::findOrFail($id);
+        $taxRate = TaxRate::where('company_id', $companyId)->findOrFail($id);
         return view('accounts.tax.ratesEdit', compact('taxRate','tab'));
     }
 
     public function taxRatesUpdate(Request $request, $id)
     {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }      
+        $companyId = auth()->user()->company_id;
+        //where('company_id', $companyId)->
+
         // Validate the request
         $validatedData = $request->validate([
             'name' => 'required',
@@ -1379,7 +1770,7 @@ class AccountsController extends Controller
         // Merge the company_id into the request data
         $validatedData['company_id'] = auth()->user()->company_id;
         // Find the tax rate
-        $taxRate = TaxRate::findOrFail($id);
+        $taxRate = TaxRate::where('company_id', $companyId)->findOrFail($id);
 
         // Update the tax rate
         $taxRate->update($validatedData);
@@ -1396,12 +1787,512 @@ class AccountsController extends Controller
 
     public function taxRatesDestroy($id)
     {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }      
+        $companyId = auth()->user()->company_id;
+        //where('company_id', $companyId)->
+
         // Find the tax rate
-        $taxRate = TaxRate::findOrFail($id);
+        $taxRate = TaxRate::where('company_id', $companyId)->findOrFail($id);
 
         // Delete the tax rate
         $taxRate->delete();
 
         return redirect()->route('tax-rates.index')->with('success', 'Tax rate deleted successfully.');
+    }
+
+    public function taxTransactionsIndex()
+    {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }      
+        $companyId = auth()->user()->company_id;
+        //where('company_id', $companyId)->
+
+        // $tab = request()->query('tab');
+        $taxTransactions = TaxTransaction::where('company_id', $companyId)->get();
+        return view('accounts.tax.transactionsIndex', compact('taxTransactions'));
+    }
+
+    public function taxTransactionsCreate()
+    {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }      
+        $companyId = auth()->user()->company_id;
+        //where('company_id', $companyId)->
+
+        $transactionTypes = TransactionType::where('company_id', $companyId)->get();
+        $taxCodes = TaxCode::where('company_id', $companyId)->get();
+        return view('accounts.tax.transactionsCreate', compact('transactionTypes','taxCodes'));
+    }
+
+    public function taxTransactionsStore(Request $request)
+    {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }      
+        $companyId = auth()->user()->company_id;
+        //where('company_id', $companyId)->
+
+        $validatedData = $request->validate([
+            'amount' => 'required|numeric',
+            'transaction_type' => 'required|string',
+            // 'transaction_type' => 'required|exists:transaction_types,id',
+            'tax_code_id' => 'nullable',
+            // 'tax_code_id' => 'required|exists:tax_codes,id',
+            // Add more validation rules as needed
+        ]);
+    
+        // Merge the company_id into the request data
+        $validatedData['company_id'] = auth()->user()->company_id;
+    
+        // Create a new tax transaction
+        TaxTransaction::create($validatedData);
+    
+        return redirect()->route('tax-transactions.index')->with('success', 'Tax transaction created successfully.');
+    }
+    
+
+    public function taxTransactionsShow($id)
+    {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }      
+        $companyId = auth()->user()->company_id;
+        //where('company_id', $companyId)->
+
+        $tab = request()->query('tab');
+        $taxTransaction = TaxTransaction::where('company_id', $companyId)->findOrFail($id);
+        return view('accounts.tax.transactionsShow', compact('taxTransaction', 'tab'));
+    }
+
+    public function taxTransactionsEdit($id)
+    {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }      
+        $companyId = auth()->user()->company_id;
+        //where('company_id', $companyId)->
+
+        $transactionTypes = TransactionType::where('company_id', $companyId)->get(); 
+        $taxTransaction = TaxTransaction::where('company_id', $companyId)->findOrFail($id);
+        $taxCodes = TaxCode::where('company_id', $companyId)->get();
+        return view('accounts.tax.transactionsEdit', compact('taxTransaction', 'transactionTypes','taxCodes'));
+    }
+
+    public function taxTransactionsUpdate(Request $request, $id)
+    {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }      
+        $companyId = auth()->user()->company_id;
+        //where('company_id', $companyId)->
+
+        $validatedData = $request->validate([
+            'amount' => 'required|numeric',
+            'transaction_type' => 'required',
+            'tax_code_id' => 'required|exists:tax_codes,id',
+            // Add more validation rules as needed
+        ]);
+
+        // Merge the company_id into the request data
+        $validatedData['company_id'] = auth()->user()->company_id;
+
+        // Find the tax transaction
+        $taxTransaction = TaxTransaction::where('company_id', $companyId)->findOrFail($id);
+
+        // Update the tax transaction
+        $taxTransaction->update($validatedData);
+
+        return redirect()->route('tax-transactions.index')->with('success', 'Tax transaction updated successfully.');
+    }
+
+    public function taxTransactionsDestroy($id)
+    {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }      
+        $companyId = auth()->user()->company_id;
+        //where('company_id', $companyId)->
+
+        $taxTransaction = TaxTransaction::where('company_id', $companyId)->findOrFail($id);
+        $taxTransaction->delete();
+        return redirect()->route('tax-transactions.index')->with('success', 'Tax transaction deleted successfully.');
+    }
+
+    // Tax Payments Index
+    public function taxPaymentsIndex()
+    {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }      
+        $companyId = auth()->user()->company_id;
+        //where('company_id', $companyId)->
+
+        $taxPayments = TaxPayment::where('company_id', $companyId)->get();
+        return view('accounts.tax.paymentsIndex', compact('taxPayments'));
+    }
+
+    // Tax Payments Create
+    public function taxPaymentsCreate()
+    {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }      
+        $companyId = auth()->user()->company_id;
+        //where('company_id', $companyId)->
+
+        return view('accounts.tax.paymentsCreate');
+    }
+
+    // Tax Payments Store
+    public function taxPaymentsStore(Request $request)
+    {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }      
+        $companyId = auth()->user()->company_id;
+        //where('company_id', $companyId)->
+
+        $validatedData = $request->validate([
+            'amount' => 'required|numeric',
+            'payment_date' => 'required|date',
+            'tax_type' => 'required|string',
+            'reference' => 'nullable|string',
+            // 'tax_authority_id' => 'required|exists:tax_authorities,id',
+        ]);
+        // $validatedData['payment_date'] = date('Y-m-d'); 
+        $validatedData['company_id'] = auth()->user()->company_id;
+        TaxPayment::create($validatedData);
+
+        return redirect()->route('tax-payments.index')->with('success', 'Tax payment created successfully.');
+    }
+
+    // Tax Payments Show
+    public function taxPaymentsShow($id)
+    {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }      
+        $companyId = auth()->user()->company_id;
+        //where('company_id', $companyId)->
+
+        $taxPayment = TaxPayment::where('company_id', $companyId)->findOrFail($id);
+        return view('accounts.tax.paymentsShow', compact('taxPayment'));
+    }
+
+    // Tax Payments Edit
+    public function taxPaymentsEdit($id)
+    {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }      
+        $companyId = auth()->user()->company_id;
+        //where('company_id', $companyId)->
+
+        $taxPayment = TaxPayment::where('company_id', $companyId)->findOrFail($id);
+        return view('accounts.tax.paymentsEdit', compact('taxPayment'));
+    }
+
+    // Tax Payments Update
+    public function taxPaymentsUpdate(Request $request, $id)
+    {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }      
+        $companyId = auth()->user()->company_id;
+        //where('company_id', $companyId)->
+
+        $taxPayment = TaxPayment::where('company_id', $companyId)->findOrFail($id);
+        $validatedData = $request->validate([
+            'amount' => 'required|numeric',
+            'payment_date' => 'required|date',
+            'tax_type' => 'required|string',
+            'reference' => 'nullable|string',
+            // 'tax_authority_id' => 'required|exists:tax_authorities,id',
+            // Add more validation rules as needed
+        ]);
+        $validatedData['company_id'] = auth()->user()->company_id;
+        $taxPayment->update($validatedData);
+
+        return redirect()->route('tax-payments.index')->with('success', 'Tax payment updated successfully.');
+    }
+
+    // Tax Payments Destroy
+    public function taxPaymentsDestroy($id)
+    {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }      
+        $companyId = auth()->user()->company_id;
+        //where('company_id', $companyId)->
+
+        $taxPayment = TaxPayment::where('company_id', $companyId)->findOrFail($id);
+        $taxPayment->delete();
+
+        return redirect()->route('tax-payments.index')->with('success', 'Tax payment deleted successfully.');
+    }
+
+
+    // Tax Settings Index
+    public function taxSettingsIndex()
+    {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }      
+        $companyId = auth()->user()->company_id;
+        //where('company_id', $companyId)->
+
+        $taxSettings = TaxSetting::where('company_id', $companyId)->get();
+        return view('accounts.tax.settingsIndex', compact('taxSettings'));
+    }
+
+    // Tax Settings Create
+    public function taxSettingsCreate()
+    {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }      
+        $companyId = auth()->user()->company_id;
+        //where('company_id', $companyId)->
+
+        return view('accounts.tax.settingsCreate');
+    }
+
+    // Tax Settings Store
+    public function taxSettingsStore(Request $request)
+    {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }      
+        $companyId = auth()->user()->company_id;
+        //where('company_id', $companyId)->
+
+        $validatedData = $request->validate([
+            'name' => 'required|string',
+            'value' => 'required|string',
+            // Add more validation rules as needed
+        ]);
+
+        // Merge the company_id into the request data
+        $validatedData['company_id'] = auth()->user()->company_id;
+
+        // Create a new tax setting
+        TaxSetting::create($validatedData);
+
+        return redirect()->route('tax-settings.index')->with('success', 'Tax setting created successfully.');
+    }
+
+    // Tax Settings Show
+    public function taxSettingsShow($id)
+    {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }      
+        $companyId = auth()->user()->company_id;
+        //where('company_id', $companyId)->
+
+        $taxSetting = TaxSetting::where('company_id', $companyId)->findOrFail($id);
+        return view('accounts.tax.settingsShow', compact('taxSetting'));
+    }
+
+    // Tax Settings Edit
+    public function taxSettingsEdit($id)
+    {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }      
+        $companyId = auth()->user()->company_id;
+        //where('company_id', $companyId)->
+
+        $taxSetting = TaxSetting::where('company_id', $companyId)->findOrFail($id);
+        return view('accounts.tax.settingsEdit', compact('taxSetting'));
+    }
+
+    // Tax Settings Update
+    public function taxSettingsUpdate(Request $request, $id)
+    {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }      
+        $companyId = auth()->user()->company_id;
+        //where('company_id', $companyId)->
+
+        $validatedData = $request->validate([
+            'name' => 'required|string',
+            'value' => 'required|string',
+            // Add more validation rules as needed
+        ]);
+
+        // Find the tax setting
+        $taxSetting = TaxSetting::where('company_id', $companyId)->findOrFail($id);
+
+        // Update the tax setting
+        $taxSetting->update($validatedData);
+
+        return redirect()->route('tax-settings.index')->with('success', 'Tax setting updated successfully.');
+    }
+
+    // Tax Settings Destroy
+    public function taxSettingsDestroy($id)
+    {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }      
+        $companyId = auth()->user()->company_id;
+        //where('company_id', $companyId)->
+
+        // Find the tax setting
+        $taxSetting = TaxSetting::where('company_id', $companyId)->findOrFail($id);
+
+        // Delete the tax setting
+        $taxSetting->delete();
+
+        return redirect()->route('tax-settings.index')->with('success', 'Tax setting deleted successfully.');
+    }
+
+    public function taxExemptionsIndex()
+    {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }      
+        $companyId = auth()->user()->company_id;
+        //where('company_id', $companyId)->
+
+        $taxExemptions = TaxExemption::where('company_id', $companyId)->get();
+        return view('accounts.tax.exemptionsIndex', compact('taxExemptions'));
+    }
+
+    public function taxExemptionsCreate()
+    {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }      
+        $companyId = auth()->user()->company_id;
+        //where('company_id', $companyId)->
+
+        return view('accounts.tax.exemptionsCreate');
+    }
+
+    public function taxExemptionsStore(Request $request)
+    {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }      
+        $companyId = auth()->user()->company_id;
+        //where('company_id', $companyId)->
+
+        $validatedData = $request->validate([
+            'name' => 'required',
+            'description' => 'nullable',
+            'valid_from' => 'nullable|date',
+            'valid_to' => 'nullable|date',
+            // Add more validation rules as needed
+        ]);
+
+        // Merge the company_id into the request data
+        $validatedData['company_id'] = auth()->user()->company_id;
+
+        // Create a new tax exemption
+        TaxExemption::create($validatedData);
+
+        return redirect()->route('tax-exemptions.index')->with('success', 'Tax exemption created successfully.');
+    }
+
+    public function taxExemptionsShow($id)
+    {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }      
+        $companyId = auth()->user()->company_id;
+        //where('company_id', $companyId)->
+
+        $taxExemption = TaxExemption::where('company_id', $companyId)->findOrFail($id);
+        return view('accounts.tax.exemptionsShow', compact('taxExemption'));
+    }
+
+    public function taxExemptionsEdit($id)
+    {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }      
+        $companyId = auth()->user()->company_id;
+        //where('company_id', $companyId)->
+
+        $taxExemption = TaxExemption::where('company_id', $companyId)->findOrFail($id);
+        return view('accounts.tax.exemptionsEdit', compact('taxExemption'));
+    }
+
+    public function taxExemptionsUpdate(Request $request, $id)
+    {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }      
+        $companyId = auth()->user()->company_id;
+        //where('company_id', $companyId)->
+
+        $validatedData = $request->validate([
+            'name' => 'required',
+            'description' => 'nullable',
+            'valid_from' => 'nullable|date',
+            'valid_to' => 'nullable|date',
+            // Add more validation rules as needed
+        ]);
+
+        // Find the tax exemption
+        $taxExemption = TaxExemption::where('company_id', $companyId)->findOrFail($id);
+
+        // Update the tax exemption
+        $taxExemption->update($validatedData);
+
+        return redirect()->route('tax-exemptions.index')->with('success', 'Tax exemption updated successfully.');
+    }
+
+    public function taxExemptionsDestroy($id)
+    {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }      
+        $companyId = auth()->user()->company_id;
+        //where('company_id', $companyId)->
+
+        // Find the tax exemption
+        $taxExemption = TaxExemption::where('company_id', $companyId)->findOrFail($id);
+
+        // Delete the tax exemption
+        $taxExemption->delete();
+
+        return redirect()->route('tax-exemptions.index')->with('success', 'Tax exemption deleted successfully.');
     }
 }

@@ -25,6 +25,8 @@
   body,
   html {
     height: 100%;
+    font-size: 0.9em;
+    background-color: #f6fbff;
     /* background-color: #000000; */
   }
   
@@ -433,12 +435,41 @@
     box-shadow: 0 2px 7px #4e6570;
   }
   
+  .btn {
+    border-radius: .5rem !important;
+  }
+
+  .btn-info {
+    background-color: #4e6570;
+    color: #fff;
+    border-color: #fff;
+    border-left-color: #4e6570;
+  }
+  .btn-info:hover {
+    color: #fff;
+    background-color: #394a52;
+    border-color: #394a52;
+  }
+
+  .btn-success {
+    background-color: #3bb643;
+    color: #fff;
+    border-color: #fff;
+    border-left-color: #27ff34;
+  }
+  /* .btn-info:hover {
+    color: #fff;
+    background-color: #394a52;
+    border-color: #394a52;
+  } */
+  
   .btn-pink {
     color: #fff;
     background-color: #4e6570;
     border-color: #fff;
     border-left-color: #4e6570;
   }
+
   
   .btn-pink:hover {
     color: #fff;

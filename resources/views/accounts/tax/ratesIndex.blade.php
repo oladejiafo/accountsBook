@@ -15,7 +15,7 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header" style="color: #4e4e4e; font-style: bold; font-size: 3rem;">Tax Rates</div>
-
+                    <p class="text-muted">Configure various tax rates for your business.</p>
                     <div class="card-body">
                         <!-- Nav tabs -->
                         
@@ -34,8 +34,8 @@
                                 <!-- Content for Business Taxes tab -->
                                 <a href="{{ route('tax-rates.create', ['tab' => 'Business']) }}" class="btn btn-success mb-3 ml-auto justify-content-end" style="float:right;">Create Business Tax Rate</a>
 
-                                <table class="table">
-                                    <thead>
+                                <table class="table table-css table-bordered table-hover">
+                                    <thead class="thead-dark align-middle">
                                         <tr>
                                             <th>Tax Name</th>
                                             <th>Tax Rate</th>
@@ -43,8 +43,12 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @if (!isset($taxRates) || $taxRates->isEmpty())
-                                            <p>No business tax rates found.</p>
+
+                                        @if ($taxRates->isEmpty() || $taxRates->every(fn($taxRate) => $taxRate->name === 'Income Tax' || $taxRate->name === 'Employee Tax' || Str::contains($taxRate->name, 'Income')))
+                                            <tr>
+                                                <td colspan="3">No business tax rates found.</td>
+                                            </tr>
+
                                         @else
                                             @foreach ($taxRates as $taxRate)
                                                 @if (isset($taxRates) && $taxRate->name !== 'Income Tax' && $taxRate->name !== 'Employee Tax' && !Str::contains($taxRate->name, 'Income'))
@@ -62,9 +66,9 @@
                                                     </tr>
                                                 @endif
                                             @endforeach
-                                        </tbody>
-                                    </table>
-                                @endif
+                                        @endif
+                                    </tbody>                                    
+                                </table>
                             </div>
                             <div class="tab-pane fade" id="employeeTaxes" role="tabpanel" aria-labelledby="employeeTaxes-tab">
                                 <!-- Content for Business Taxes tab -->
@@ -82,11 +86,15 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @if (!isset($taxRates) || $taxRates->isEmpty())
-                                            <p>No Employee Income tax rates found.</p>
+
+                                        @if ($taxRates->isEmpty() || $taxRates->every(fn($taxRate) => $taxRate->name !== 'Income Tax' && $taxRate->name !== 'Employee Tax' && !Str::contains($taxRate->name, 'Income')))
+                                            <tr>
+                                                <td colspan="6">No employee income tax rates found.</td>
+                                            </tr>
                                         @else
                                             @foreach ($taxRates as $taxRate)
-                                                @if (isset($taxRates) && ($taxRate->name == 'Income Tax' || $taxRate->name == 'Employee Tax' || Str::contains($taxRate->name, 'Income')))
+                                                @if ($taxRate->name === 'Income Tax' || $taxRate->name === 'Employee Tax' || Str::contains($taxRate->name, 'Income'))
+
                                                     <tr>
                                                         <td>{{ $taxRate->name }}</td>
                                                         <td>{{ $taxRate->rate }}</td>
@@ -104,9 +112,9 @@
                                                     </tr>
                                                 @endif
                                             @endforeach
-                                        </tbody>
-                                    </table>
-                                @endif
+                                        @endif
+                                    </tbody>                                    
+                                </table>
                             </div>
                         </div>
                     </div>

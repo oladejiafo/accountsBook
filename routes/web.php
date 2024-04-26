@@ -31,9 +31,14 @@ Route::post('/register/company', [RegisteredUserController::class, 'createCompan
 
 require __DIR__.'/auth.php';
 
-Route::get('/', [HomeController::class, 'index'])->name('home');
+######### DASHBOARDS
+Route::get('/inventoryInsights', [HomeController::class, 'index'])->name('home');
+
+Route::get('/dashboard', [AccountsController::class, 'dashboard'])->name('account.dashboard');
+
 
 Route::get('/about', [HomeController::class, 'about'])->name('about');
+
 
 ############ INVENTORY AND STOCKS
 Route::get('/inventory', [StockController::class, 'index'])->name('inventory');
@@ -103,11 +108,12 @@ Route::delete('/payments/{payment}', [TransactionsController::class, 'paymentsDe
 Route::get('/get-stock-details/{stock}', [TransactionsController::class, 'getStockDetails'])->name('stocks.details');
 
 ############# ACCOUNTS 
-
-Route::get('/account/dashboard', [AccountsController::class, 'dashboard'])->name('account.dashboard');
-
 Route::prefix('ledger')->group(function () {
     Route::get('/', [AccountsController::class, 'ledgerIndex'])->name('ledger.index');
+    Route::get('/general', [AccountsController::class, 'generalLedger'])->name('ledger.general_ledger');
+    Route::get('/accounts-receivable', [AccountsController::class, 'accountsReceivable'])->name('ledger.accounts_receivable_ledger');
+    Route::get('/accounts-payable', [AccountsController::class, 'accountsPayable'])->name('ledger.accounts_payable_ledger');
+    
 });
 
 Route::prefix('transactions')->group(function () {
@@ -147,9 +153,6 @@ Route::prefix('transfers')->group(function () {
     Route::get('/delete/{id}', [AccountsController::class, 'transfersDestroy'])->name('transfers.destroy');
 });
 
-Route::prefix('taxes')->group(function () {
-    // Define routes for taxes module
-});
 
 Route::get('/chart-of-accounts', [AccountsController::class, 'chartOfAccounts'])->name('chartOfAccounts');
 Route::post('/chart-of-accounts/upload', [AccountsController::class, 'uploadChartOfAccounts'])->name('chartOfAccounts.upload');
@@ -190,6 +193,42 @@ Route::prefix('tax')->group(function () {
     Route::put('/rates/{id}', [AccountsController::class, 'taxRatesUpdate'])->name('tax-rates.update');
     Route::delete('/rates/{id}', [AccountsController::class, 'taxRatesDestroy'])->name('tax-rates.destroy');
 
+    // Tax Transactions Routes
+    Route::get('/transactions', [AccountsController::class, 'taxTransactionsIndex'])->name('tax-transactions.index');
+    Route::get('/transactions/create', [AccountsController::class, 'taxTransactionsCreate'])->name('tax-transactions.create');
+    Route::post('/transactions', [AccountsController::class, 'taxTransactionsStore'])->name('tax-transactions.store');
+    Route::get('/transactions/{id}', [AccountsController::class, 'taxTransactionsShow'])->name('tax-transactions.show');
+    Route::get('/transactions/{id}/edit', [AccountsController::class, 'taxTransactionsEdit'])->name('tax-transactions.edit');
+    Route::put('/transactions/{id}', [AccountsController::class, 'taxTransactionsUpdate'])->name('tax-transactions.update');
+    Route::delete('/transactions/{id}', [AccountsController::class, 'taxTransactionsDestroy'])->name('tax-transactions.destroy');
+
+    // Tax Payments Routes
+    Route::get('/payments', [AccountsController::class, 'taxPaymentsIndex'])->name('tax-payments.index');
+    Route::get('/payments/create', [AccountsController::class, 'taxPaymentsCreate'])->name('tax-payments.create');
+    Route::post('/payments', [AccountsController::class, 'taxPaymentsStore'])->name('tax-payments.store');
+    Route::get('/payments/{id}', [AccountsController::class, 'taxPaymentsShow'])->name('tax-payments.show');
+    Route::get('/payments/{id}/edit', [AccountsController::class, 'taxPaymentsEdit'])->name('tax-payments.edit');
+    Route::put('/payments/{id}', [AccountsController::class, 'taxPaymentsUpdate'])->name('tax-payments.update');
+    Route::delete('/payments/{id}', [AccountsController::class, 'taxPaymentsDestroy'])->name('tax-payments.destroy');
+
+    // Tax Settings Routes
+    Route::get('/settings', [AccountsController::class, 'taxSettingsIndex'])->name('tax-settings.index');
+    Route::get('/settings/create', [AccountsController::class, 'taxSettingsCreate'])->name('tax-settings.create');
+    Route::post('/settings', [AccountsController::class, 'taxSettingsStore'])->name('tax-settings.store');
+    Route::get('/settings/{id}', [AccountsController::class, 'taxSettingsShow'])->name('tax-settings.show');
+    Route::get('/settings/{id}/edit', [AccountsController::class, 'taxSettingsEdit'])->name('tax-settings.edit');
+    Route::put('/settings/{id}', [AccountsController::class, 'taxSettingsUpdate'])->name('tax-settings.update');
+    Route::delete('/settings/{id}', [AccountsController::class, 'taxSettingsDestroy'])->name('tax-settings.destroy');
+    
+    // Tax Exemptions Routes
+    Route::get('/exemptions', [AccountsController::class, 'taxExemptionsIndex'])->name('tax-exemptions.index');
+    Route::get('/exemptions/create', [AccountsController::class, 'taxExemptionsCreate'])->name('tax-exemptions.create');
+    Route::post('/exemptions', [AccountsController::class, 'taxExemptionsStore'])->name('tax-exemptions.store');
+    Route::get('/exemptions/{id}', [AccountsController::class, 'taxExemptionsShow'])->name('tax-exemptions.show');
+    Route::get('/exemptions/{id}/edit', [AccountsController::class, 'taxExemptionsEdit'])->name('tax-exemptions.edit');
+    Route::put('/exemptions/{id}', [AccountsController::class, 'taxExemptionsUpdate'])->name('tax-exemptions.update');
+    Route::delete('/exemptions/{id}', [AccountsController::class, 'taxExemptionsDestroy'])->name('tax-exemptions.destroy');
+
     // Tax Authorities Routes
     Route::resource('authorities', 'AccountsController')->except(['show'])->names([
         'index' => 'tax-authorities.index',
@@ -209,57 +248,5 @@ Route::prefix('tax')->group(function () {
         'update' => 'tax-codes.update',
         'destroy' => 'tax-codes.destroy',
     ]);
-
-    // Tax Transactions Routes
-    Route::resource('transactions', 'AccountsController')->except(['show'])->names([
-        'index' => 'tax-transactions.index',
-        'create' => 'tax-transactions.create',
-        'store' => 'tax-transactions.store',
-        'edit' => 'tax-transactions.edit',
-        'update' => 'tax-transactions.update',
-        'destroy' => 'tax-transactions.destroy',
-    ]);
-
-    // Tax Forms Routes
-    Route::resource('forms', 'AccountsController')->except(['show'])->names([
-        'index' => 'tax-forms.index',
-        'create' => 'tax-forms.create',
-        'store' => 'tax-forms.store',
-        'edit' => 'tax-forms.edit',
-        'update' => 'tax-forms.update',
-        'destroy' => 'tax-forms.destroy',
-    ]);
-
-    // Tax Payments Routes
-    Route::resource('payments', 'AccountsController')->except(['show'])->names([
-        'index' => 'tax-payments.index',
-        'create' => 'tax-payments.create',
-        'store' => 'tax-payments.store',
-        'edit' => 'tax-payments.edit',
-        'update' => 'tax-payments.update',
-        'destroy' => 'tax-payments.destroy',
-    ]);
-
-    // Tax Settings Routes
-    Route::resource('settings', 'AccountsController')->except(['show'])->names([
-        'index' => 'tax-settings.index',
-        'create' => 'tax-settings.create',
-        'store' => 'tax-settings.store',
-        'edit' => 'tax-settings.edit',
-        'update' => 'tax-settings.update',
-        'destroy' => 'tax-settings.destroy',
-    ]);
-
-    // Tax Exemptions Routes
-    Route::resource('exemptions', 'AccountsController')->except(['show'])->names([
-        'index' => 'tax-exemptions.index',
-        'create' => 'tax-exemptions.create',
-        'store' => 'tax-exemptions.store',
-        'edit' => 'tax-exemptions.edit',
-        'update' => 'tax-exemptions.update',
-        'destroy' => 'tax-exemptions.destroy',
-    ]);
-
-    // Other custom routes can be defined here as needed
 });
 

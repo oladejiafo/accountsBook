@@ -85,6 +85,7 @@ class RegisteredUserController extends Controller
         $user->save();
 
         Auth::login($user);
+
         // Redirect to home or any other desired page
         return redirect(RouteServiceProvider::HOME);
     }

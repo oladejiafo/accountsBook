@@ -4,6 +4,11 @@
   color: inherit;
   text-decoration: none;
   transition: all 0.3s;
+  font-size: 1.1em !important;
+}
+
+.sidebar-text:hover{
+ opacity: .7;
 }
 
 #wrapper {
@@ -25,20 +30,19 @@
   color: #fff;
   transition: all 0.3s;
 }
-
-#scrollable-menu {
-  overflow-x: auto; /* Enable horizontal scrolling for the menu */
-  white-space: nowrap; /* Prevent menu items from wrapping to the next line */
-}
-
-
+.sidebar-text{ margin-left: .75rem;}
 .sidebar.active {
   margin-left: -250px;
 }
-
+#sidebar .logo{
+  max-width: 200px;
+}
 .sidebar-header {
   padding: 20px;
   background: #607d8b;
+  /* position: fixed; */
+  /* overflow: hidden; */
+  /* z-index: 50; */
 }
 
 .sidebar-components {
@@ -75,6 +79,7 @@ a.right-arrow[data-toggle="collapse"] {
 }
 
 .sidebar-subitem {
+  /* font-size: 0.9em !important; */
   font-size: 0.9em !important;
   padding-left: 30px !important;
   background: #3c515a;
@@ -102,6 +107,32 @@ a.nav-button {
   position: absolute;
   min-width: 250px;
   max-width: 250px;
+}
+
+/* Fixed sidebar header */
+.sidebar-header {
+  position: fixed;
+  top: 0;
+  z-index: 999; 
+  padding: 15px; 
+}
+
+#scrollable-menu {
+  margin-top: 45%;
+  white-space: nowrap; 
+  /* max-height: calc(100vh - 100px);  */
+  /* overflow-y: auto; */
+}
+
+/* #sidebar, */
+#scrollable-menu {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+}
+
+/* #sidebar::-webkit-scrollbar, */
+#scrollable-menu::-webkit-scrollbar {
+  display: none;
 }
 
 /* ---------------------------------------------------

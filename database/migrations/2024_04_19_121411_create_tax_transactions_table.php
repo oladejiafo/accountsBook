@@ -16,8 +16,8 @@ class CreateTaxTransactionsTable extends Migration
         Schema::create('tax_transactions', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('tax_code_id');
-            $table->unsignedBigInteger('tax_return_id');
-            $table->unsignedBigInteger('tax_rate_id');
+            $table->unsignedBigInteger('tax_return_id')->nullable();
+            $table->unsignedBigInteger('tax_rate_id')->nullable();
             $table->string('transaction_type');
             $table->decimal('amount', 15, 2);
             $table->unsignedBigInteger('company_id');

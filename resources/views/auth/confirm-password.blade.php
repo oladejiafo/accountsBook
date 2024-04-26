@@ -2,7 +2,7 @@
     <x-auth-card>
         <x-slot name="logo">
             <a href="/">
-                <img src="{{ asset('images/afriledger_logo.png') }}" classx="w-20 h-20" alt="Logo">
+                <img src="{{ asset('images/akontledger_logo.png') }}" classx="w-20 h-20" alt="Logo">
             </a>
         </x-slot>
 

@@ -17,6 +17,8 @@ class CreateTaxExemptionsTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('description')->nullable();
+            $table->date('valid_from')->nullable();
+            $table->date('valid_to')->nullable();
             $table->foreignId('company_id')->constrained('companies');
             $table->timestamps();
         });

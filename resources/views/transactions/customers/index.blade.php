@@ -22,15 +22,15 @@
                     <div class="input-group search">
                         <input type="text" name="search" class="form-control textinput" placeholder="Search for customers">
                         <div class="input-group-append">
-                        <button type="submit" class="btn btn-pink">Search</button>
+                        <button type="submit" class="btn btn-pink" style="border-radius:0 .5rem .5rem 0 !important">Search</button>
                         </div>
                     </div>
                 </form>
                 <br>
 
                 <div class="card-body">
-                    <table class="table">
-                        <thead>
+                    <table class="table table-css table-bordered table-hover">
+                        <thead class="thead-dark align-middle">
                             <tr>
                                 <th>Name</th>
                                 <th>Email</th>
