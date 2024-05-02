@@ -23,6 +23,8 @@ class User extends Authenticatable
         'password',
         'otp_expire_at',
         'otp',
+        'department_id',
+        'designation_id',
         'company_id',
         'remember_token',
         'token',
@@ -47,4 +49,23 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'otp_expire_at' => 'datetime',
     ];
+
+    // public function roles()
+    // {
+    //     return $this->morphToMany(Role::class, 'model', 'model_has_roles', 'model_id', 'role_id','company_id')
+    //             ->wherePivot('company_id', $this->company_id); 
+    // }
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class, 'model_has_roles', 'model_id', 'role_id');
+    }
+    public function department()
+    {
+        return $this->belongsTo(Department::class, 'department_id');
+    }
+
+    public function designation()
+    {
+        return $this->belongsTo(Designation::class, 'designation_id');
+    }
 }

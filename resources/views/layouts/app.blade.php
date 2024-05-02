@@ -228,7 +228,8 @@
                     <ul class="collapse list-unstyled" id="UserSubmenu">
                     
                             <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{% url 'admin:index' %}"><i class="fas fa-dot-circle"></i> Admin Page</a> </li>
-                            <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{% url 'admin:index' %}"><i class="fas fa-dot-circle"></i> User Management</a> </li>
+                            <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('users.index') }}"><i class="fas fa-dot-circle"></i> Users Management</a> </li>
+                            <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('roles.index') }}"><i class="fas fa-dot-circle"></i> Roles Management</a> </li>
                             <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{% url 'admin:index' %}"><i class="fas fa-dot-circle"></i> Backup & resore</a> </li>
                             <li>
                                 <form method="POST" action="{{ route('logout') }}">

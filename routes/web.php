@@ -36,8 +36,24 @@ Route::get('/inventoryInsights', [HomeController::class, 'index'])->name('home')
 
 Route::get('/dashboard', [AccountsController::class, 'dashboard'])->name('account.dashboard');
 
-
 Route::get('/about', [HomeController::class, 'about'])->name('about');
+
+########### User routes
+Route::get('/users', [HomeController::class, 'usersIndex'])->name('users.index');
+Route::get('/users/create', [HomeController::class, 'usersCreate'])->name('users.create');
+Route::post('/users', [HomeController::class, 'usersStore'])->name('users.store');
+Route::get('/users/{user}', [HomeController::class, 'usersShow'])->name('users.show');
+Route::get('/users/{user}/edit', [HomeController::class, 'usersEdit'])->name('users.edit');
+Route::put('/users/{user}', [HomeController::class, 'usersUpdate'])->name('users.update');
+Route::delete('/users/{user}', [HomeController::class, 'usersDestroy'])->name('users.destroy');
+
+########### User Roles routes
+Route::get('/roles', [HomeController::class, 'rolesIndex'])->name('roles.index');
+Route::get('/roles/create', [HomeController::class, 'rolesCreate'])->name('roles.create');
+Route::post('/roles', [HomeController::class, 'rolesStore'])->name('roles.store');
+Route::get('/roles/{id}/edit', [HomeController::class, 'rolesEdit'])->name('roles.edit');
+Route::put('/roles/{id}', [HomeController::class, 'rolesUpdate'])->name('roles.update');
+Route::delete('/roles/{id}', [HomeController::class, 'rolesDestroy'])->name('roles.destroy');
 
 
 ############ INVENTORY AND STOCKS
