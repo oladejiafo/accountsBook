@@ -53,22 +53,15 @@
         <nav id="sidebar">
 
             <div class="sidebar-header">
-<<<<<<< HEAD
-                <a class="navbar-brand titlefont mr-1" href="{{ route('home') }}">
-=======
                 <a class="navbar-brand titlefont mr-1" href="{{ route('account.dashboard') }}">
->>>>>>> 229249a2c87ac3fe42870104681ef7d6aacd12e4
+
                     <div class="logo-wrapper">
                         <img src="{{ asset('images/akontledger_logo_white.png') }}" class="logo" alt="Logo">
                     </div>
                 </a>
                 @if(isset($companyName))
                     <div class="navbar-brandc coyfont mr-1 text-center">
-<<<<<<< HEAD
-                        {{ $companyName }} 
-=======
                         {{ $companyName }}
->>>>>>> 229249a2c87ac3fe42870104681ef7d6aacd12e4
                     </div>
                 @endif  
             </div>
