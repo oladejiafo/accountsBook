@@ -242,6 +242,7 @@
                     <li> <a class="sidebar-text sidebar-subitemX sidebar-button" href="{% url 'admin:index' %}"><i class="fas fa-cogs"></i> Admin Page</a> </li>
                     <li> <a class="sidebar-text sidebar-subitemX sidebar-button" href="{{ route('users.index') }}"><i class="fas fa-users"></i> Users Management</a> </li>
                     <li> <a class="sidebar-text sidebar-subitemX sidebar-button" href="{{ route('roles.index') }}"><i class="fas fa-user-lock"></i> Roles Management</a> </li>
+                    <li> <a class="sidebar-text sidebar-subitemX sidebar-button" href="{{ route('role-permissions.index') }}"><i class="fas fa-user-lock"></i> Roles Permissions</a> </li>
                     <li> <a class="sidebar-text sidebar-subitemX sidebar-button" href="{% url 'admin:index' %}"><i class="fas fa-database"></i> Backup & restore</a> </li>
 
                 </li>
