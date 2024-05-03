@@ -54,6 +54,7 @@
 
             <div class="sidebar-header">
                 <a class="navbar-brand titlefont mr-1" href="{{ route('account.dashboard') }}">
+
                     <div class="logo-wrapper">
                         <img src="{{ asset('images/akontledger_logo_white.png') }}" class="logo" alt="Logo">
                     </div>
@@ -222,16 +223,12 @@
                 </li>
 
                 <li class="bottomleftx">
+                    <span class="sidebar-textx sidebar-button coyfont mr-4 mt-2">SETTINGS</span>
                     <a href="#UserSubmenu" data-toggle="collapse" class="dropdown-toggle sidebar-text right-arrow sidebar-button"><i class="fas fa-user-circle" style="margin-right: .75rem"></i> @if(request()->user())
                         <span> {{ request()->user()->name }}</span>
                     @endif
                     </a>
                     <ul class="collapse list-unstyled" id="UserSubmenu">
-                    
-                            <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{% url 'admin:index' %}"><i class="fas fa-dot-circle"></i> Admin Page</a> </li>
-                            <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('users.index') }}"><i class="fas fa-dot-circle"></i> Users Management</a> </li>
-                            <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('roles.index') }}"><i class="fas fa-dot-circle"></i> Roles Management</a> </li>
-                            <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{% url 'admin:index' %}"><i class="fas fa-dot-circle"></i> Backup & resore</a> </li>
                             <li>
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
@@ -242,6 +239,11 @@
                                 {{-- <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('logout') }}"><i class="fas fa-dot-circle"></i> Logout</a>  --}}
                             </li>
                     </ul>
+                    <li> <a class="sidebar-text sidebar-subitemX sidebar-button" href="{% url 'admin:index' %}"><i class="fas fa-cogs"></i> Admin Page</a> </li>
+                    <li> <a class="sidebar-text sidebar-subitemX sidebar-button" href="{{ route('users.index') }}"><i class="fas fa-users"></i> Users Management</a> </li>
+                    <li> <a class="sidebar-text sidebar-subitemX sidebar-button" href="{{ route('roles.index') }}"><i class="fas fa-user-lock"></i> Roles Management</a> </li>
+                    <li> <a class="sidebar-text sidebar-subitemX sidebar-button" href="{% url 'admin:index' %}"><i class="fas fa-database"></i> Backup & restore</a> </li>
+
                 </li>
            
 

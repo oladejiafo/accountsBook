@@ -49,7 +49,6 @@ class ChartImportClass implements ToModel, WithHeadingRow
             'code' => $row['code'],
             'category' => $row['category'],
             'type' => $row['type'],
-            'name' => $row['name'],
             'description' => $row['description'],
             'company_id' => $companyId,
         ]);
