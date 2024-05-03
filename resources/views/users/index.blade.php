@@ -73,8 +73,8 @@
         </tbody>
     </table>
     @if ($users->isNotEmpty())
-    <div class="pagination">
-        {{ $users->links() }}
-</div>
-@endif
+        <div class="pagination">
+            {{ $users->links() }}
+        </div>
+    @endif
 @endsection

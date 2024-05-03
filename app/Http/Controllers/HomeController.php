@@ -10,6 +10,8 @@ use App\Models\Role;
 use App\Models\Department;
 use App\Models\Designation;
 use App\Models\ModelHasRole;
+use App\Models\Permission;
+use App\Models\RolePermission;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -17,13 +19,16 @@ use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         // Check authentication and company identification
         if (!auth()->check() || !auth()->user()->company_id) {
             return redirect()->route('login')->with('error', 'Unauthorized access.');
         }
-
+        // dd($request->user()->hasPermission('account_view'));
+        if (!$request->user()->hasPermission('account_view')) {
+            abort(403, 'Unauthorized');
+        }
         $companyId = null;
         $companyName = null;
 
@@ -423,4 +428,138 @@ class HomeController extends Controller
         return redirect()->route('roles.index')->with('success', 'User Role deleted successfully.');
     }    
 
+    ///Roles Permissions
+    public function rolePermissionsIndex(Request $request)
+    {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }      
+        $companyId = auth()->user()->company_id;
+        //where('company_id', $companyId)->get();
+            // Fetch roles and permissions
+        $roles = Role::where('company_id', $companyId)->get();
+        $permissions = Permission::all();
+        // Create a query builder for RolePermission model
+        $rolePermissions = RolePermission::query()->where('company_id', $companyId);
+
+        // Handle search query if provided
+        $query = $request->input('search');
+        if ($query) {
+            $rolePermissions->where(function ($queryBuilder) use ($query) {
+                $queryBuilder
+                    ->orWhereHas('role', function ($roleQuery) use ($query) {
+                        $roleQuery->where('name', 'like', '%' . $query . '%');
+                    })
+                    ->orWhereHas('permission', function ($permissionQuery) use ($query) {
+                        $permissionQuery->where('name', 'like', '%' . $query . '%');
+                    });
+            });
+        }
+
+        // Execute the query and fetch the results
+        $rolePermissions = $rolePermissions->paginate(15);
+        // Define the $editing variable
+        $editing = false;
+        // $rolePermissions = RolePermission::where('company_id', $companyId)->get();
+        return view('role_permissions.index', compact('rolePermissions', 'roles', 'permissions','editing'));
+    }
+
+    public function rolePermissionCreate()
+    {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }      
+        $companyId = auth()->user()->company_id;
+        //where('company_id', $companyId)->get();
+        $roles = Role::where('company_id', $companyId)->get();
+        $permissions = Permission::all();
+        return view('role_permissions.create', compact('roles', 'permissions'));
+    }
+
+    public function rolePermissionStore(Request $request)
+    {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }      
+        $companyId = auth()->user()->company_id;
+        //where('company_id', $companyId)->get();
+
+        // Validate the request
+        $request->validate([
+            'role_id' => 'required',
+            'permission_id' => 'required',
+        ]);
+
+        // Create a new role permission
+        RolePermission::create([
+            'role_id' => $request->role_id,
+            'permission_id' => $request->permission_id,
+            'company_id' => auth()->user()->company_id,
+        ]);
+
+        return redirect()->route('role-permissions.index')->with('success', 'Role permission created successfully!');
+
+    }
+
+    public function rolePermissionEdit(RolePermission $rolePermission)
+    {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }      
+        $companyId = auth()->user()->company_id;
+        //where('company_id', $companyId)->get();
+
+        $roles = Role::where('company_id', $companyId)->get();
+        $permissions = Permission::all();
+        return view('role_permissions.edit', compact('rolePermission', 'roles', 'permissions'));
+    }
+
+    public function rolePermissionUpdate(Request $request, RolePermission $rolePermission)
+    {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }      
+        $companyId = auth()->user()->company_id;
+        //where('company_id', $companyId)->get();
+        
+        // Validate the request
+        $request->validate([
+            'role_id' => 'required',
+            'permission_id' => 'required',
+        ]);
+
+        // Update the role permission
+        $rolePermission->update([
+            'role_id' => $request->role_id,
+            'permission_id' => $request->permission_id,
+            'company_id' => auth()->user()->company_id,
+        ]);
+
+        return redirect()->route('role-permissions.index')->with('success', 'Role permission updated successfully!');
+    }
+
+    public function rolePermissionDestroy(RolePermission $rolePermission)
+    {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }      
+        $companyId = auth()->user()->company_id;
+
+        // Check if the role permission belongs to the authenticated user's company
+        if ($rolePermission->company_id !== auth()->user()->company_id) {
+            return redirect()->route('role-permissions.index')->with('error', 'Unauthorized access.');
+        }
+
+        // Delete the role permission
+        $rolePermission->delete();
+
+        // Redirect back with success message
+        return redirect()->route('role-permissions.index')->with('success', 'Role permission deleted successfully');
+    }
 }

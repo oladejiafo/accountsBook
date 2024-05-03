@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Dashboard')
-
+{{-- @can('dashboard_view') --}}
 @section('content')
 <style>
     .alert-custom {
@@ -170,3 +170,6 @@
 </script> --}}
 
 @endsection
+{{-- @else
+    <p>Sorry, you don't have permission to view this page.</p>
+@endcan --}}

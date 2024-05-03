@@ -203,6 +203,7 @@
                     </ul>
                 </li>
                 <!-- Grouping for Reports -->
+                @if(auth()->user()->hasPermission('dashboard_view'))
                 <li>
                     <span class="sidebar-textx sidebar-button coyfont mr-4 mt-2">REPORTS</span>
                     <ul class="list-unstyled">
@@ -215,7 +216,7 @@
                         </li>
                     </ul>
                 </li>
-
+                @endif
                 <li>
                     <a class="sidebar-text sidebar-button" href="{{ route('about') }}"><i class="fas fa-info-circle" style="margin-right: .75rem"></i> About</a>
                 </li>
