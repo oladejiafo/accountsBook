@@ -30,7 +30,7 @@
     <table class="table table-css table-bordered table-hover">
         <thead class="thead-dark align-middle">
                                 <tr>
-                                    <th>ID</th>
+                                    <!-- <th>ID</th> -->
                                     <th>Name</th>
                                     <th>Guard Name</th>
                                     <th>Actions</th>
@@ -39,7 +39,7 @@
                             <tbody>
                                 @foreach($roles as $role)
                                     <tr>
-                                        <td>{{ $role->id }}</td>
+                                        <!-- <td>{{ $role->id }}</td> -->
                                         <td>{{ $role->name }}</td>
                                         <td>{{ $role->guard_name }}</td>
                                         <td>

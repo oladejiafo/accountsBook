@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Role;
 use App\Models\Company;
+use App\Models\ModelHasRole;
 use App\Models\Currency;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
@@ -48,13 +50,14 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
+    // Store the user's email in session flash data
+    $request->session()->flash('user_email', $request->email);
 
-        event(new Registered($user));
-        $currencies = Currency::pluck('acronym', 'id'); 
-        // Auth::login($user);
+      event(new Registered($user));
 
-        // return redirect(RouteServiceProvider::HOME);
-        return view('auth.register-company', compact('currencies'));
+      $currencies = Currency::pluck('acronym', 'id'); 
+      return view('auth.register-company', compact('currencies'));
+
     }
 
     public function createCompany(Request $request)
@@ -79,10 +82,44 @@ class RegisteredUserController extends Controller
         // Add other company details as needed
         $company->save();
 
+        // Alternatively, re-fetch the company object from the database
+        $company = Company::where('name', $request->company_name)->first();
+        $companyId = $company->id;
+
+    // // Retrieve the user's email from session flash data
+    $userEmail = $request->session()->get('user_email');
+
+    // // Retrieve the user by email
+    $user = User::where('email', $userEmail)->firstOrFail();
+    if ($user) {
         // Associate the user with the company
-        $user = Auth::user();
-        $user->company_id = $company->id;
+        $user->company_id = $companyId;
         $user->save();
+    }
+ 
+
+    // if ($company->users()->count() == 1) {
+
+// Array of role names
+$roleNames = ['Super_Admin', 'Admin', 'Accountant', 'HR Manager'];
+
+// Create roles for the company
+foreach ($roleNames as $roleName) {
+    Role::create([
+        'name' => $roleName,
+        'guard_name' => 'web',
+        'company_id' => $company->id,
+    ]);
+}
+
+        // Map the "Super_Admin" role to the user
+        ModelHasRole::create([
+            'model_id' => $user->id,
+            'model_type' => User::class,
+            'role_id' => $superAdminRole->id,
+            'company_id' => $company->id,
+        ]);
+    // }
 
         Auth::login($user);
 

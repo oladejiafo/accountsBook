@@ -39,9 +39,9 @@ Route::get('/about', [HomeController::class, 'about'])->name('about');
 
 Route::middleware('auth')->group(function () {
     ######### DASHBOARDS
-    Route::get('/inventoryInsights', [HomeController::class, 'index'])->name('home')->middleware('can:account_view');
+    Route::get('/inventoryInsights', [HomeController::class, 'index'])->name('home');
     
-    Route::get('/dashboard', [AccountsController::class, 'dashboard'])->name('account.dashboard')->middleware('can:dashboard_view');
+    Route::get('/dashboard', [AccountsController::class, 'dashboard'])->name('account.dashboard');
 
     ########### User routes
     Route::get('/users', [HomeController::class, 'usersIndex'])->name('users.index');

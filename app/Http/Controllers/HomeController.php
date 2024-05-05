@@ -25,10 +25,20 @@ class HomeController extends Controller
         if (!auth()->check() || !auth()->user()->company_id) {
             return redirect()->route('login')->with('error', 'Unauthorized access.');
         }
-        // dd($request->user()->hasPermission('account_view'));
-        if (!$request->user()->hasPermission('account_view')) {
-            abort(403, 'Unauthorized');
-        }
+
+// // For other users, check individual permission
+// if (!$request->user()->hasPermission('account_insight_view')) {
+//     abort(403, 'Unauthorized');
+// }
+$userPermissionsAndRoles = $request->user()->hasPermission('account_insight_view');
+
+$permissions = $userPermissionsAndRoles['permissions'];
+$roles = $userPermissionsAndRoles['roles'];
+// dd($roles);
+if (!$permissions->contains('account_insight_view') && !in_array('Super_Admin', array_values($roles))) {
+    abort(403, 'Unauthorized');
+}
+
         $companyId = null;
         $companyName = null;
 

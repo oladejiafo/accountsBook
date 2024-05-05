@@ -201,6 +201,7 @@ class AccountsController extends Controller
             return redirect()->route('login')->with('error', 'Unauthorized access.');
         }      
         $companyId = auth()->user()->company_id;
+
         if (!$request->user()->hasPermission('ledger_view')) {
             abort(403, 'Unauthorized');
         }
@@ -317,6 +318,9 @@ class AccountsController extends Controller
         }      
         $companyId = auth()->user()->company_id;
 
+        if (!$request->user()->hasPermission('ledger_view')) {
+            abort(403, 'Unauthorized');
+        }
         
         // Fetch account categories
         $accountCategories = AccountsCategory::all(); // Assuming AccountCategory is your model for account categories
@@ -430,6 +434,9 @@ class AccountsController extends Controller
         }      
         $companyId = auth()->user()->company_id;
     
+        if (!$request->user()->hasPermission('ledger_view')) {
+            abort(403, 'Unauthorized');
+        }
         // Fetch account categories
         $accountCategories = AccountsCategory::all(); // Assuming AccountCategory is your model for account categories
     
@@ -524,6 +531,9 @@ class AccountsController extends Controller
         }      
         $companyId = auth()->user()->company_id;
     
+        if (!$request->user()->hasPermission('ledger_view')) {
+            abort(403, 'Unauthorized');
+        }
         // Fetch account categories
         $accountCategories = AccountsCategory::all(); // Assuming AccountCategory is your model for account categories
 
