@@ -37,6 +37,8 @@ Route::get('/about', [HomeController::class, 'about'])->name('about');
 //     Route::get('/dashboard', [AccountsController::class, 'dashboard'])->name('account.dashboard')->middleware('can:dashboard_view');
 // });
 
+Route::get('/global-search', [HomeController::class, 'globalSearch'])->name('global.search');
+
 Route::middleware('auth')->group(function () {
     ######### DASHBOARDS
     Route::get('/inventoryInsights', [HomeController::class, 'index'])->name('home');

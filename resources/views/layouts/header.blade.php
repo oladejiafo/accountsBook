@@ -34,19 +34,18 @@
 
 <!-- Centered Search bar -->
 <div class="text-center col-6">
-<form class="form-inline">
-    <div class="input-group">
-        <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
-        <div class="input-group-prepend">
-            <a href="{{ route('account.dashboard') }}" class="input-group-text" id="basic-addon1">
-                <i class="fas fa-search"></i>
-            </a>
+    <form class="form-inline" action="{{ route('global.search') }}" method="GET">
+        <div class="input-group">
+            <input type="text" class="form-control" name="query" placeholder="Search" aria-label="Search" aria-describedby="basic-addon1">
+            <div class="input-group-prepend">
+                <button type="submit" class="input-group-text" id="basic-addon1">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
         </div>
-    </div>
-</form>
-
-
+    </form>
 </div>
+
 
 <!-- User info and logout button -->
 <div class="user-info-container col-3">
@@ -234,6 +233,12 @@
 
                 <li class="bottomleftx">
                     <span class="sidebar-textx sidebar-button coyfont mr-4 mt-2">SETTINGS</span>
+                    
+                    <li> <a class="sidebar-text sidebar-subitemX sidebar-button" href="{% url 'admin:index' %}"><i class="fas fa-cogs"></i> Admin Page</a> </li>
+                    <li> <a class="sidebar-text sidebar-subitemX sidebar-button" href="{{ route('users.index') }}"><i class="fas fa-users"></i> Users Management</a> </li>
+                    <li> <a class="sidebar-text sidebar-subitemX sidebar-button" href="{{ route('roles.index') }}"><i class="fas fa-user-lock"></i> Roles Management</a> </li>
+                    <li> <a class="sidebar-text sidebar-subitemX sidebar-button" href="{{ route('role-permissions.index') }}"><i class="fas fa-user-lock"></i> Roles Permissions</a> </li>
+                    <li> <a class="sidebar-text sidebar-subitemX sidebar-button" href="{% url 'admin:index' %}"><i class="fas fa-database"></i> Backup & restore</a> </li>
                     <a href="#UserSubmenu" data-toggle="collapse" class="dropdown-toggle sidebar-text right-arrow sidebar-button"><i class="fas fa-user-circle" style="margin-right: .75rem"></i> @if(request()->user())
                         <span> {{ request()->user()->name }}</span>
                     @endif
@@ -248,11 +253,6 @@
                                 </form>
                             </li>
                     </ul>
-                    <li> <a class="sidebar-text sidebar-subitemX sidebar-button" href="{% url 'admin:index' %}"><i class="fas fa-cogs"></i> Admin Page</a> </li>
-                    <li> <a class="sidebar-text sidebar-subitemX sidebar-button" href="{{ route('users.index') }}"><i class="fas fa-users"></i> Users Management</a> </li>
-                    <li> <a class="sidebar-text sidebar-subitemX sidebar-button" href="{{ route('roles.index') }}"><i class="fas fa-user-lock"></i> Roles Management</a> </li>
-                    <li> <a class="sidebar-text sidebar-subitemX sidebar-button" href="{{ route('role-permissions.index') }}"><i class="fas fa-user-lock"></i> Roles Permissions</a> </li>
-                    <li> <a class="sidebar-text sidebar-subitemX sidebar-button" href="{% url 'admin:index' %}"><i class="fas fa-database"></i> Backup & restore</a> </li>
 
                 </li>
         
