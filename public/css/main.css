@@ -278,6 +278,7 @@
     font-family: Audiowide;
   }
   .coyfont {
+    /*color: #000;*/
     color: #dee1e4;
     font-family: Audiowide;
   }
@@ -577,3 +578,5 @@
 .btn-toggle[aria-pressed="true"] .handle {
     transform: translateX(26px);
 }
+
+

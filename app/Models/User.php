@@ -54,22 +54,25 @@ class User extends Authenticatable
 
     public function hasPermission(string $permission)
     {
+
         // Fetch all roles associated with the user
-        $roles = $this->roles()->pluck('id')->toArray();
+        $roles = $this->roles()->pluck('name', 'id')->toArray();
 
         // Fetch permissions associated with these roles within the context of the user's company
         $permissions = RolePermission::join('permissions', 'role_permissions.permission_id', '=', 'permissions.id')
                         ->join('roles', 'role_permissions.role_id', '=', 'roles.id')
-                        ->whereIn('role_permissions.role_id', $roles) // Filter by user's roles
-                        ->where('role_permissions.company_id', 1)
+                        ->whereIn('role_permissions.role_id', array_keys($roles)) // Filter by user's roles
+                        ->where('role_permissions.company_id', auth()->user()->company_id)
                         ->distinct()
                         ->pluck('permissions.name');
         // dd($permissions);
 
         // Check if the given permission exists in the derived permissions
-        return $permissions->contains($permission);
+        // return $permissions->contains($permission);
+        return ['permissions' => $permissions, 'roles' => $roles];
 
-    }
+
+    } 
 
     public function roles()
     {

@@ -7,6 +7,7 @@ use App\Models\SaleBill;
 use App\Models\PurchaseBill;
 use App\Models\User;
 use App\Models\Role;
+use App\Models\Transaction;
 use App\Models\Department;
 use App\Models\Designation;
 use App\Models\ModelHasRole;
@@ -25,10 +26,20 @@ class HomeController extends Controller
         if (!auth()->check() || !auth()->user()->company_id) {
             return redirect()->route('login')->with('error', 'Unauthorized access.');
         }
-        // dd($request->user()->hasPermission('account_view'));
-        if (!$request->user()->hasPermission('account_view')) {
-            abort(403, 'Unauthorized');
-        }
+
+// // For other users, check individual permission
+// if (!$request->user()->hasPermission('account_insight_view')) {
+//     abort(403, 'Unauthorized');
+// }
+$userPermissionsAndRoles = $request->user()->hasPermission('account_insight_view');
+
+$permissions = $userPermissionsAndRoles['permissions'];
+$roles = $userPermissionsAndRoles['roles'];
+// dd($roles);
+if (!$permissions->contains('account_insight_view') && !in_array('Super_Admin', array_values($roles))) {
+    abort(403, 'Unauthorized');
+}
+
         $companyId = null;
         $companyName = null;
 
@@ -74,6 +85,64 @@ class HomeController extends Controller
             ->get();
         // dd($purchases,$sales);
         return view('home.inventoryInsights', compact('labels', 'data','catt', 'sales', 'purchases', 'companyName'));
+    }
+
+    public function globalSearch(Request $request)
+    {
+        $query = $request->input('query');
+
+        // Search Users
+        $users = User::where('name', 'like', "%$query%")->limit(5)->get();
+        
+        // Search Transactions
+        $transactions = Transaction::where('description', 'like', "%$query%")->limit(5)->get();
+
+        // // Search Sales
+        // $sales = Sale::where('product_name', 'like', "%$query%")->limit(5)->get();
+
+        // // Search Supplier Purchases
+        // $supplierPurchases = Purchase::where('product_name', 'like', "%$query%")->limit(5)->get();
+
+        // Combine search results from different models into a single array
+        $searchResults = [];
+        
+        // Users
+        foreach ($users as $user) {
+            $searchResults[] = [
+                'type' => 'User',
+                'name' => $user->name,
+                'link' => route('users.show', $user->id), // Example link to user profile
+            ];
+        }
+
+        // Transactions
+        foreach ($transactions as $transaction) {
+            $searchResults[] = [
+                'type' => 'Transaction',
+                'description' => $transaction->description,
+                'link' => route('transactions.index', $transaction->id), // Example link to transaction detail
+            ];
+        }
+
+        // // Sales
+        // foreach ($sales as $sale) {
+        //     $searchResults[] = [
+        //         'type' => 'Sale',
+        //         'product_name' => $sale->product_name,
+        //         'link' => route('sale.detail', $sale->id), // Example link to sale detail
+        //     ];
+        // }
+
+        // // Supplier Purchases
+        // foreach ($supplierPurchases as $purchase) {
+        //     $searchResults[] = [
+        //         'type' => 'Supplier Purchase',
+        //         'product_name' => $purchase->product_name,
+        //         'link' => route('supplier.purchase.detail', $purchase->id), // Example link to supplier purchase detail
+        //     ];
+        // }
+
+        return response()->json($searchResults);
     }
 
     public function about()

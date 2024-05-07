@@ -17,13 +17,13 @@ class PermissionSeeder extends Seeder
     {
         // Define permissions for Insight Module
         $this->createPermissions('Insight Module', [
-            ['name' => 'insight_view', 'label' => 'View Insight Module'],
-            ['name' => 'account_view', 'label' => 'View Account Insight'],
-            ['name' => 'inventory_view', 'label' => 'View Inventory Insight'],
-            ['name' => 'sales_view', 'label' => 'View Sales Insight'],
-            ['name' => 'payment_view', 'label' => 'View Payment Insight'],
-            ['name' => 'assets_view', 'label' => 'View Assets Insight'],
-            ['name' => 'employee_view', 'label' => 'View Employee Insights'],
+            ['name' => 'dashboard_view', 'label' => 'View Insight Module'],
+            ['name' => 'account_insight_view', 'label' => 'View Account Insight'],
+            ['name' => 'inventory_insight_view', 'label' => 'View Inventory Insight'],
+            ['name' => 'sales_insight_view', 'label' => 'View Sales Insight'],
+            ['name' => 'payment_insight_view', 'label' => 'View Payment Insight'],
+            ['name' => 'assets_insight_view', 'label' => 'View Assets Insight'],
+            ['name' => 'employee_insight_view', 'label' => 'View Employee Insights'],
         ]);
 
         // Define permissions for Accounts Module
@@ -63,7 +63,7 @@ class PermissionSeeder extends Seeder
             ['name' => 'sales_order_view', 'label' => 'View Sales Orders'],
             ['name' => 'payment_view', 'label' => 'View Payments'],
             ['name' => 'sales_return_view', 'label' => 'View Sales Returns'],
-            ['name' => 'invoice_view', 'label' => 'View Invoices'],
+            ['name' => 'reciept_view', 'label' => 'View Invoices'],
             // Add other permissions as needed
         ]);
 
@@ -93,16 +93,6 @@ class PermissionSeeder extends Seeder
             ['name' => 'assign_permissions_view', 'label' => 'View Assign Permissions to Roles'],
             ['name' => 'backup_restore_view', 'label' => 'View Backup/Restore'],
             // Add other permissions as needed
-        ]);
-
-        // Define permissions for Insight Module - Edit
-        $this->createPermissions('Insight Module', [
-            ['name' => 'account_edit', 'label' => 'Edit Account Dashboard'],
-            ['name' => 'inventory_edit', 'label' => 'Edit Inventory Insight'],
-            ['name' => 'sales_edit', 'label' => 'Edit Sales Insight'],
-            ['name' => 'payment_edit', 'label' => 'Edit Payment Insight'],
-            ['name' => 'assets_edit', 'label' => 'Edit Assets Insight'],
-            ['name' => 'employee_edit', 'label' => 'Edit Employee Insights'],
         ]);
 
         // Define permissions for Accounts Module - Export, Create, Edit, Delete
