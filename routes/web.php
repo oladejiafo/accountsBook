@@ -70,6 +70,9 @@ Route::middleware('auth')->group(function () {
     Route::put('/role-permissions/update/{rolePermission}', [HomeController::class, 'rolePermissionUpdate'])->name('role-permissions.update');
     Route::delete('/role-permissions/delete/{rolePermission}', [HomeController::class, 'rolePermissionDestroy'])->name('role-permissions.destroy');
 
+    Route::get('/get-sub-modules/{moduleId}', [HomeController::class, 'getSubModules']);
+
+
     ############ INVENTORY AND STOCKS
     Route::get('/inventory', [StockController::class, 'index'])->name('inventory');
     Route::get('/stock/new', [StockController::class, 'create'])->name('new-stock');

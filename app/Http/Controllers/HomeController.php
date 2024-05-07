@@ -13,6 +13,8 @@ use App\Models\Designation;
 use App\Models\ModelHasRole;
 use App\Models\Permission;
 use App\Models\RolePermission;
+use App\Models\Module;
+use App\Models\SubModule;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -27,18 +29,14 @@ class HomeController extends Controller
             return redirect()->route('login')->with('error', 'Unauthorized access.');
         }
 
-// // For other users, check individual permission
-// if (!$request->user()->hasPermission('account_insight_view')) {
-//     abort(403, 'Unauthorized');
-// }
-$userPermissionsAndRoles = $request->user()->hasPermission('account_insight_view');
+        // $userPermissionsAndRoles = $request->user()->hasPermission('view');
 
-$permissions = $userPermissionsAndRoles['permissions'];
-$roles = $userPermissionsAndRoles['roles'];
-// dd($roles);
-if (!$permissions->contains('account_insight_view') && !in_array('Super_Admin', array_values($roles))) {
-    abort(403, 'Unauthorized');
-}
+        // $permissions = $userPermissionsAndRoles['permissions'];
+        // $roles = $userPermissionsAndRoles['roles'];
+
+        // if (!$permissions->contains('view') && !in_array('Super_Admin', array_values($roles))) {
+        //     abort(403, 'Unauthorized');
+        // }
 
         $companyId = null;
         $companyName = null;
@@ -533,44 +531,70 @@ if (!$permissions->contains('account_insight_view') && !in_array('Super_Admin', 
         // $rolePermissions = RolePermission::where('company_id', $companyId)->get();
         return view('role_permissions.index', compact('rolePermissions', 'roles', 'permissions','editing'));
     }
-
+    
     public function rolePermissionCreate()
     {
         // Check authentication and company identification
         if (!auth()->check() || !auth()->user()->company_id) {
             return redirect()->route('login')->with('error', 'Unauthorized access.');
         }      
-        $companyId = auth()->user()->company_id;
-        //where('company_id', $companyId)->get();
-        $roles = Role::where('company_id', $companyId)->get();
+        
+        // Load roles and permissions
+        $roles = Role::where('company_id', auth()->user()->company_id)->get();
         $permissions = Permission::all();
-        return view('role_permissions.create', compact('roles', 'permissions'));
+        
+        // Load modules and sub-modules
+        $modules = Module::all();
+        $subModules = SubModule::all();
+        
+        return view('role_permissions.create', compact('roles', 'permissions', 'modules', 'subModules'));
     }
-
+    
     public function rolePermissionStore(Request $request)
     {
         // Check authentication and company identification
         if (!auth()->check() || !auth()->user()->company_id) {
             return redirect()->route('login')->with('error', 'Unauthorized access.');
-        }      
-        $companyId = auth()->user()->company_id;
-        //where('company_id', $companyId)->get();
-
+        }
+    
         // Validate the request
         $request->validate([
             'role_id' => 'required',
-            'permission_id' => 'required',
+            'permission_id' => 'required|array',
+            'module_id' => 'required',
+            'sub_module_id' => 'required',
         ]);
-
-        // Create a new role permission
-        RolePermission::create([
-            'role_id' => $request->role_id,
-            'permission_id' => $request->permission_id,
-            'company_id' => auth()->user()->company_id,
-        ]);
-
-        return redirect()->route('role-permissions.index')->with('success', 'Role permission created successfully!');
-
+    
+        // Retrieve the selected permissions, module, and sub-module IDs from the request
+        $permissions = $request->input('permission_id', []);
+        $moduleId = $request->module_id;
+        $subModuleId = $request->sub_module_id;
+    
+        // Loop through each combination of permission_id and create a new role permission
+        foreach ($permissions as $permissionId) {
+            RolePermission::create([
+                'role_id' => $request->role_id,
+                'permission_id' => $permissionId,
+                'module_id' => $moduleId,
+                'sub_module_id' => $subModuleId,
+                'company_id' => auth()->user()->company_id,
+            ]);
+        }
+    
+        return redirect()->route('role-permissions.index')->with('success', 'Role permissions created successfully!');
+    }
+    
+    
+    
+    
+    
+    public function getSubModules($moduleId)
+    {
+        // Retrieve sub-modules for the selected module
+        $subModules = SubModule::where('module_id', $moduleId)->pluck('name', 'id')->toArray();
+    
+        // Return the sub-modules as JSON response
+        return response()->json($subModules);
     }
 
     public function rolePermissionEdit(RolePermission $rolePermission)

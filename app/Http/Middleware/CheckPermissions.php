@@ -36,13 +36,13 @@ class CheckPermissions
            
             // Check if the authenticated user has any of the required permissions
             foreach ($permissions as $permission) {
-                // dd($request->user(), $request->user()->hasPermission($permission));
-                if ($request->user()->hasPermission($permission)) {
-                    // dd('hi');
+                // Pass the permission, module ID, and submodule ID to the hasPermission method
+                if ($request->user()->hasPermission($permission, $request->input('moduleId'), $request->input('subModuleId'))) {
                     // User has permission, allow the request to proceed
                     return $next($request);
                 }
             }
+
     
             // If none of the required permissions are found, abort the request with a 403 Forbidden response
             abort(403, 'Unauthorized');

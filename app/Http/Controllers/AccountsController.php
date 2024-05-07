@@ -45,9 +45,20 @@ class AccountsController extends Controller
         }      
         $companyId = auth()->user()->company_id;
         // where('company_id', $companyId)->
-        if (!$request->user()->hasPermission('dashboard_view')) {
+
+        $userPermissionsAndRoles = $request->user()->hasPermission('view', $request->input('moduleId'), $request->input('subModuleId'));
+
+        // dd($request->input('moduleId'));
+       
+        $permissions = $userPermissionsAndRoles['permissions'];
+        $roles = $userPermissionsAndRoles['roles'];
+        
+        // Check if the user has permission to view the module and submodule
+        if (!$permissions->contains('view') && !in_array('Super_Admin', array_values($roles))) {
             abort(403, 'Unauthorized');
         }
+        
+
         // Get real-time values for financial metrics
         $income = $this->getIncome();
         $expenses = $this->getExpenses();
@@ -202,9 +213,17 @@ class AccountsController extends Controller
         }      
         $companyId = auth()->user()->company_id;
 
-        if (!$request->user()->hasPermission('ledger_view')) {
+        $userPermissionsAndRoles = $request->user()->hasPermission('view', $request->input('moduleId'), $request->input('subModuleId'));
+
+        $permissions = $userPermissionsAndRoles['permissions'];
+        $roles = $userPermissionsAndRoles['roles'];
+        
+        // Check if the user has permission to view the module and submodule
+        if (!$permissions->contains('view') && !in_array('Super_Admin', array_values($roles))) {
             abort(403, 'Unauthorized');
         }
+        
+
         // Fetch account categories
         $accountCategories = AccountsCategory::all(); // Assuming AccountCategory is your model for account categories
 
@@ -318,10 +337,17 @@ class AccountsController extends Controller
         }      
         $companyId = auth()->user()->company_id;
 
-        if (!$request->user()->hasPermission('ledger_view')) {
+        $userPermissionsAndRoles = $request->user()->hasPermission('view', $request->input('moduleId'), $request->input('subModuleId'));
+
+        $permissions = $userPermissionsAndRoles['permissions'];
+        $roles = $userPermissionsAndRoles['roles'];
+        
+        // Check if the user has permission to view the module and submodule
+        if (!$permissions->contains('view') && !in_array('Super_Admin', array_values($roles))) {
             abort(403, 'Unauthorized');
         }
         
+
         // Fetch account categories
         $accountCategories = AccountsCategory::all(); // Assuming AccountCategory is your model for account categories
 
@@ -434,9 +460,18 @@ class AccountsController extends Controller
         }      
         $companyId = auth()->user()->company_id;
     
-        if (!$request->user()->hasPermission('ledger_view')) {
+
+        $userPermissionsAndRoles = $request->user()->hasPermission('view', $request->input('moduleId'), $request->input('subModuleId'));
+
+        $permissions = $userPermissionsAndRoles['permissions'];
+        $roles = $userPermissionsAndRoles['roles'];
+        
+        // Check if the user has permission to view the module and submodule
+        if (!$permissions->contains('view') && !in_array('Super_Admin', array_values($roles))) {
             abort(403, 'Unauthorized');
         }
+        
+
         // Fetch account categories
         $accountCategories = AccountsCategory::all(); // Assuming AccountCategory is your model for account categories
     
@@ -531,9 +566,18 @@ class AccountsController extends Controller
         }      
         $companyId = auth()->user()->company_id;
     
-        if (!$request->user()->hasPermission('ledger_view')) {
+
+        $userPermissionsAndRoles = $request->user()->hasPermission('view', $request->input('moduleId'), $request->input('subModuleId'));
+
+        $permissions = $userPermissionsAndRoles['permissions'];
+        $roles = $userPermissionsAndRoles['roles'];
+        
+        // Check if the user has permission to view the module and submodule
+        if (!$permissions->contains('view') && !in_array('Super_Admin', array_values($roles))) {
             abort(403, 'Unauthorized');
         }
+        
+
         // Fetch account categories
         $accountCategories = AccountsCategory::all(); // Assuming AccountCategory is your model for account categories
 

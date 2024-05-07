@@ -42,6 +42,7 @@
 
 #sidebar .logo{
   max-width: 200px;
+  margin-left: 1rem;
 }
 .sidebar-header {
   padding: 20px;
@@ -186,7 +187,8 @@ a.nav-button {
     .user-info a {
         text-decoration: none;
         color: #333;
-        display: flex;
+        font-size: 1.5rem;
+        /* display: flex; */
         align-items: center;
     }
     .user-info a:hover {

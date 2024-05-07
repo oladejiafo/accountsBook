@@ -64,25 +64,25 @@
                     </select>
                 </div>
                 
-<div class="form-group">
-    <label for="roles">Roles:</label><br>
-    @php $counter = 0 @endphp
-    @foreach($roles as $role)
-        @if($counter % 2 == 0)
-            <div class="row mb-2">
-        @endif
-        <div class="col-md-6">
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="role_{{ $role->id }}" name="roles[]" value="{{ $role->id }}">
-                <label class="form-check-label ml-3" style="margin-top: -5px;" for="role_{{ $role->id }}">{{ $role->name }}</label>
-            </div>
-        </div>
-        @if($counter % 2 != 0 || $loop->last)
-            </div>
-        @endif
-        @php $counter++ @endphp
-    @endforeach
-</div>
+                <div class="form-group">
+                    <label for="roles">Roles:</label><br>
+                    @php $counter = 0 @endphp
+                    @foreach($roles as $role)
+                        @if($counter % 2 == 0)
+                            <div class="row mb-2">
+                        @endif
+                        <div class="col-md-6">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="role_{{ $role->id }}" name="roles[]" value="{{ $role->id }}">
+                                <label class="form-check-label ml-3" style="margin-top: -5px;" for="role_{{ $role->id }}">{{ $role->name }}</label>
+                            </div>
+                        </div>
+                        @if($counter % 2 != 0 || $loop->last)
+                            </div>
+                        @endif
+                        @php $counter++ @endphp
+                    @endforeach
+                </div>
 
 
                 <br>
