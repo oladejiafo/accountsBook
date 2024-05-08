@@ -221,7 +221,7 @@ class AccountsController extends Controller
 
         // Fetch account categories
         $accountCategories = AccountsCategory::all(); // Assuming AccountCategory is your model for account categories
-
+// dd(auth()->user()->hasPermission('transactions.index'));
         // Initialize variables
         $keyword = $request->input('keyword');
         $searchAccount = $request->input('search_account');

@@ -96,8 +96,8 @@
                 </ul>
             </li>
             
-            @can('view', $transaction)
-            <!-- Grouping for Accounts -->
+@if(auth()->user()->hasPermission('transactions.index'))
+
             <li>
                 <span class="sidebar-textx sidebar-button coyfont mr-4 mt-0">ACCOUNTS</span>
                 <ul class="list-unstyled">
@@ -136,8 +136,8 @@
                                     List Transactions</a> </li>
                         </ul>
                     </li>
-                    @endcan
-                    @if (Auth::user()->cannot('view', $transaction))
+@endif
+@if(auth()->user()->hasPermission('tax.index'))
                     <li>
                         <a href="#taxSubmenu" data-toggle="collapse"
                             class="dropdown-toggle sidebar-text right-arrow sidebar-button"><i
@@ -163,7 +163,8 @@
                             {{-- <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('tax-codes.index') }}"><i class="fas fa-dot-circle  fa-fw"></i> Tax Codes</a> </li> --}}
                         </ul>
                     </li>
-                    @endcannot
+@endif
+
                     <li>
                         <a href="#chartSubmenu" data-toggle="collapse"
                             class="dropdown-toggle sidebar-text right-arrow sidebar-button"><i

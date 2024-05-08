@@ -16,6 +16,12 @@ class TransactionPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
+    public function access(User $user)
+    {
+        // Check if the user has access to the accounting module
+        return $user->can('transactions.index');
+    }
+
     public function viewAny(User $user)
     {
         if ($user->isSuperAdmin()) {

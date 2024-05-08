@@ -68,16 +68,16 @@ class User extends Authenticatable
         $companyId = auth()->user()->company_id;
 
         // Fetch all roles associated with the user within the context of the user's company
-        $roles = $this->roles()->where('company_id', $companyId)->pluck('id')->toArray();
+        $roles = $this->roles()->where('roles.company_id', $companyId)->pluck('id')->toArray();
     
         // Fetch permissions associated with these roles
         $permissions = RolePermission::join('permissions', 'role_permissions.permission_id', '=', 'permissions.id')
                         ->join('roles', 'role_permissions.role_id', '=', 'roles.id')
-                        ->whereIn('role_permissions.role_id', array_keys($roles))
+                        ->whereIn('role_permissions.role_id', $roles)
                         ->where('role_permissions.company_id', $companyId)
                         ->distinct()
                         ->pluck('permissions.name');
-    
+    // dd($permissions);
         return $permissions->contains($permission);
     }
     

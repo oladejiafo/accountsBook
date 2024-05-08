@@ -561,8 +561,8 @@ class HomeController extends Controller
         $request->validate([
             'role_id' => 'required',
             'permission_id' => 'required|array',
-            'module_id' => 'required',
-            'sub_module_id' => 'required',
+            // 'module_id' => 'required',
+            // 'sub_module_id' => 'required',
         ]);
     
         // Retrieve the selected permissions, module, and sub-module IDs from the request
@@ -575,8 +575,8 @@ class HomeController extends Controller
             RolePermission::create([
                 'role_id' => $request->role_id,
                 'permission_id' => $permissionId,
-                'module_id' => $moduleId,
-                'sub_module_id' => $subModuleId,
+                // 'module_id' => $moduleId,
+                // 'sub_module_id' => $subModuleId,
                 'company_id' => auth()->user()->company_id,
             ]);
         }

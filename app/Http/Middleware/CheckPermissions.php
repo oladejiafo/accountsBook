@@ -36,7 +36,7 @@ class CheckPermissions
                             ->where('role_permissions.company_id', $companyId)
                             ->distinct()
                             ->pluck('permissions.name');
-           
+// dd($permissions);  
             // Check if the permission for the current route exists among the user's permissions
             $routeName = $request->route()->getName();
             $hasPermission = $permissions->contains($routeName);
