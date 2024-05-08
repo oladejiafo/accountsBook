@@ -1,8 +1,9 @@
 <?php
-namespace Database\Seeders;
 
+namespace Database\Seeders;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
+use App\Models\Permission;
+use Illuminate\Support\Facades\Route;
 
 class PermissionSeeder extends Seeder
 {
@@ -13,36 +14,18 @@ class PermissionSeeder extends Seeder
      */
     public function run()
     {
-        $modules = [
-            'Insight Module',
-            'Accounts Module',
-            'Banking Module',
-            'Inventories Module',
-            'Customer Module',
-            'HR Module',
-            'Report Module',
-            'Admin Settings Module',
-        ];
+        // Get all registered routes
+        $routes = collect(Route::getRoutes())->map->getName()->reject(function ($name) {
+            return is_null($name); // Filter out routes with no name
+        })->unique();
 
-        $permissions = ['view', 'edit', 'create', 'delete', 'export'];
-
-        foreach ($modules as $module) {
-            foreach ($permissions as $permission) {
-                $this->createPermission($permission, $module);
-            }
+        // Create permissions based on route names
+        foreach ($routes as $routeName) {
+            Permission::create([
+                'name' => $routeName,
+                'label' => 'Access ' . $routeName, // You can adjust the label as needed
+                'module' => 'General', // Adjust the module name if necessary
+            ]);
         }
-    }
-
-    protected function createPermission($permission, $module)
-    {
-        $permissionLabel = ucfirst($permission) . ' ' . $module;
-
-        DB::table('permissions')->insert([
-            'name' => $permission,
-            'label' => $permissionLabel,
-            'module' => $module,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
     }
 }

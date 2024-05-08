@@ -95,6 +95,8 @@
                         <li><a class="sidebar-text sidebar-button" href="#"><i class="fas fa-chart-line fa-fw" style="margin-right: .75rem"></i> Employee Insights</a></li> --}}
                 </ul>
             </li>
+            
+            @can('view', $transaction)
             <!-- Grouping for Accounts -->
             <li>
                 <span class="sidebar-textx sidebar-button coyfont mr-4 mt-0">ACCOUNTS</span>
@@ -134,6 +136,8 @@
                                     List Transactions</a> </li>
                         </ul>
                     </li>
+                    @endcan
+                    @if (Auth::user()->cannot('view', $transaction))
                     <li>
                         <a href="#taxSubmenu" data-toggle="collapse"
                             class="dropdown-toggle sidebar-text right-arrow sidebar-button"><i
@@ -159,7 +163,7 @@
                             {{-- <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('tax-codes.index') }}"><i class="fas fa-dot-circle  fa-fw"></i> Tax Codes</a> </li> --}}
                         </ul>
                     </li>
-
+                    @endcannot
                     <li>
                         <a href="#chartSubmenu" data-toggle="collapse"
                             class="dropdown-toggle sidebar-text right-arrow sidebar-button"><i
@@ -328,7 +332,7 @@
                 <a class="sidebar-text sidebar-button" href="{{ route('about') }}"><i class="fas fa-info-circle"
                         style="margin-right: .75rem"></i> About</a>
             </li>
-
+            @if (Auth::user()->hasRole('Super_Admin') || Auth::user()->hasRole('Admin'))
             <li class="bottomleftx">
                 <span class="sidebar-textx sidebar-button coyfont mr-4 mt-2">SETTINGS</span>
 
@@ -343,6 +347,7 @@
                     Permissions</a> </li>
             <li> <a class="sidebar-text sidebar-subitemX sidebar-button" href="{% url 'admin:index' %}"><i
                         class="fas fa-database"></i> Backup & restore</a> </li>
+            @endif
             <a href="#UserSubmenu" data-toggle="collapse"
                 class="dropdown-toggle sidebar-text right-arrow sidebar-button"><i class="fas fa-user-circle"
                     style="margin-right: .75rem"></i>

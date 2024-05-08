@@ -33,12 +33,14 @@ use App\Imports\BankImportClass;
 use Maatwebsite\Excel\Facades\Excel;
 // use Spatie\SimpleExcel\SimpleExcelReader;
 use Carbon\Carbon;
-
+use App\Policies\DynamicAuthorizationPolicy;
+use App\Policies\UserPolicy;
+use App\Models\User;
 
 class AccountsController extends Controller
 {
     public function dashboard(Request $request)
-    {
+    { 
         // Check authentication and company identification
         if (!auth()->check() || !auth()->user()->company_id) {
             return redirect()->route('login')->with('error', 'Unauthorized access.');
@@ -46,17 +48,21 @@ class AccountsController extends Controller
         $companyId = auth()->user()->company_id;
         // where('company_id', $companyId)->
 
-        $userPermissionsAndRoles = $request->user()->hasPermission('view', $request->input('moduleId'), $request->input('subModuleId'));
+        // Authorize using a policy
+        // $user = auth()->user();
+        // $this->authorize('viewAny', $user);
 
-        // dd($request->input('moduleId'));
+        // $userPermissionsAndRoles = $request->user()->hasPermission('view', $request->input('moduleId'), $request->input('subModuleId'));
+
+        // // dd($request->input('moduleId'));
        
-        $permissions = $userPermissionsAndRoles['permissions'];
-        $roles = $userPermissionsAndRoles['roles'];
+        // $permissions = $userPermissionsAndRoles['permissions'];
+        // $roles = $userPermissionsAndRoles['roles'];
         
-        // Check if the user has permission to view the module and submodule
-        if (!$permissions->contains('view') && !in_array('Super_Admin', array_values($roles))) {
-            abort(403, 'Unauthorized');
-        }
+        // // Check if the user has permission to view the module and submodule
+        // if (!$permissions->contains('view') && !in_array('Super_Admin', array_values($roles))) {
+        //     abort(403, 'Unauthorized');
+        // }
         
 
         // Get real-time values for financial metrics
@@ -213,17 +219,6 @@ class AccountsController extends Controller
         }      
         $companyId = auth()->user()->company_id;
 
-        $userPermissionsAndRoles = $request->user()->hasPermission('view', $request->input('moduleId'), $request->input('subModuleId'));
-
-        $permissions = $userPermissionsAndRoles['permissions'];
-        $roles = $userPermissionsAndRoles['roles'];
-        
-        // Check if the user has permission to view the module and submodule
-        if (!$permissions->contains('view') && !in_array('Super_Admin', array_values($roles))) {
-            abort(403, 'Unauthorized');
-        }
-        
-
         // Fetch account categories
         $accountCategories = AccountsCategory::all(); // Assuming AccountCategory is your model for account categories
 
@@ -337,16 +332,6 @@ class AccountsController extends Controller
         }      
         $companyId = auth()->user()->company_id;
 
-        $userPermissionsAndRoles = $request->user()->hasPermission('view', $request->input('moduleId'), $request->input('subModuleId'));
-
-        $permissions = $userPermissionsAndRoles['permissions'];
-        $roles = $userPermissionsAndRoles['roles'];
-        
-        // Check if the user has permission to view the module and submodule
-        if (!$permissions->contains('view') && !in_array('Super_Admin', array_values($roles))) {
-            abort(403, 'Unauthorized');
-        }
-        
 
         // Fetch account categories
         $accountCategories = AccountsCategory::all(); // Assuming AccountCategory is your model for account categories
@@ -461,15 +446,15 @@ class AccountsController extends Controller
         $companyId = auth()->user()->company_id;
     
 
-        $userPermissionsAndRoles = $request->user()->hasPermission('view', $request->input('moduleId'), $request->input('subModuleId'));
+        // $userPermissionsAndRoles = $request->user()->hasPermission('view', $request->input('moduleId'), $request->input('subModuleId'));
 
-        $permissions = $userPermissionsAndRoles['permissions'];
-        $roles = $userPermissionsAndRoles['roles'];
+        // $permissions = $userPermissionsAndRoles['permissions'];
+        // $roles = $userPermissionsAndRoles['roles'];
         
-        // Check if the user has permission to view the module and submodule
-        if (!$permissions->contains('view') && !in_array('Super_Admin', array_values($roles))) {
-            abort(403, 'Unauthorized');
-        }
+        // // Check if the user has permission to view the module and submodule
+        // if (!$permissions->contains('view') && !in_array('Super_Admin', array_values($roles))) {
+        //     abort(403, 'Unauthorized');
+        // }
         
 
         // Fetch account categories
@@ -567,15 +552,15 @@ class AccountsController extends Controller
         $companyId = auth()->user()->company_id;
     
 
-        $userPermissionsAndRoles = $request->user()->hasPermission('view', $request->input('moduleId'), $request->input('subModuleId'));
+        // $userPermissionsAndRoles = $request->user()->hasPermission('view', $request->input('moduleId'), $request->input('subModuleId'));
 
-        $permissions = $userPermissionsAndRoles['permissions'];
-        $roles = $userPermissionsAndRoles['roles'];
+        // $permissions = $userPermissionsAndRoles['permissions'];
+        // $roles = $userPermissionsAndRoles['roles'];
         
-        // Check if the user has permission to view the module and submodule
-        if (!$permissions->contains('view') && !in_array('Super_Admin', array_values($roles))) {
-            abort(403, 'Unauthorized');
-        }
+        // // Check if the user has permission to view the module and submodule
+        // if (!$permissions->contains('view') && !in_array('Super_Admin', array_values($roles))) {
+        //     abort(403, 'Unauthorized');
+        // }
         
 
         // Fetch account categories
@@ -841,7 +826,7 @@ class AccountsController extends Controller
         // Ensure the company_id is set correctly
         $validatedData['company_id'] = auth()->user()->company_id;
     
-        $transaction = Transaction::where('company_id', $companyId)->findOrFail($id);
+        $transaction = Transaction::where('company_id', auth()->user()->company_id)->findOrFail($id);
         $transaction->update($validatedData);
     
         // Redirect back to the index page with a success message

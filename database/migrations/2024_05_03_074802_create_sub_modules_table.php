@@ -15,12 +15,9 @@ class CreateSubModulesTable extends Migration
     {
         Schema::create('sub_modules', function (Blueprint $table) {
             $table->id();
-            // $table->unsignedBigInteger('company_id');
             $table->unsignedBigInteger('module_id');
             $table->string('name');
-            // Add other fields as needed
             $table->timestamps();
-            // $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
             $table->foreign('module_id')->references('id')->on('modules')->onDelete('cascade');
         });
     }

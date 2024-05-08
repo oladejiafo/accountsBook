@@ -39,7 +39,7 @@ Route::get('/about', [HomeController::class, 'about'])->name('about');
 
 Route::get('/global-search', [HomeController::class, 'globalSearch'])->name('global.search');
 
-Route::middleware('auth')->group(function () {
+Route::middleware('auth', 'check.permissions')->group(function () {
     ######### DASHBOARDS
     Route::get('/inventoryInsights', [HomeController::class, 'index'])->name('home');
     

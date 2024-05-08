@@ -68,8 +68,9 @@
                     <!-- Show save button -->
                     <button class="btn btn-success">Save</button>
                 @else
-                    <!-- Show edit button -->
+                  
                     <a href="{{ route('role-permissions.edit', $rolePermission->id) }}" class="btn btn-info"><i class="fas fa-edit"></i></a>
+                    
                 @endif
     
                 <!-- Delete button always shown -->

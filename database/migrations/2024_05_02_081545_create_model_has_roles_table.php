@@ -18,10 +18,7 @@ class CreateModelHasRolesTable extends Migration
             $table->unsignedBigInteger('model_id');
             $table->string('model_type');
             $table->unsignedBigInteger('company_id'); 
-            // $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');
             $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
-            // Consider if you really need to include company_id in the primary key
-            // $table->primary(['role_id', 'model_id', 'model_type', 'company_id']);
             $table->primary(['role_id', 'model_id', 'model_type', 'company_id']);
             $table->timestamps();
         });

@@ -6,6 +6,8 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Permission;
+use App\Models\RolePermission;
+use Illuminate\Support\Facades\Route;
 
 class CheckPermissions
 {
@@ -16,40 +18,35 @@ class CheckPermissions
      * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-    public function handle(Request $request, Closure $next)
-    {
-        // Check if the user is authenticated
-        // if (!Auth::check()) {
-        //     // Exclude the login route from redirection
-        //     if ($request->routeIs('login')) {
-        //         return $next($request);
-        //     }
-            
-        //     // User is not authenticated, redirect to login page
-        //     return redirect()->route('login');
-        // }
-    
-        // Check if the user has permissions only for routes that require authentication
-        if ($request->route() && $request->user()) {
-            // Get all permissions from the database
-            $permissions = Permission::pluck('name')->toArray();
-           
-            // Check if the authenticated user has any of the required permissions
-            foreach ($permissions as $permission) {
-                // Pass the permission, module ID, and submodule ID to the hasPermission method
-                if ($request->user()->hasPermission($permission, $request->input('moduleId'), $request->input('subModuleId'))) {
-                    // User has permission, allow the request to proceed
-                    return $next($request);
-                }
-            }
 
-    
-            // If none of the required permissions are found, abort the request with a 403 Forbidden response
-            abort(403, 'Unauthorized');
+    public function handle($request, Closure $next)
+    { 
+        if ($request->user()) {
+
+            $user = $request->user();
+
+            $companyId = auth()->user()->company_id;
+
+            // Fetch all roles associated with the user within the context of the user's company
+            $roles = $user->roles()->where('roles.company_id', $companyId)->pluck('id')->toArray();
+
+            // Fetch permissions associated with these roles
+            $permissions = RolePermission::join('permissions', 'role_permissions.permission_id', '=', 'permissions.id')
+                            ->whereIn('role_permissions.role_id', $roles)
+                            ->where('role_permissions.company_id', $companyId)
+                            ->distinct()
+                            ->pluck('permissions.name');
+           
+            // Check if the permission for the current route exists among the user's permissions
+            $routeName = $request->route()->getName();
+            $hasPermission = $permissions->contains($routeName);
+            
+            if ($user && (!$hasPermission && !$user->hasRole('Super_Admin'))) {
+                abort(403, 'Unauthorized');
+            }
+        
         }
-    
-        // For routes that don't require authentication, proceed without permission checks
         return $next($request);
     }
-    
+
 }

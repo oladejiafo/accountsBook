@@ -13,4 +13,8 @@ class Module extends Model
         'name',
         // Add other fillable attributes as needed
     ];
+    public function subModules()
+    {
+        return $this->hasMany(SubModule::class);
+    }
 }

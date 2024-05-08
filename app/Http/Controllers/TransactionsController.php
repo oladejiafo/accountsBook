@@ -17,6 +17,7 @@ use App\Models\ReturnProduct;
 use App\Models\Customer;
 use App\Models\Payment;
 use App\Models\Bank;
+use App\Models\User;
 use App\Models\Transaction;
 use App\Models\TransactionType;
 use App\Models\TransactionAccountMapping;

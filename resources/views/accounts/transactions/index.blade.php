@@ -10,7 +10,7 @@
         <div class="col-md-6">
             <div style="float:right;" class="d-flex justify-content-end mt-3">
                 <div>
-                    <a href="{{ route('transactions.create') }}" class="btn btn-success mb-3">Create Transaction</a>
+                    @can('create',\App\Models\Transaction::class)<a href="{{ route('transactions.create') }}" class="btn btn-success mb-3">Create Transaction</a>@endcan
                 </div>
             </div>
         </div>
@@ -50,12 +50,17 @@
                 <td>{{ $transaction->description }}</td>
                 <td>{{ number_format($transaction->amount,2) }}</td>
                 <td>
-                    <a href="{{ route('transactions.edit', $transaction->id) }}" class="btn btn-sm btn-info">Edit</a>
+                    
+                    @can('update',$transaction)
+                      <a href="{{ route('transactions.edit', $transaction->id) }}" class="btn btn-sm btn-info">Edit</a>
+                    @endcan
+                    @can('delete',$transaction)
                     <form action="{{ route('transactions.destroy', $transaction->id) }}" method="POST" style="display: inline-block;">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this record?')">Delete</button>
                     </form>
+                    @endcan
                 </td>
             </tr>
             @endforeach

@@ -2,12 +2,16 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\Gate;
+
 use Illuminate\Support\Facades\View;
 use App\Models\Company;
 use App\Models\Currency;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Schema;
+use App\Policies\DynamicAuthorizationPolicy;
+use App\Models\User;
 
 
 class AppServiceProvider extends ServiceProvider
@@ -29,6 +33,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Gate::policy(User::class, DynamicAuthorizationPolicy::class);
+
         Schema::defaultStringLength(191);
 
         View::composer('*', function ($view) {

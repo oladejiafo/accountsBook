@@ -15,11 +15,8 @@ class CreateModulesTable extends Migration
     {
         Schema::create('modules', function (Blueprint $table) {
             $table->id();
-            // $table->unsignedBigInteger('company_id');
-            $table->string('name');
-            // Add other fields as needed
+            $table->string('name')->unique();
             $table->timestamps();
-            // $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
         });
     }
 

@@ -13,4 +13,9 @@ class SubModule extends Model
         'name',
         // Add other fillable attributes as needed
     ];
+
+    public function module()
+    {
+        return $this->belongsTo(Module::class);
+    }
 }
