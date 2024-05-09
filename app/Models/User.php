@@ -86,10 +86,6 @@ class User extends Authenticatable
     {
         return $this->hasRole('Super_Admin');
     }
-    public function isAccountant()
-    {
-        return $this->hasRole('Accountant');
-    }
 
     public function department()
     {

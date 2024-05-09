@@ -7,8 +7,8 @@
   font-size: 1.1em !important;
 }
 
-.sidebar-text:hover{
- opacity: .7;
+.sidebar-text:hover {
+  opacity: .7;
 }
 
 #wrapper {
@@ -30,20 +30,27 @@
   color: #fff;
   transition: all 0.3s;
 }
-.sidebar-text{ margin-left: .75rem;}
+
+.sidebar-text {
+  margin-left: .75rem;
+}
+
 .sidebar.active {
   margin-left: -250px;
 }
-     .logo-wrapper {
-        max-width: 100%;
-        height: auto;
-        color: inherit; /* Ensure the logo inherits the color of its parent */
-    }
 
-#sidebar .logo{
+.logo-wrapper {
+  max-width: 100%;
+  height: auto;
+  color: inherit;
+  /* Ensure the logo inherits the color of its parent */
+}
+
+#sidebar .logo {
   max-width: 200px;
   margin-left: 1rem;
 }
+
 .sidebar-header {
   padding: 20px;
   background: #607d8b;
@@ -71,12 +78,12 @@
 }
 
 #dropdown-toggler::after {
-    display: inline-block !important;
-    top: 0 !important;
-    right: 0 !important;
-    position: relative !important;
-    width: 10px;
-    color: #333;
+  display: inline-block !important;
+  top: 0 !important;
+  right: 0 !important;
+  position: relative !important;
+  width: 10px;
+  color: #333;
 }
 
 
@@ -135,77 +142,98 @@ a.nav-button {
 .sidebar-header {
   position: fixed;
   top: 0;
-  z-index: 999; 
-  padding: 15px; 
+  z-index: 999;
+  padding: 0px;
 
-        width: 101%;
-        background-color: #fff;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 10px 10px;
-    }
-    .sidebar-header .navbar-brand {
-        display: inline-block;
-    }
-    .sidebar-header .navbar-brandc {
-        display: inline-block;
-        margin-left: 10px;
-    }
-    .sidebar-header .navbar-brand img {
-        max-width: 100%;
-        height: auto;
-    }
+  width: 101%;
+  background-color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.01), 0px 0px 0px 0.5px #dbdbdb;
+  
+
+  padding: 10px 0px;
+}
+
+.sidebar-header .navbar-brand {
+  display: inline-block;
+}
+
+.sidebar-header .navbar-brandc {
+  display: inline-block;
+  margin-left: 10px;
+}
+
+.sidebar-header .navbar-brand img {
+  max-width: 100%;
+  height: auto;
+}
 
 .sidebar-header-left {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* background-color: #BFBFBF; */
 }
 
 #scrollable-menu {
-  margin-top: 45%;
-  white-space: nowrap; 
+  margin-top: 30%;
+  white-space: nowrap;
   /* max-height: calc(100vh - 100px);  */
   /* overflow-y: auto; */
 }
 
 /* #sidebar, */
 #scrollable-menu {
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE 10+ */
+  scrollbar-width: none;
+  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE 10+ */
 }
 
 /* #sidebar::-webkit-scrollbar, */
 #scrollable-menu::-webkit-scrollbar {
   display: none;
 }
-    .user-info {
-        display: flex;
-        align-items: center;
-    }
-    .user-info a {
-        text-decoration: none;
-        color: #333;
-        font-size: 1.5rem;
-        /* display: flex; */
-        align-items: center;
-    }
-    .user-info a:hover {
-        text-decoration: underline;
-    }
+
+.user-info {
+  display: flex;
+  align-items: center;
+}
+
+.user-info a {
+  text-decoration: none;
+  color: #333;
+  font-size: 1.5rem;
+  /* display: flex; */
+  align-items: center;
+}
+
+.user-info a:hover {
+  text-decoration: underline;
+}
+
 .user-info-container {
-    position: absolute;
-    width: 130px;
-    top: 10px;
-    right: 10px;
-    z-index: 999; /* Ensure it's above other elements */
+  position: absolute;
+  width: 200px;
+  top: 10px;
+  right: 10px;
+  z-index: 999;
+}
+
+.menutitlefont {
+  font-size: 1.0rem;
+  color: #BFBFBF;
+  font-family: Audiowide;
 }
 
 
 .navbar-brandc {
-    margin-top: 5px; /* Adjust as needed */
+  margin-top: 5px;
+  /* Adjust as needed */
 }
+
 /* ---------------------------------------------------
     CONTENT STYLE
 ----------------------------------------------------- */
@@ -226,9 +254,11 @@ a.nav-button {
   #sidebar {
     margin-left: -250px;
   }
+
   #sidebar.active {
     margin-left: 0;
   }
+
   #sidebarCollapse span {
     display: none;
   }

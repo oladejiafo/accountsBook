@@ -19,6 +19,7 @@ use App\Models\SubModule;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Collection;
 
 class HomeController extends Controller
 {
@@ -525,7 +526,7 @@ class HomeController extends Controller
         }
 
         // Execute the query and fetch the results
-        $rolePermissions = $rolePermissions->paginate(15);
+        $rolePermissions = $rolePermissions->get();
         // Define the $editing variable
         $editing = false;
         // $rolePermissions = RolePermission::where('company_id', $companyId)->get();

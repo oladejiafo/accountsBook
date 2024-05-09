@@ -70,7 +70,7 @@ Route::middleware('auth', 'check.permissions')->group(function () {
     Route::put('/role-permissions/update/{rolePermission}', [HomeController::class, 'rolePermissionUpdate'])->name('role-permissions.update');
     Route::delete('/role-permissions/delete/{rolePermission}', [HomeController::class, 'rolePermissionDestroy'])->name('role-permissions.destroy');
 
-    Route::get('/get-sub-modules/{moduleId}', [HomeController::class, 'getSubModules']);
+    Route::get('/get-sub-modules/{moduleId}', [HomeController::class, 'getSubModules'])->name('getSubModules');
 
 
     ############ INVENTORY AND STOCKS

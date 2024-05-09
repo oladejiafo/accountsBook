@@ -9,66 +9,30 @@ use Illuminate\Auth\Access\HandlesAuthorization;
 class TransactionPolicy
 {
     use HandlesAuthorization;
-
-    /**
-     * Determine whether the user can view any models.
-     *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
-    public function access(User $user)
-    {
-        // Check if the user has access to the accounting module
-        return $user->can('transactions.index');
-    }
-
     public function viewAny(User $user)
     {
-        if ($user->isSuperAdmin()) {
+        if ($user->hasRole('Super_Admin')) {
             return true;
         }
-        return (bool) $user->isAccountant();
-
-    //     $company = $user->company;
-    //     if (!$company) {
-    //         return false; // Or handle the scenario accordingly
-    //     }
-
-    //     // Fetch roles and permissions dynamically based on the company
-    //     $roles = $company->roles;
-    //     $permissions = $company->permissions;
-
-    //     // Check if the user has any of the required roles or permissions
-    //     foreach ($roles as $role) {
-    //         if ($user->hasRole($role->name)) {
-    //             return true;
-    //         }
-    //     }
-    //     foreach ($permissions as $permission) {
-    //         if ($user->hasPermission($permission->name)) {
-    //             return true;
-    //         }
-    //     }
-
-    //     return false;
-    // }
+    
+        // Get all roles of the user
+        $roles = $user->roles->pluck('name')->toArray();
+    
+        // Custom logic based on roles and company context
+        foreach ($roles as $role) {
+            if ($this->canViewForRole($role)) {
+                return true;
+            }
+        }
+    
+        return false;
     }
-
-    /**
-     * Determine whether the user can view the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Transaction  $transaction
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
+    
     public function view(User $user, Transaction $transaction)
     {
-        if ($user->isSuperAdmin()) {
-            return true;
-        }
-        return (bool) $user->isAccountant();
+        return (bool) $user->hasRole('Super_Admin') ||  $user->hasPermission('transactions.index');
     }
-
+    
     /**
      * Determine whether the user can create models.
      *
@@ -77,7 +41,7 @@ class TransactionPolicy
      */
     public function create(User $user)
     {
-        return (bool) $user->isAccountant();
+        return (bool) $user->hasRole('Super_Admin') ||  $user->hasPermission('transactions.create');
     }
 
     /**
@@ -89,7 +53,7 @@ class TransactionPolicy
      */
     public function update(User $user, Transaction $transaction)
     {
-        return (bool) $user->isAccountant();
+        return (bool) $user->hasRole('Super_Admin') ||  $user->hasPermission('transactions.update');
     }
 
     /**
@@ -101,7 +65,7 @@ class TransactionPolicy
      */
     public function delete(User $user, Transaction $transaction)
     {
-        return (bool) $user->isAccountant();
+        return (bool) $user->hasRole('Super_Admin') ||  $user->hasPermission('transactions.destroy');
     }
 
     /**

@@ -21,6 +21,15 @@ class AuthServiceProvider extends ServiceProvider
     protected $policies = [
         User::class => UserPolicy::class,
         Transaction::class => TransactionPolicy::class,
+        Supplier::class => SupplierPolicy::class, 
+        Stock::class => StockPolicy::class, 
+        SaleBill::class => SaleBillPolicy::class, 
+        Role::class => RolePolicy::class, 
+        RolePermission::class => RolePermissionPolicy::class, 
+        PurchaseBill::class => PurchaseBillPolicy::class, 
+        Payment::class => PaymentPolicy::class, 
+        Customer::class => CustomerPolicy::class, 
+        ChartOfAccount::class => ChartOfAccountPolicy::class,
         // 'App\Models\User' => 'App\Policies\DynamicAuthorizationPolicy',
     ];
 
@@ -32,8 +41,6 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
-        // Gate::policy(DynamicAuthorizationPolicy::class, DynamicAuthorizationPolicy::class);
 
-        // \Log::info('DynamicAuthorizationPolicy registered successfully.');
     }
 }

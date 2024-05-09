@@ -2,10 +2,11 @@
 
 namespace App\Policies;
 
+use App\Models\Payment;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class UserPolicy
+class PaymentPolicy
 {
     use HandlesAuthorization;
 
@@ -15,32 +16,21 @@ class UserPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    
     public function viewAny(User $user)
     {
-        return (bool) $user->hasRole('Super_Admin') 
-        || $user->hasPermission('account.dashboard')
-        || $user->hasPermission('home')
-        || $user->hasPermission('users.index')
-        || $user->hasPermission('users.show')
-        ;
+        //
     }
 
     /**
      * Determine whether the user can view the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\User  $model
+     * @param  \App\Models\Payment  $payment
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, User $model)
+    public function view(User $user, Payment $payment)
     {
-        return (bool) $user->hasRole('Super_Admin') 
-        || $user->hasPermission('account.dashboard')
-        || $user->hasPermission('home')
-        || $user->hasPermission('users.index')
-        || $user->hasPermission('users.show')
-        ;
+        //
     }
 
     /**
@@ -51,47 +41,41 @@ class UserPolicy
      */
     public function create(User $user)
     {
-        return (bool) $user->hasRole('Super_Admin') 
-        || $user->hasPermission('users.create')
-        ;
+        //
     }
 
     /**
      * Determine whether the user can update the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\User  $model
+     * @param  \App\Models\Payment  $payment
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, User $model)
+    public function update(User $user, Payment $payment)
     {
-        return (bool) $user->hasRole('Super_Admin') 
-        || $user->hasPermission('users.update')
-        ;
+        //
     }
 
     /**
      * Determine whether the user can delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\User  $model
+     * @param  \App\Models\Payment  $payment
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user, User $model)
+    public function delete(User $user, Payment $payment)
     {
-        return (bool) $user->hasRole('Super_Admin') 
-        || $user->hasPermission('users.destroy')
-        ;
+        //
     }
 
     /**
      * Determine whether the user can restore the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\User  $model
+     * @param  \App\Models\Payment  $payment
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function restore(User $user, User $model)
+    public function restore(User $user, Payment $payment)
     {
         //
     }
@@ -100,10 +84,10 @@ class UserPolicy
      * Determine whether the user can permanently delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\User  $model
+     * @param  \App\Models\Payment  $payment
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function forceDelete(User $user, User $model)
+    public function forceDelete(User $user, Payment $payment)
     {
         //
     }
