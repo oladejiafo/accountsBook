@@ -18,7 +18,9 @@ class PaymentPolicy
      */
     public function viewAny(User $user)
     {
-        //
+        return (bool) $user->hasRole('Super_Admin') 
+        || $user->hasPermission('payments.index')
+        ;
     }
 
     /**
@@ -30,7 +32,9 @@ class PaymentPolicy
      */
     public function view(User $user, Payment $payment)
     {
-        //
+        return (bool) $user->hasRole('Super_Admin') 
+        || $user->hasPermission('payments.index')
+        ;
     }
 
     /**
@@ -41,7 +45,9 @@ class PaymentPolicy
      */
     public function create(User $user)
     {
-        //
+        return (bool) $user->hasRole('Super_Admin') 
+        || $user->hasPermission('payments.create')
+        ;
     }
 
     /**
@@ -53,7 +59,9 @@ class PaymentPolicy
      */
     public function update(User $user, Payment $payment)
     {
-        //
+        return (bool) $user->hasRole('Super_Admin') 
+        || $user->hasPermission('payments.update')
+        ;
     }
 
     /**
@@ -65,7 +73,9 @@ class PaymentPolicy
      */
     public function delete(User $user, Payment $payment)
     {
-        //
+        return (bool) $user->hasRole('Super_Admin') 
+        || $user->hasPermission('payments.destroy')
+        ;
     }
 
     /**

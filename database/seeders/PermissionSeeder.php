@@ -32,7 +32,6 @@ class PermissionSeeder extends Seeder
             'autocomplete.customers',
             'global.search',
             'reconciliation.match',
-            'returns.process', 
             'verification.notice',
             'verification.send',
             'verification.verify',
@@ -57,9 +56,9 @@ class PermissionSeeder extends Seeder
         
             // Replace "index" with "View"
             $label = str_replace(' Index', ' View', $label);
-    
-            // Replace "destroy" with "delete"
-            $routeName = str_replace('destroy', 'delete', $routeName);
+            $label = str_replace(' Destroy', ' Delete', $label);
+            $label = str_replace(' Show', ' Display', $label);
+
         
             Permission::create([
                 'name' => $routeName,
@@ -73,7 +72,7 @@ class PermissionSeeder extends Seeder
     private function shouldSkip($routeName)
     {
         // Exempt routes ending with "edit" or "store"
-        if (Str::endsWith($routeName, ['edit', 'store','show','edit-stock', 'store-stock'])) {
+        if (Str::endsWith($routeName, ['edit', 'store','edit-stock', 'store-stock'])) {
             return true;
         }
     

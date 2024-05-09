@@ -18,7 +18,9 @@ class SaleBillPolicy
      */
     public function viewAny(User $user)
     {
-        //
+        return (bool) $user->hasRole('Super_Admin') 
+        || $user->hasPermission('sales.index')
+        ;
     }
 
     /**
@@ -30,7 +32,9 @@ class SaleBillPolicy
      */
     public function view(User $user, SaleBill $saleBill)
     {
-        //
+        return (bool) $user->hasRole('Super_Admin') 
+        || $user->hasPermission('sales.index')
+        ;
     }
 
     /**
@@ -41,7 +45,9 @@ class SaleBillPolicy
      */
     public function create(User $user)
     {
-        //
+        return (bool) $user->hasRole('Super_Admin') 
+        || $user->hasPermission('sales.create')
+        ;
     }
 
     /**
@@ -53,7 +59,9 @@ class SaleBillPolicy
      */
     public function update(User $user, SaleBill $saleBill)
     {
-        //
+        return (bool) $user->hasRole('Super_Admin') 
+        || $user->hasPermission('sales.update')
+        ;
     }
 
     /**
@@ -65,7 +73,9 @@ class SaleBillPolicy
      */
     public function delete(User $user, SaleBill $saleBill)
     {
-        //
+        return (bool) $user->hasRole('Super_Admin') 
+        || $user->hasPermission('sales.destroy')
+        ;
     }
 
     /**

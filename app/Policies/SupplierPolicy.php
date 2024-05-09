@@ -18,7 +18,9 @@ class SupplierPolicy
      */
     public function viewAny(User $user)
     {
-        //
+        return (bool) $user->hasRole('Super_Admin') 
+        || $user->hasPermission('supplier.index')
+        ;
     }
 
     /**
@@ -30,7 +32,9 @@ class SupplierPolicy
      */
     public function view(User $user, Supplier $supplier)
     {
-        //
+        return (bool) $user->hasRole('Super_Admin') 
+        || $user->hasPermission('supplier.index')
+        ;
     }
 
     /**
@@ -41,7 +45,9 @@ class SupplierPolicy
      */
     public function create(User $user)
     {
-        //
+        return (bool) $user->hasRole('Super_Admin') 
+        || $user->hasPermission('supplier.create')
+        ;
     }
 
     /**
@@ -53,7 +59,9 @@ class SupplierPolicy
      */
     public function update(User $user, Supplier $supplier)
     {
-        //
+        return (bool) $user->hasRole('Super_Admin') 
+        || $user->hasPermission('supplier.update')
+        ;
     }
 
     /**
@@ -65,7 +73,9 @@ class SupplierPolicy
      */
     public function delete(User $user, Supplier $supplier)
     {
-        //
+        return (bool) $user->hasRole('Super_Admin') 
+        || $user->hasPermission('supplier.destroy')
+        ;
     }
 
     /**

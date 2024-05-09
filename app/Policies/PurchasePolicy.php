@@ -18,7 +18,9 @@ class PurchasePolicy
      */
     public function viewAny(User $user)
     {
-        //
+        return (bool) $user->hasRole('Super_Admin') 
+        || $user->hasPermission('purchase.index')
+        ;
     }
 
     /**
@@ -30,7 +32,9 @@ class PurchasePolicy
      */
     public function view(User $user, Purchase $purchase)
     {
-        //
+        return (bool) $user->hasRole('Super_Admin') 
+        || $user->hasPermission('purchase.index')
+        ;
     }
 
     /**
@@ -41,7 +45,9 @@ class PurchasePolicy
      */
     public function create(User $user)
     {
-        //
+        return (bool) $user->hasRole('Super_Admin') 
+        || $user->hasPermission('purchase.create')
+        ;
     }
 
     /**
@@ -53,7 +59,9 @@ class PurchasePolicy
      */
     public function update(User $user, Purchase $purchase)
     {
-        //
+        return (bool) $user->hasRole('Super_Admin') 
+        || $user->hasPermission('purchase.update')
+        ;
     }
 
     /**
@@ -65,7 +73,9 @@ class PurchasePolicy
      */
     public function delete(User $user, Purchase $purchase)
     {
-        //
+        return (bool) $user->hasRole('Super_Admin') 
+        || $user->hasPermission('purchase.destroy')
+        ;
     }
 
     /**

@@ -19,10 +19,10 @@
 <main id="wrapper">
     <nav id="sidebar">
         <div class="sidebar-header row align-items-center">
-            <div class="sidebar-header-left">
+            <div class="sidebar-header-left col-md-3">
                 <a class="navbar-brand titlefont mb-2" href="{{ route('account.dashboard') }}">
                     <div class="logo-wrapper">
-                        <img src="{{ asset('images/akontledger_logo-bg.png') }}" style="min-width: 100%" class="logo"
+                        <img src="{{ asset('images/akontledger_logo-bg.png') }}"  class="logo"
                             alt="Logo">
                     </div>
                 </a>
@@ -33,7 +33,7 @@
                 @endif --}}
             </div>
 
-            <div class="col-md-6 xxtext-center">
+            <div class="col-md-6 text-center">
                 @if (isset($companyName))
                 <div class="navbar-brandcxx coyfont" style="color: #333">
                     {{ $companyName }}
@@ -53,7 +53,7 @@
             </div>
 
             <!-- User info and logout button -->
-            <div class="user-info-container">
+            <div class="user-info-container col-md-3">
                 <div class="user-info">
                     @if (auth()->check())
                         <li class="nav-item dropdown">
