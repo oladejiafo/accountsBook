@@ -48,23 +48,6 @@ class AccountsController extends Controller
         $companyId = auth()->user()->company_id;
         // where('company_id', $companyId)->
 
-        // Authorize using a policy
-        // $user = auth()->user();
-        // $this->authorize('viewAny', $user);
-
-        // $userPermissionsAndRoles = $request->user()->hasPermission('view', $request->input('moduleId'), $request->input('subModuleId'));
-
-        // // dd($request->input('moduleId'));
-       
-        // $permissions = $userPermissionsAndRoles['permissions'];
-        // $roles = $userPermissionsAndRoles['roles'];
-        
-        // // Check if the user has permission to view the module and submodule
-        // if (!$permissions->contains('view') && !in_array('Super_Admin', array_values($roles))) {
-        //     abort(403, 'Unauthorized');
-        // }
-        
-
         // Get real-time values for financial metrics
         $income = $this->getIncome();
         $expenses = $this->getExpenses();
@@ -74,14 +57,6 @@ class AccountsController extends Controller
         // Get any relevant alerts
         $alerts = $this->getAlerts();
     
-        // // Pass data to the dashboard view
-        // return view('accounts.dashboard', [
-        //     'income' => $income,
-        //     'expenses' => $expenses,
-        //     'cashFlow' => $cashFlow,
-        //     'accountBalances' => $accountBalances,
-        //     'alerts' => $alerts,
-        // ]);
 
         // Calculate income
         $income = Transaction::where('company_id', $companyId)->where('type', 'income')->sum('amount');

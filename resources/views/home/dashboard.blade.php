@@ -19,7 +19,7 @@
 
 </style>
 <div class="container">
-    <h1  style="color: #4e4e4e; font-style: bold; font-size: 3rem;">Dashboard</h1>
+    <h1  style="color: #4e4e4e; font-style: bold; font-size: 3rem;">Dashboard: <span style="font-size: smaller">Account Insight</span></h1>
 
     <!-- Overview Section -->
     <div class="card mb-4">

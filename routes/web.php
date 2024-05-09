@@ -41,9 +41,10 @@ Route::get('/global-search', [HomeController::class, 'globalSearch'])->name('glo
 
 Route::middleware('auth', 'check.permissions')->group(function () {
     ######### DASHBOARDS
-    Route::get('/inventoryInsights', [HomeController::class, 'index'])->name('home');
+    Route::get('/dashboard', [HomeController::class, 'index'])->name('home');
+    Route::get('/inventoryInsights', [HomeController::class, 'insightDashboard'])->name('insight.dashboard');
     
-    Route::get('/dashboard', [AccountsController::class, 'dashboard'])->name('account.dashboard');
+    Route::get('/AccountInsights', [AccountsController::class, 'dashboard'])->name('account.dashboard');
 
     ########### User routes
     Route::get('/users', [HomeController::class, 'usersIndex'])->name('users.index');

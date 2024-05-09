@@ -20,7 +20,7 @@
     <nav id="sidebar">
         <div class="sidebar-header row align-items-center">
             <div class="sidebar-header-left col-md-3">
-                <a class="navbar-brand titlefont mb-2" href="{{ route('account.dashboard') }}">
+                <a class="navbar-brand titlefont mb-2" href="{{ route('home') }}">
                     <div class="logo-wrapper">
                         <img src="{{ asset('images/akontledger_logo-bg.png') }}"  class="logo"
                             alt="Logo">
@@ -84,16 +84,24 @@
             @if (auth()->user()->hasPermission('account.dashboard') || auth()->user()->hasPermission('home') || auth()->user()->hasRole('Super_Admin'))
             <!-- Grouping for Dashboards -->
             <li>
+                <a href="{{ route('home') }}">
                 <span class="sidebar-textx sidebar-button menutitlefont mr-4 mt-2">DASHBOARDS</span>
+            </a>
                 <ul class="list-unstyled">
+                @if (auth()->user()->hasPermission('home') || auth()->user()->hasRole('Super_Admin'))
+                    <li><a class="sidebar-text sidebar-button" href="{{ route('home') }}"><i
+                                class="fas fa-chart-line fa-fw" style="margin-right: .75rem"></i> Dashboard</a>
+                    </li>
+                @endif
+
                 @if (auth()->user()->hasPermission('account.dashboard') || auth()->user()->hasRole('Super_Admin'))
                     <li><a class="sidebar-text sidebar-button" href="{{ route('account.dashboard') }}"><i
                                 class="fas fa-tachometer-alt  fa-fw" style="margin-right: .75rem"></i> Accounts
                             Insights</a>
                     </li>
                 @endif 
-                @if (auth()->user()->hasPermission('home') || auth()->user()->hasRole('Super_Admin'))
-                    <li><a class="sidebar-text sidebar-button" href="{{ route('home') }}"><i
+                @if (auth()->user()->hasPermission('insight.dashboard') || auth()->user()->hasRole('Super_Admin'))
+                    <li><a class="sidebar-text sidebar-button" href="{{ route('insight.dashboard') }}"><i
                                 class="fas fa-chart-line fa-fw" style="margin-right: .75rem"></i> Inventory Insights</a>
                     </li>
                 @endif
