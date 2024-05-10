@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Dashboard')
+@section('title', 'Dashboard: Account Insight')
 {{-- @can('dashboard_view') --}}
 @section('content')
 <style>
@@ -32,7 +32,7 @@
                     <div class="card bg-success text-white mb-3">
                         <div class="card-body">
                             <h5 class="card-title">Income</h5>
-                            <p class="card-text">${{ number_format($income, 2) }}</p>
+                            <p class="card-text">{{ $defaultCurrency }}{{ number_format($income, 2) }}</p>
                         </div>
                     </div>
                 </div>
@@ -41,7 +41,7 @@
                     <div class="card bg-danger text-white mb-3">
                         <div class="card-body">
                             <h5 class="card-title">Expenses</h5>
-                            <p class="card-text">${{ number_format($expenses, 2) }}</p>
+                            <p class="card-text">{{ $defaultCurrency }}{{ number_format($expenses, 2) }}</p>
                         </div>
                     </div>
                 </div>
@@ -50,7 +50,7 @@
                     <div class="card bg-info text-white mb-3">
                         <div class="card-body">
                             <h5 class="card-title">Cash Flow</h5>
-                            <p class="card-text">${{ number_format($cashFlow, 2) }}</p>
+                            <p class="card-text">{{ $defaultCurrency }}{{ number_format($cashFlow, 2) }}</p>
                         </div>
                     </div>
                 </div>
@@ -61,7 +61,7 @@
                     <div class="card bg-primary text-white mb-3">
                         <div class="card-body">
                             <h5 class="card-title">Assets</h5>
-                            <p class="card-text">${{ number_format($accountBalances['assets'], 2) }}</p>
+                            <p class="card-text">{{ $defaultCurrency }}{{ number_format($accountBalances['assets'], 2) }}</p>
                         </div>
                     </div>
                 </div>
@@ -69,7 +69,7 @@
                     <div class="card bg-warning text-white mb-3">
                         <div class="card-body">
                             <h5 class="card-title">Liabilities</h5>
-                            <p class="card-text">${{ number_format($accountBalances['liabilities'], 2) }}</p>
+                            <p class="card-text">{{ $defaultCurrency }}{{ number_format($accountBalances['liabilities'], 2) }}</p>
                         </div>
                     </div>
                 </div>
@@ -77,7 +77,7 @@
                     <div class="card bg-secondary text-white mb-3">
                         <div class="card-body">
                             <h5 class="card-title">Equity</h5>
-                            <p class="card-text">${{ number_format($accountBalances['equity'], 2) }}</p>
+                            <p class="card-text">{{ $defaultCurrency }}{{ number_format($accountBalances['equity'], 2) }}</p>
                         </div>
                     </div>
                 </div>

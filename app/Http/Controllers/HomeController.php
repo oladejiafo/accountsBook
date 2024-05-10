@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Models\Currency;
 use App\Models\Stock;
 use App\Models\Company;
 use App\Models\Customer;
@@ -34,13 +35,29 @@ class HomeController extends Controller
         if (!auth()->check() || !auth()->user()->company_id) {
             return redirect()->route('login')->with('error', 'Unauthorized access.');
         }
+        
+        $companyId = auth()->user()->company_id;
+        $company = Company::find($companyId);
+        $currencies = Currency::where('acronym','=', $company->currency)->pluck('symbol')->first();
+
+        if(isset($currencies)){
+            $defaultCurrency = $currencies;
+        } else {
+            $defaultCurrency = "$";
+        }
 
         // Define filter options
         $filterOptions = [
-            '7_days' => 'Last 7 days',
-            '30_days' => 'Last 30 days',
-            'last_month' => 'Last month',
+            'today' => 'Today',
+            '7_days' => 'Last 7 Days',
+            '30_days' => 'Last 30 Days',
+            'month_to_date' => 'Month To Date',
+            'last_month' => 'Last Month',
+            'year_to_date' => 'Year To Date',
         ];
+
+        // Get selected filter option
+        $filter = $request->input('filter', '30_days');
 
         // Get insights
         $insights = [
@@ -51,35 +68,131 @@ class HomeController extends Controller
                 'description' => 'Total number of registered customers',
             ],
             [
-                'icon' => 'fas fa-chart-line text-success',
+                'icon' => 'fas fa-chart-line text-dark',
+                'title' => 'Number of Sales',
+                'value' => SaleBill::count(),
+                'description' => 'Total number of sales',
+            ],
+            [
+                'icon' => 'fas fa-dollar-sign text-success',
                 'title' => 'Total Sales',
-                'value' => '$' . SaleBillDetails::sum('total'),
+                'value' => SaleBillDetails::sum('total'),
                 'description' => 'Total amount of sales made',
             ],
             [
                 'icon' => 'fas fa-money-bill-wave text-info',
                 'title' => 'Total Payments',
-                'value' => '$' . Payment::sum('paid_amount'),
+                'value' =>Payment::sum('paid_amount'),
                 'description' => 'Total amount of payments received',
             ],
             [
                 'icon' => 'fas fa-cubes text-warning',
-                'title' => 'Restock Level',
+                'title' => 'Products With Low Stock Levels',
                 'value' => Stock::where('quantity', '<=', 10)->count(),
                 'description' => 'Number of products with low stock levels',
             ],
             [
                 'icon' => 'fas fa-shopping-cart text-danger',
                 'title' => 'Total Purchases',
-                'value' => '$' . PurchaseBillDetails::sum('total'),
+                'value' => PurchaseBillDetails::sum('total'),
                 'description' => 'Total amount spent on purchases',
             ],
             // Add any additional insights here
         ];
 
-        return view('home.index', compact('insights', 'filterOptions'));
+
+        // Apply filter to insights data
+        switch ($request->filter) {
+            case 'today':
+                $startDate = now()->startOfDay();
+                $endDate = now()->endOfDay();
+                $insights = $this->applyDateRangeFilter($insights, $startDate, $endDate);
+                break;
+            case '7_days':
+                $startDate = now()->subDays(7)->startOfDay();
+                $endDate = now()->endOfDay();
+                $insights = $this->applyDateRangeFilter($insights, $startDate, $endDate);
+                break;
+            case '30_days':
+                $startDate = now()->subDays(30)->startOfDay();
+                $endDate = now()->endOfDay();
+                $insights = $this->applyDateRangeFilter($insights, $startDate, $endDate);
+                break;
+            case 'month_to_date':
+                $startDate = now()->startOfMonth()->startOfDay();
+                $endDate = now()->endOfDay();
+                $insights = $this->applyDateRangeFilter($insights, $startDate, $endDate);
+                break;
+            case 'year_to_date':
+                $startDate = now()->startOfYear()->startOfDay();
+                $endDate = now()->endOfDay();
+                $insights = $this->applyDateRangeFilter($insights, $startDate, $endDate);
+                break;
+            case 'last_month':
+                $startDate = now()->subMonth()->startOfMonth()->startOfDay();
+                $endDate = now()->subMonth()->endOfMonth()->endOfDay();
+                $insights = $this->applyDateRangeFilter($insights, $startDate, $endDate);
+                break;
+            default:
+                $startDate = now()->startOfMonth()->startOfDay();
+                $endDate = now()->endOfDay();
+                $insights = $this->applyDateRangeFilter($insights, $startDate, $endDate);
+                break;
+        }
+
+        // return view('home.index', compact('insights', 'filterOptions'));
+        return view('home.index', compact('insights', 'filterOptions', 'filter'));
     }
 
+    protected function applyDateRangeFilter($insights, $startDate, $endDate)
+    {
+        $companyId = auth()->user()->company_id;
+        $company = Company::find($companyId);
+        $currencies = Currency::where('acronym','=', $company->currency)->pluck('symbol')->first();
+
+        if(isset($currencies)){
+            $defaultCurrency = $currencies;
+        } else {
+            $defaultCurrency = "$";
+        }
+        // Filter insights data based on the date range
+        foreach ($insights as $key => $insight) {
+            switch ($insight['title']) {
+                case 'Number of Customers':
+                    $filteredCustomers = Customer::whereBetween('created_at', [$startDate, $endDate])->count();
+                    $insights[$key]['value'] = $filteredCustomers;
+                    break;
+                case 'Number of Sales':
+                    $filteredSales = SaleBill::whereBetween('created_at', [$startDate, $endDate])->count();
+                    $insights[$key]['value'] = $filteredSales;
+                    break;
+                case 'Total Sales':
+                    $filteredTotalSales = SaleBillDetails::whereBetween('created_at', [$startDate, $endDate])->sum('total');
+                    $insights[$key]['value'] = $defaultCurrency  . number_format($filteredTotalSales,2);
+                    break;
+                case 'Total Payments':
+                    $filteredTotalPayments = Payment::whereBetween('created_at', [$startDate, $endDate])->sum('paid_amount');
+                    $insights[$key]['value'] = $defaultCurrency  . number_format($filteredTotalPayments,2);
+                    break;
+                case 'Products With Low Stock Levels':
+                    $filteredLowStockProducts = Stock::whereBetween('created_at', [$startDate, $endDate])
+                        ->where('quantity', '<=', 10)->count();
+                    $insights[$key]['value'] = $filteredLowStockProducts;
+                    break;
+                case 'Total Purchases':
+                    $filteredTotalPurchases = PurchaseBillDetails::whereBetween('created_at', [$startDate, $endDate])->sum('total');
+                    $insights[$key]['value'] = $defaultCurrency  . number_format($filteredTotalPurchases,2);
+                    break;
+                // Add cases for any additional insights here
+                default:
+                    // Apply default logic
+                    break;
+            }
+        }
+    
+        return $insights;
+    }
+    
 
     public function insightDashboard(Request $request)
     {

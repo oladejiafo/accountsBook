@@ -58,6 +58,7 @@ class PermissionSeeder extends Seeder
             $label = str_replace(' Index', ' View', $label);
             $label = str_replace(' Destroy', ' Delete', $label);
             $label = str_replace(' Show', ' Display', $label);
+            $label = str_replace('Home', 'Dashboard', $label);
 
         
             Permission::create([

@@ -1,13 +1,10 @@
-<!--     <div class="user-info">
-        @if (auth()->check())
-<span>{{ auth()->user()->name }}</span>
-            <form method="POST" action="{{ route('logout') }}">
-                @csrf
-                <button type="submit" class="btn btn-link">Logout</button>
-            </form>
-@endif
-    </div> -->
+<style>
+    .dropdown-menu.user-drop {
+    transform: translate3d(0, 66px, 0) !important;
+    border-radius: 0px !important;
+}
 
+</style>
 <!-- Button to toggle sidebar on small screens -->
 <button class="btn btn-custom d-lg-none" id="sidebarToggle">
     <i class="fas fa-bars"></i>
@@ -56,22 +53,23 @@
             <div class="user-info-container col-md-3">
                 <div class="user-info">
                     @if (auth()->check())
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle dropdown-user" id="dropdown-toggler" href="#"
-                                role="button" data-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-user-circle" style="margin-right: .05rem; color: #333"></i>
-                                <span style="color: #333">{{ auth()->user()->name }}</span>
-                            </a>
-                            <div class="dropdown-menu list-unstyled" style="background-color: #ffccc;">
-                                <form method="POST" action="{{ route('logout') }}" style="background-color: #ffccc">
-                                    @csrf
-                                    <button type="submit" class="sidebar-text sidebar-subitem sidebar-button"
-                                        style="background: inherit; border: none; padding: 0; font: inherit; cursor: pointer; color: inherit; text-decoration: underline; outline: inherit;">
-                                        <i class="fas fa-dot-circle"></i> Logout
-                                    </button>
-                                </form>
-                            </div>
-                        </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle dropdown-user" id="dropdown-toggler" href="#"
+                            role="button" data-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user-circle" style="margin-right: .05rem; color: #333"></i>
+                            <span style="color: #333">{{ auth()->user()->name }}</span>
+                        </a>
+                        <div class="user-drop dropdown-menu dropdown-menu-right list-unstyled" style="background-color: #d0d3da;">
+                            <form method="POST" action="{{ route('logout') }}" style="background-color: #d0d3da">
+                                @csrf
+                                <button type="submit" class="sidebar-text sidebar-subitem sidebar-button"
+                                    style="background-color: #d0d3da; border: none; padding: 0;  cursor: pointer; color: #000; text-decoration: underlinel; outline: inherit;">
+                                    <span style="font-size: 1.1rem">Logout</span>
+                                </button>
+                            </form>
+                        </div>
+                    </li>
+                    
                     @endif
                 </div>
             </div>
@@ -90,13 +88,13 @@
                 <ul class="list-unstyled">
                 @if (auth()->user()->hasPermission('home') || auth()->user()->hasRole('Super_Admin'))
                     <li><a class="sidebar-text sidebar-button" href="{{ route('home') }}"><i
-                                class="fas fa-chart-line fa-fw" style="margin-right: .75rem"></i> Dashboard</a>
+                                class="fas fa-tachometer-alt fa-fw" style="margin-right: .75rem"></i> Dashboard</a>
                     </li>
                 @endif
 
                 @if (auth()->user()->hasPermission('account.dashboard') || auth()->user()->hasRole('Super_Admin'))
                     <li><a class="sidebar-text sidebar-button" href="{{ route('account.dashboard') }}"><i
-                                class="fas fa-tachometer-alt  fa-fw" style="margin-right: .75rem"></i> Accounts
+                                class="fas fa-chart-bar  fa-fw" style="margin-right: .75rem"></i> Accounts
                             Insights</a>
                     </li>
                 @endif 
