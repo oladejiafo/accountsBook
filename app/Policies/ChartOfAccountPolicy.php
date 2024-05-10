@@ -18,7 +18,10 @@ class ChartOfAccountPolicy
      */
     public function viewAny(User $user)
     {
-        //
+        //chartOfAccounts
+        return (bool) $user->hasRole('Super_Admin') 
+        || $user->hasPermission('chartOfAccounts')
+        ;
     }
 
     /**
@@ -30,7 +33,9 @@ class ChartOfAccountPolicy
      */
     public function view(User $user, ChartOfAccount $chartOfAccount)
     {
-        //
+        return (bool) $user->hasRole('Super_Admin') 
+        || $user->hasPermission('chartOfAccounts')
+        ;
     }
 
     /**
@@ -41,7 +46,9 @@ class ChartOfAccountPolicy
      */
     public function create(User $user)
     {
-        //
+        return (bool) $user->hasRole('Super_Admin') 
+        || $user->hasPermission('chartOfAccounts.create')
+        ;
     }
 
     /**
@@ -53,7 +60,9 @@ class ChartOfAccountPolicy
      */
     public function update(User $user, ChartOfAccount $chartOfAccount)
     {
-        //
+        return (bool) $user->hasRole('Super_Admin') 
+        || $user->hasPermission('chartOfAccounts.update')
+        ;
     }
 
     /**
@@ -65,7 +74,9 @@ class ChartOfAccountPolicy
      */
     public function delete(User $user, ChartOfAccount $chartOfAccount)
     {
-        //
+        return (bool) $user->hasRole('Super_Admin') 
+        || $user->hasPermission('chartOfAccounts.destroy')
+        ;
     }
 
     /**

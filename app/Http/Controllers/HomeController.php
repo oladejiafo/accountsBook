@@ -3,8 +3,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Stock;
 use App\Models\Company;
+use App\Models\Customer;
 use App\Models\SaleBill;
 use App\Models\PurchaseBill;
+use App\Models\SaleBillDetails;
+use App\Models\PurchaseBillDetails;
+use App\Models\Payment;
 use App\Models\User;
 use App\Models\Role;
 use App\Models\Transaction;
@@ -23,6 +27,7 @@ use Illuminate\Support\Collection;
 
 class HomeController extends Controller
 {
+
     public function index(Request $request)
     {
         // Check authentication and company identification
@@ -30,14 +35,58 @@ class HomeController extends Controller
             return redirect()->route('login')->with('error', 'Unauthorized access.');
         }
 
-        // $userPermissionsAndRoles = $request->user()->hasPermission('view');
+        // Define filter options
+        $filterOptions = [
+            '7_days' => 'Last 7 days',
+            '30_days' => 'Last 30 days',
+            'last_month' => 'Last month',
+        ];
 
-        // $permissions = $userPermissionsAndRoles['permissions'];
-        // $roles = $userPermissionsAndRoles['roles'];
+        // Get insights
+        $insights = [
+            [
+                'icon' => 'fas fa-users text-primary',
+                'title' => 'Number of Customers',
+                'value' => Customer::count(),
+                'description' => 'Total number of registered customers',
+            ],
+            [
+                'icon' => 'fas fa-chart-line text-success',
+                'title' => 'Total Sales',
+                'value' => '$' . SaleBillDetails::sum('total'),
+                'description' => 'Total amount of sales made',
+            ],
+            [
+                'icon' => 'fas fa-money-bill-wave text-info',
+                'title' => 'Total Payments',
+                'value' => '$' . Payment::sum('paid_amount'),
+                'description' => 'Total amount of payments received',
+            ],
+            [
+                'icon' => 'fas fa-cubes text-warning',
+                'title' => 'Restock Level',
+                'value' => Stock::where('quantity', '<=', 10)->count(),
+                'description' => 'Number of products with low stock levels',
+            ],
+            [
+                'icon' => 'fas fa-shopping-cart text-danger',
+                'title' => 'Total Purchases',
+                'value' => '$' . PurchaseBillDetails::sum('total'),
+                'description' => 'Total amount spent on purchases',
+            ],
+            // Add any additional insights here
+        ];
 
-        // if (!$permissions->contains('view') && !in_array('Super_Admin', array_values($roles))) {
-        //     abort(403, 'Unauthorized');
-        // }
+        return view('home.index', compact('insights', 'filterOptions'));
+    }
+
+
+    public function insightDashboard(Request $request)
+    {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }
 
         $companyId = null;
         $companyName = null;

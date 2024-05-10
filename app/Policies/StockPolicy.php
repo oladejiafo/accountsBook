@@ -18,7 +18,9 @@ class StockPolicy
      */
     public function viewAny(User $user)
     {
-        //
+        return (bool) $user->hasRole('Super_Admin') 
+        || $user->hasPermission('inventory')
+        ;
     }
 
     /**
@@ -30,7 +32,9 @@ class StockPolicy
      */
     public function view(User $user, Stock $stock)
     {
-        //
+        return (bool) $user->hasRole('Super_Admin') 
+        || $user->hasPermission('inventory')
+        ;
     }
 
     /**
@@ -41,7 +45,9 @@ class StockPolicy
      */
     public function create(User $user)
     {
-        //
+        return (bool) $user->hasRole('Super_Admin') 
+        || $user->hasPermission('new-stock')
+        ;
     }
 
     /**
@@ -53,7 +59,9 @@ class StockPolicy
      */
     public function update(User $user, Stock $stock)
     {
-        //
+        return (bool) $user->hasRole('Super_Admin') 
+        || $user->hasPermission('update-stock')
+        ;
     }
 
     /**
@@ -65,7 +73,9 @@ class StockPolicy
      */
     public function delete(User $user, Stock $stock)
     {
-        //
+        return (bool) $user->hasRole('Super_Admin') 
+        || $user->hasPermission('delete-stock')
+        ;
     }
 
     /**

@@ -19,10 +19,10 @@
 <main id="wrapper">
     <nav id="sidebar">
         <div class="sidebar-header row align-items-center">
-            <div class="sidebar-header-left">
-                <a class="navbar-brand titlefont mb-2" href="{{ route('account.dashboard') }}">
+            <div class="sidebar-header-left col-md-3">
+                <a class="navbar-brand titlefont mb-2" href="{{ route('home') }}">
                     <div class="logo-wrapper">
-                        <img src="{{ asset('images/akontledger_logo-bg.png') }}" style="min-width: 100%" class="logo"
+                        <img src="{{ asset('images/akontledger_logo-bg.png') }}"  class="logo"
                             alt="Logo">
                     </div>
                 </a>
@@ -33,7 +33,7 @@
                 @endif --}}
             </div>
 
-            <div class="col-md-6 xxtext-center">
+            <div class="col-md-6 text-center">
                 @if (isset($companyName))
                 <div class="navbar-brandcxx coyfont" style="color: #333">
                     {{ $companyName }}
@@ -53,7 +53,7 @@
             </div>
 
             <!-- User info and logout button -->
-            <div class="user-info-container">
+            <div class="user-info-container col-md-3">
                 <div class="user-info">
                     @if (auth()->check())
                         <li class="nav-item dropdown">
@@ -84,16 +84,24 @@
             @if (auth()->user()->hasPermission('account.dashboard') || auth()->user()->hasPermission('home') || auth()->user()->hasRole('Super_Admin'))
             <!-- Grouping for Dashboards -->
             <li>
+                <a href="{{ route('home') }}">
                 <span class="sidebar-textx sidebar-button menutitlefont mr-4 mt-2">DASHBOARDS</span>
+            </a>
                 <ul class="list-unstyled">
+                @if (auth()->user()->hasPermission('home') || auth()->user()->hasRole('Super_Admin'))
+                    <li><a class="sidebar-text sidebar-button" href="{{ route('home') }}"><i
+                                class="fas fa-chart-line fa-fw" style="margin-right: .75rem"></i> Dashboard</a>
+                    </li>
+                @endif
+
                 @if (auth()->user()->hasPermission('account.dashboard') || auth()->user()->hasRole('Super_Admin'))
                     <li><a class="sidebar-text sidebar-button" href="{{ route('account.dashboard') }}"><i
                                 class="fas fa-tachometer-alt  fa-fw" style="margin-right: .75rem"></i> Accounts
                             Insights</a>
                     </li>
                 @endif 
-                @if (auth()->user()->hasPermission('home') || auth()->user()->hasRole('Super_Admin'))
-                    <li><a class="sidebar-text sidebar-button" href="{{ route('home') }}"><i
+                @if (auth()->user()->hasPermission('insight.dashboard') || auth()->user()->hasRole('Super_Admin'))
+                    <li><a class="sidebar-text sidebar-button" href="{{ route('insight.dashboard') }}"><i
                                 class="fas fa-chart-line fa-fw" style="margin-right: .75rem"></i> Inventory Insights</a>
                     </li>
                 @endif

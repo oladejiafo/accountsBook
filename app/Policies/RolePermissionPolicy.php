@@ -18,7 +18,9 @@ class RolePermissionPolicy
      */
     public function viewAny(User $user)
     {
-        //
+        return (bool) $user->hasRole('Super_Admin') 
+        || $user->hasPermission('role-permissions.index')
+        ;
     }
 
     /**
@@ -30,7 +32,9 @@ class RolePermissionPolicy
      */
     public function view(User $user, RolePermission $rolePermission)
     {
-        //
+        return (bool) $user->hasRole('Super_Admin') 
+        || $user->hasPermission('role-permissions.index')
+        ;
     }
 
     /**
@@ -41,7 +45,9 @@ class RolePermissionPolicy
      */
     public function create(User $user)
     {
-        //
+        return (bool) $user->hasRole('Super_Admin') 
+        || $user->hasPermission('role-permissions.create')
+        ;
     }
 
     /**
@@ -53,7 +59,9 @@ class RolePermissionPolicy
      */
     public function update(User $user, RolePermission $rolePermission)
     {
-        //
+        return (bool) $user->hasRole('Super_Admin') 
+        || $user->hasPermission('role-permissions.update')
+        ;
     }
 
     /**
@@ -65,7 +73,9 @@ class RolePermissionPolicy
      */
     public function delete(User $user, RolePermission $rolePermission)
     {
-        //
+        return (bool) $user->hasRole('Super_Admin') 
+        || $user->hasPermission('role-permissions.destroy')
+        ;
     }
 
     /**

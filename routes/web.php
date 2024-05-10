@@ -41,9 +41,10 @@ Route::get('/global-search', [HomeController::class, 'globalSearch'])->name('glo
 
 Route::middleware('auth', 'check.permissions')->group(function () {
     ######### DASHBOARDS
-    Route::get('/inventoryInsights', [HomeController::class, 'index'])->name('home');
+    Route::get('/dashboard', [HomeController::class, 'index'])->name('home');
+    Route::get('/inventoryInsights', [HomeController::class, 'insightDashboard'])->name('insight.dashboard');
     
-    Route::get('/dashboard', [AccountsController::class, 'dashboard'])->name('account.dashboard');
+    Route::get('/AccountInsights', [AccountsController::class, 'dashboard'])->name('account.dashboard');
 
     ########### User routes
     Route::get('/users', [HomeController::class, 'usersIndex'])->name('users.index');
@@ -262,25 +263,6 @@ Route::middleware('auth', 'check.permissions')->group(function () {
         Route::put('/exemptions/{id}', [AccountsController::class, 'taxExemptionsUpdate'])->name('tax-exemptions.update');
         Route::delete('/exemptions/{id}', [AccountsController::class, 'taxExemptionsDestroy'])->name('tax-exemptions.destroy');
 
-        // Tax Authorities Routes
-        Route::resource('authorities', 'AccountsController')->except(['show'])->names([
-            'index' => 'tax-authorities.index',
-            'create' => 'tax-authorities.create',
-            'store' => 'tax-authorities.store',
-            'edit' => 'tax-authorities.edit',
-            'update' => 'tax-authorities.update',
-            'destroy' => 'tax-authorities.destroy',
-        ]);
-
-        // Tax Codes Routes
-        Route::resource('codes', 'AccountsController')->except(['show'])->names([
-            'index' => 'tax-codes.index',
-            'create' => 'tax-codes.create',
-            'store' => 'tax-codes.store',
-            'edit' => 'tax-codes.edit',
-            'update' => 'tax-codes.update',
-            'destroy' => 'tax-codes.destroy',
-        ]);
     });
 
 });

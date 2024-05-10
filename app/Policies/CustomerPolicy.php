@@ -18,7 +18,9 @@ class CustomerPolicy
      */
     public function viewAny(User $user)
     {
-        //
+        return (bool) $user->hasRole('Super_Admin') 
+        || $user->hasPermission('customers.index')
+        ;
     }
 
     /**
@@ -30,7 +32,9 @@ class CustomerPolicy
      */
     public function view(User $user, Customer $customer)
     {
-        //
+        return (bool) $user->hasRole('Super_Admin') 
+        || $user->hasPermission('customers.index')
+        ;
     }
 
     /**
@@ -41,7 +45,9 @@ class CustomerPolicy
      */
     public function create(User $user)
     {
-        //
+        return (bool) $user->hasRole('Super_Admin') 
+        || $user->hasPermission('customers.create')
+        ;
     }
 
     /**
@@ -53,7 +59,9 @@ class CustomerPolicy
      */
     public function update(User $user, Customer $customer)
     {
-        //
+        return (bool) $user->hasRole('Super_Admin') 
+        || $user->hasPermission('customers.update')
+        ;
     }
 
     /**
@@ -65,7 +73,9 @@ class CustomerPolicy
      */
     public function delete(User $user, Customer $customer)
     {
-        //
+        return (bool) $user->hasRole('Super_Admin') 
+        || $user->hasPermission('customers.destroy')
+        ;
     }
 
     /**
