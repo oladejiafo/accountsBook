@@ -527,6 +527,7 @@ class HomeController extends Controller
 
         // Execute the query and fetch the results
         $rolePermissions = $rolePermissions->get();
+
         // Define the $editing variable
         $editing = false;
         // $rolePermissions = RolePermission::where('company_id', $companyId)->get();
