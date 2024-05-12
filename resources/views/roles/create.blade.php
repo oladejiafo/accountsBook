@@ -15,8 +15,8 @@
                                 <input type="text" name="name" id="name" class="form-control">
                             </div>
                             <div class="form-group">
-                                <label for="guard_name">Guard Name</label>
-                                <input type="text" name="guard_name" id="guard_name" value="web" class="form-control">
+                                <label for="description">Description</label>
+                                <input type="text" name="description" id="description" value="web" class="form-control">
                             </div>
                             <div class="align-middle">
                                 <button type="submit" class="btn  btn-lg btn-success">Create User</button>

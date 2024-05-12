@@ -16,8 +16,8 @@
                                 <input type="text" name="name" id="name" class="form-control" value="{{ $role->name }}">
                             </div>
                             <div class="form-group">
-                                <label for="guard_name">Guard Name</label>
-                                <input type="text" name="guard_name" id="guard_name" class="form-control" value="{{ $role->guard_name }}">
+                                <label for="description">Description</label>
+                                <input type="text" name="description" id="description" class="form-control" value="{{ $role->description }}">
                             </div>
                             <br>
 

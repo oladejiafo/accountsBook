@@ -1,17 +1,17 @@
 @extends('layouts.app')
 
-@section('title', 'Concept')
+@section('title', 'About AkɔntForge')
 
 @section('content')
 
-<div class="align-middle" style="color: #4caf50; font-style: bold; font-size: 3rem;">AfriLedger</div>
+<div class="align-middle" style="color: #4caf50; font-style: bold; font-size: 3rem;">AkɔntForge</div>
 <div class="align-middle" style="color: rgb(73, 73, 73)">A SaaS Accounting Portal for the SMEs</div>
 <br><br>
 
 <div class="align-middle"> 
     <h2 style="color:#4caf50">| Concept |</h3> <br>
     <p>
-        AfriLedger aims to revolutionize accounting practices for small businesses by providing a comprehensive SaaS accounting portal. Tailored to meet the unique needs of the SMEs, AfriLedger offers a range of modules and features designed to simplify accounting processes and empower businesses to manage their finances effectively.
+        AkɔntForge aims to revolutionize accounting practices for small businesses by providing a comprehensive SaaS accounting portal. Tailored to meet the unique needs of the SMEs, AkɔntForge offers a range of modules and features designed to simplify accounting processes and empower businesses to manage their finances effectively.
     </p>
     <br>
 </div>

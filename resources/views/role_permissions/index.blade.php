@@ -1,5 +1,6 @@
 @extends('layouts.app')
 
+
 @section('title', 'Role Permissions')
 @section('content')
 <div class="row">
@@ -28,44 +29,26 @@
 <table class="table table-css table-bordered table-hover">
     <thead class="thead-dark align-middle">
         <tr>
-            <th width="30%">Role</th>
-            <th width="70%">Permissions</th>
-            {{-- <th>Actions</th> --}}
+            <th>Role</th>
+            <th>Number of Permissions</th>
+            <th>Action</th>
         </tr>
     </thead>
     <tbody class="align-middle">
-        @foreach ($rolePermissions->groupBy('role_id') as $roleId => $permissions)
+        @foreach ($roles as $role)
+            @if ($role->name !== 'Super_Admin')
             <tr>
-                <td>{{ optional($permissions->first()->role)->name }}</td>
+                <td>{{ $role->name }}</td>
+                <td>{{ $rolePermissionsCount[$role->id] }}</td>
                 <td>
-                    @foreach ($permissions as $permission)
-                        <span class="badge badge-success rounded-pill py-2 px-3 mr-2 mb-3" style="background-color: #deb94a;">
-                            {{ optional($permission->permission)->label }}
-                            <a href="{{ route('role-permissions.edit', $permission->id) }}" class="badge-link"><i class="fas fa-edit"></i></a>
-                            <form action="{{ route('role-permissions.destroy', $permission->id) }}" method="POST" class="badge-link-form" style="display: inline;">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="badge-link-button btn-danger" onclick="return confirm('Are you sure you want to delete this role permission?')"><i class="fas fa-trash-alt"></i></button>
-                            </form>
-                        </span>
-                    @endforeach
+                    <a href="{{ route('role-permissions.view', $role->id) }}" class="btn btn-info" title="View Permissions">
+                            <i class="fas fa-eye"></i>
+                    </a>
                 </td>
-                {{-- <td>
-                    <a href="{{ route('role-permissions.edit', $permissions->first()->id) }}" class="btn btn-info"><i class="fas fa-edit"></i> Edit</a>
-                    <form action="{{ route('role-permissions.destroy', $permissions->first()->id) }}" method="POST" style="display: inline;">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete all permissions for this role?')"><i class="fas fa-trash-alt"></i> Delete</button>
-                    </form>
-                </td> --}}
             </tr>
+            @endif
         @endforeach
     </tbody>
 </table>
-{{-- @if ($rolePermissions->isNotEmpty())
-<div class="pagination">
-    {{ $rolePermissions->links() }}
-</div>
-@endif --}}
 
 @endsection

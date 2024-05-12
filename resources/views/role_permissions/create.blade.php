@@ -28,7 +28,7 @@
                     @csrf
                     <div class="form-group">
                         <label for="role_id">Role</label>
-                        <select name="role_id" id="role_id" class="form-control">
+                        <select name="role_id" id="role_id" class="form-control" required>
                             <option selected disabled>Select Role</option>
                             @foreach ($roles as $role)
                                 <option value="{{ $role->id }}">{{ $role->name }}</option>
@@ -36,35 +36,13 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="module_id">Module</label>
-                        <select name="module_id" id="module_id" class="form-control">
-                            <option selected disabled>Select Module</option>
-                            @foreach ($modules as $module)
-                                <option value="{{ $module->id }}">{{ $module->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="sub_module_id">Sub Module</label>
-                        <select name="sub_module_id" id="sub_module_id" class="form-control">
-                            <option selected disabled>Select Sub-Modules</option>
-                            @foreach ($subModules as $subModule)
-                                <option value="{{ $subModule->id }}">{{ $subModule->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="form-group">
                         <label for="permission_id">Permission</label>
-                        <div class="row">
+                        <select name="permission_id[]" id="permission_id" class="form-control" multiple style="height: 200px;">
+                            <option selected disabled>Select All Permissions Applicable</option>
                             @foreach ($permissions as $permission)
-                                <div class="col-md-6">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="permission_{{ $permission->id }}" name="permission_id[]" value="{{ $permission->id }}">
-                                        <label class="form-check-label ml-3" style="margin-top: -5px;" for="permission_{{ $permission->id }}">{{ $permission->label }}</label>
-                                    </div>
-                                </div>
+                                <option value="{{ $permission->id }}">{{ $permission->label  }}</option>
                             @endforeach
-                        </div>
+                        </select>
                     </div>
                     
                     <div class="align-middle">

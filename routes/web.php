@@ -7,6 +7,8 @@ use App\Http\Controllers\StockController;
 use App\Http\Controllers\TransactionsController;
 use App\Http\Controllers\AccountsController;
 
+use App\Http\Controllers\EmployeeController;
+
 use App\Http\Controllers\Auth\RegisteredUserController;
 /*
 |--------------------------------------------------------------------------
@@ -65,6 +67,7 @@ Route::middleware('auth', 'check.permissions')->group(function () {
 
     ########### Permissions routes
     Route::get('/role-permissions', [HomeController::class, 'rolePermissionsIndex'])->name('role-permissions.index');
+    Route::get('/role-permissions/view/{roleId}', [HomeController::class, 'rolePermissionsView'])->name('role-permissions.view');
     Route::get('/role-permissions/create', [HomeController::class, 'rolePermissionCreate'])->name('role-permissions.create');
     Route::post('/role-permissions/store', [HomeController::class, 'rolePermissionStore'])->name('role-permissions.store');
     Route::get('/role-permissions/{rolePermission}/edit', [HomeController::class, 'rolePermissionEdit'])->name('role-permissions.edit');
@@ -266,3 +269,13 @@ Route::middleware('auth', 'check.permissions')->group(function () {
     });
 
 });
+
+
+// Employee Routes
+Route::get('/employees', [EmployeeController::class, 'index'])->name('employees.index');
+Route::get('/employees/create', [EmployeeController::class, 'create'])->name('employees.create');
+Route::post('/employees', [EmployeeController::class, 'store'])->name('employees.store');
+Route::get('/employees/{employee}', [EmployeeController::class, 'show'])->name('employees.show');
+Route::get('/employees/{employee}/edit', [EmployeeController::class, 'edit'])->name('employees.edit');
+Route::put('/employees/{employee}', [EmployeeController::class, 'update'])->name('employees.update');
+Route::delete('/employees/{employee}', [EmployeeController::class, 'destroy'])->name('employees.destroy');

@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@section('title', 'Sales List')
 @section('content')
     <div class="row" style="color: #575757; font-style: bold; font-size: 3rem;">
         <div class="col-md-8">Sales List</div>

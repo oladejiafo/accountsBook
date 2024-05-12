@@ -1,4 +1,7 @@
+
 @extends('layouts.app')
+
+@section('title', 'Tax Rates')
 <style>
     .nav-tabs .nav-link {
         font-weight: bold; /* Make the text bolder */

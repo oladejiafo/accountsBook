@@ -39,7 +39,6 @@ class CheckPermissions
                 'autocomplete.customers',
                 'global.search',
                 'reconciliation.match',
-                'returns.process', 
                 'verification.notice',
                 'verification.send',
                 'verification.verify',

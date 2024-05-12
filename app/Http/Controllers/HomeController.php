@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Currency;
@@ -35,12 +36,12 @@ class HomeController extends Controller
         if (!auth()->check() || !auth()->user()->company_id) {
             return redirect()->route('login')->with('error', 'Unauthorized access.');
         }
-        
+
         $companyId = auth()->user()->company_id;
         $company = Company::find($companyId);
-        $currencies = Currency::where('acronym','=', $company->currency)->pluck('symbol')->first();
+        $currencies = Currency::where('acronym', '=', $company->currency)->pluck('symbol')->first();
 
-        if(isset($currencies)){
+        if (isset($currencies)) {
             $defaultCurrency = $currencies;
         } else {
             $defaultCurrency = "$";
@@ -82,7 +83,7 @@ class HomeController extends Controller
             [
                 'icon' => 'fas fa-money-bill-wave text-info',
                 'title' => 'Total Payments',
-                'value' =>Payment::sum('paid_amount'),
+                'value' => Payment::sum('paid_amount'),
                 'description' => 'Total amount of payments received',
             ],
             [
@@ -148,9 +149,9 @@ class HomeController extends Controller
     {
         $companyId = auth()->user()->company_id;
         $company = Company::find($companyId);
-        $currencies = Currency::where('acronym','=', $company->currency)->pluck('symbol')->first();
+        $currencies = Currency::where('acronym', '=', $company->currency)->pluck('symbol')->first();
 
-        if(isset($currencies)){
+        if (isset($currencies)) {
             $defaultCurrency = $currencies;
         } else {
             $defaultCurrency = "$";
@@ -159,40 +160,40 @@ class HomeController extends Controller
         foreach ($insights as $key => $insight) {
             switch ($insight['title']) {
                 case 'Number of Customers':
-                    $filteredCustomers = Customer::whereBetween('created_at', [$startDate, $endDate])->count();
+                    $filteredCustomers = Customer::where('company_id', $companyId)->whereBetween('created_at', [$startDate, $endDate])->count();
                     $insights[$key]['value'] = $filteredCustomers;
                     break;
                 case 'Number of Sales':
-                    $filteredSales = SaleBill::whereBetween('created_at', [$startDate, $endDate])->count();
+                    $filteredSales = SaleBill::where('company_id', $companyId)->whereBetween('created_at', [$startDate, $endDate])->count();
                     $insights[$key]['value'] = $filteredSales;
                     break;
                 case 'Total Sales':
-                    $filteredTotalSales = SaleBillDetails::whereBetween('created_at', [$startDate, $endDate])->sum('total');
-                    $insights[$key]['value'] = $defaultCurrency  . number_format($filteredTotalSales,2);
+                    $filteredTotalSales = SaleBillDetails::where('company_id', $companyId)->whereBetween('created_at', [$startDate, $endDate])->sum('total');
+                    $insights[$key]['value'] = $defaultCurrency  . number_format($filteredTotalSales, 2);
                     break;
                 case 'Total Payments':
-                    $filteredTotalPayments = Payment::whereBetween('created_at', [$startDate, $endDate])->sum('paid_amount');
-                    $insights[$key]['value'] = $defaultCurrency  . number_format($filteredTotalPayments,2);
+                    $filteredTotalPayments = Payment::where('company_id', $companyId)->whereBetween('created_at', [$startDate, $endDate])->sum('paid_amount');
+                    $insights[$key]['value'] = $defaultCurrency  . number_format($filteredTotalPayments, 2);
                     break;
                 case 'Products With Low Stock Levels':
-                    $filteredLowStockProducts = Stock::whereBetween('created_at', [$startDate, $endDate])
+                    $filteredLowStockProducts = Stock::where('company_id', $companyId)->whereBetween('created_at', [$startDate, $endDate])
                         ->where('quantity', '<=', 10)->count();
                     $insights[$key]['value'] = $filteredLowStockProducts;
                     break;
                 case 'Total Purchases':
-                    $filteredTotalPurchases = PurchaseBillDetails::whereBetween('created_at', [$startDate, $endDate])->sum('total');
-                    $insights[$key]['value'] = $defaultCurrency  . number_format($filteredTotalPurchases,2);
+                    $filteredTotalPurchases = PurchaseBillDetails::where('company_id', $companyId)->whereBetween('created_at', [$startDate, $endDate])->sum('total');
+                    $insights[$key]['value'] = $defaultCurrency  . number_format($filteredTotalPurchases, 2);
                     break;
-                // Add cases for any additional insights here
+                    // Add cases for any additional insights here
                 default:
                     // Apply default logic
                     break;
             }
         }
-    
+
         return $insights;
     }
-    
+
 
     public function insightDashboard(Request $request)
     {
@@ -211,11 +212,11 @@ class HomeController extends Controller
             if ($company) {
                 $companyName = $company->name;
             } else {
-                $companyId =1;
+                $companyId = 1;
                 $companyName = "Demo";
             }
         } else {
-            $companyId =1;
+            $companyId = 1;
             $companyName = "Demo";
         }
         // dd($companyName);
@@ -234,7 +235,7 @@ class HomeController extends Controller
             $data[] = $item->quantity;
             $catt[] = $item->category->name;
         }
-        
+
         $sales = SaleBill::where('company_id', $companyId)
             ->orderByDesc('created_at')
             ->take(3)
@@ -245,7 +246,7 @@ class HomeController extends Controller
             ->take(3)
             ->get();
         // dd($purchases,$sales);
-        return view('home.inventoryInsights', compact('labels', 'data','catt', 'sales', 'purchases', 'companyName'));
+        return view('home.inventoryInsights', compact('labels', 'data', 'catt', 'sales', 'purchases', 'companyName'));
     }
 
     public function globalSearch(Request $request)
@@ -254,7 +255,7 @@ class HomeController extends Controller
 
         // Search Users
         $users = User::where('name', 'like', "%$query%")->limit(5)->get();
-        
+
         // Search Transactions
         $transactions = Transaction::where('description', 'like', "%$query%")->limit(5)->get();
 
@@ -266,7 +267,7 @@ class HomeController extends Controller
 
         // Combine search results from different models into a single array
         $searchResults = [];
-        
+
         // Users
         foreach ($users as $user) {
             $searchResults[] = [
@@ -317,7 +318,7 @@ class HomeController extends Controller
         // Check authentication and company identification
         if (!auth()->check() || !auth()->user()->company_id) {
             return redirect()->route('login')->with('error', 'Unauthorized access.');
-        }      
+        }
         $companyId = auth()->user()->company_id;
 
         $query = $request->input('search');
@@ -351,7 +352,7 @@ class HomeController extends Controller
         // Check authentication and company identification
         if (!auth()->check() || !auth()->user()->company_id) {
             return redirect()->route('login')->with('error', 'Unauthorized access.');
-        }      
+        }
         $companyId = auth()->user()->company_id;
         //where('company_id', $companyId)->get();
 
@@ -367,7 +368,7 @@ class HomeController extends Controller
         // Check authentication and company identification
         if (!auth()->check() || !auth()->user()->company_id) {
             return redirect()->route('login')->with('error', 'Unauthorized access.');
-        }      
+        }
         $companyId = auth()->user()->company_id;
         //where('company_id', $companyId)->get();
 
@@ -407,7 +408,7 @@ class HomeController extends Controller
                     'company_id' => auth()->user()->company_id,
                 ]);
             }
-        }        
+        }
         // // Update roles
         // $user->roles()->sync($request->input('roles', []));
 
@@ -430,7 +431,7 @@ class HomeController extends Controller
         // Check authentication and company identification
         if (!auth()->check() || !auth()->user()->company_id) {
             return redirect()->route('login')->with('error', 'Unauthorized access.');
-        }      
+        }
         $companyId = auth()->user()->company_id;
         //where('company_id', $companyId)->get();
         $departments = Department::where('company_id', $companyId)->get();
@@ -444,7 +445,7 @@ class HomeController extends Controller
         // Check authentication and company identification
         if (!auth()->check() || !auth()->user()->company_id) {
             return redirect()->route('login')->with('error', 'Unauthorized access.');
-        }      
+        }
         $companyId = auth()->user()->company_id;
         //where('company_id', $companyId)->get();
         $roles = Role::where('company_id', $companyId)->get();
@@ -459,7 +460,7 @@ class HomeController extends Controller
         // Check authentication and company identification
         if (!auth()->check() || !auth()->user()->company_id) {
             return redirect()->route('login')->with('error', 'Unauthorized access.');
-        }      
+        }
         $companyId = auth()->user()->company_id;
         //where('company_id', $companyId)->get();
 
@@ -528,14 +529,14 @@ class HomeController extends Controller
         // Check authentication and company identification
         if (!auth()->check() || !auth()->user()->company_id) {
             return redirect()->route('login')->with('error', 'Unauthorized access.');
-        }      
-    
+        }
+
         // Load the transaction and ensure it belongs to the authenticated user's company
         $user = User::where('company_id', auth()->user()->company_id)->findOrFail($id);
-    
+
         // Delete the transaction
         $user->delete();
-    
+
         // Redirect back to the index page with a success message
         return redirect()->route('users.index')->with('success', 'User deleted successfully.');
     }
@@ -545,7 +546,7 @@ class HomeController extends Controller
         // Check authentication and company identification
         if (!auth()->check() || !auth()->user()->company_id) {
             return redirect()->route('login')->with('error', 'Unauthorized access.');
-        }      
+        }
         $companyId = auth()->user()->company_id;
 
         $query = $request->input('search');
@@ -565,176 +566,237 @@ class HomeController extends Controller
 
         return view('roles.index', compact('roles'));
     }
-    
+
     public function rolesCreate()
     {
         // Check authentication and company identification
         if (!auth()->check() || !auth()->user()->company_id) {
             return redirect()->route('login')->with('error', 'Unauthorized access.');
-        }      
+        }
         $companyId = auth()->user()->company_id;
         //where('company_id', $companyId)->get();
 
         // $roles = Role::where('company_id', $companyId)->get();
         return view('roles.create');
     }
-    
+
     public function rolesStore(Request $request)
     {
         // Check authentication and company identification
         if (!auth()->check() || !auth()->user()->company_id) {
             return redirect()->route('login')->with('error', 'Unauthorized access.');
-        }      
+        }
         $companyId = auth()->user()->company_id;
         //where('company_id', $companyId)->get();
 
         // Validate request data
         $request->validate([
             'name' => 'required|string|max:255',
-            'guard_name' => 'nullable',
+            'description' => 'nullable',
         ]);
 
         $role = new Role();
         $role->name = $request->input('name');
-        $role->guard_name = $request->input('guard_name');
+        $role->description = $request->input('description');
         $role->company_id = auth()->user()->company_id;
 
         $role->save();
 
         return redirect()->route('roles.index')->with('success', 'User Role created successfully');
     }
-    
+
     public function rolesEdit($id)
     {
         // Check authentication and company identification
         if (!auth()->check() || !auth()->user()->company_id) {
             return redirect()->route('login')->with('error', 'Unauthorized access.');
-        }      
+        }
         $companyId = auth()->user()->company_id;
 
         $role = Role::where('company_id', $companyId)->findOrFail($id);
         return view('roles.edit', compact('role'));
     }
-    
+
     public function rolesUpdate(Request $request, $id)
     {
         // Check authentication and company identification
         if (!auth()->check() || !auth()->user()->company_id) {
             return redirect()->route('login')->with('error', 'Unauthorized access.');
-        }      
+        }
         $companyId = auth()->user()->company_id;
 
         // Validate request data
         $request->validate([
             'name' => 'required|string|max:255',
-            'guard_name' => 'nullable',
+            'description' => 'nullable',
         ]);
         // Find the role by its ID
         $role = Role::where('company_id', $companyId)->findOrFail($id);
-        
+
         // Update role attributes
         $role->name = $request->input('name');
-        $role->guard_name = $request->input('guard_name');
+        $role->description = $request->input('description');
         $role->company_id = auth()->user()->company_id;
         $role->save();
 
         return redirect()->route('roles.index')->with('success', 'User Role updated successfully');
     }
-    
+
     public function rolesDestroy($id)
     {
         // Check authentication and company identification
         if (!auth()->check() || !auth()->user()->company_id) {
             return redirect()->route('login')->with('error', 'Unauthorized access.');
-        }      
-    
+        }
+
         // Load the transaction and ensure it belongs to the authenticated user's company
         $role = Role::where('company_id', auth()->user()->company_id)->findOrFail($id);
-    
+
         // Delete the transaction
         $role->delete();
-    
+
         // Redirect back to the index page with a success message
         return redirect()->route('roles.index')->with('success', 'User Role deleted successfully.');
-    }    
+    }
 
     ///Roles Permissions
+    // public function rolePermissionsIndex(Request $request)
+    // {
+    //     // Check authentication and company identification
+    //     if (!auth()->check() || !auth()->user()->company_id) {
+    //         return redirect()->route('login')->with('error', 'Unauthorized access.');
+    //     }      
+    //     $companyId = auth()->user()->company_id;
+    //     //where('company_id', $companyId)->get();
+    //         // Fetch roles and permissions
+    //     $roles = Role::where('company_id', $companyId)->get();
+    //     $permissions = Permission::all();
+    //     // Create a query builder for RolePermission model
+    //     $rolePermissions = RolePermission::query()->where('company_id', $companyId);
+
+    //     // Handle search query if provided
+    //     $query = $request->input('search');
+    //     if ($query) {
+    //         $rolePermissions->where(function ($queryBuilder) use ($query) {
+    //             $queryBuilder
+    //                 ->orWhereHas('role', function ($roleQuery) use ($query) {
+    //                     $roleQuery->where('name', 'like', '%' . $query . '%');
+    //                 })
+    //                 ->orWhereHas('permission', function ($permissionQuery) use ($query) {
+    //                     $permissionQuery->where('name', 'like', '%' . $query . '%');
+    //                 });
+    //         });
+    //     }
+
+    //     // Execute the query and fetch the results
+    //     $rolePermissions = $rolePermissions->get();
+
+    //     // Define the $editing variable
+    //     $editing = false;
+    //     // $rolePermissions = RolePermission::where('company_id', $companyId)->get();
+    //     return view('role_permissions.index', compact('rolePermissions', 'roles', 'permissions','editing'));
+    // }
     public function rolePermissionsIndex(Request $request)
     {
         // Check authentication and company identification
         if (!auth()->check() || !auth()->user()->company_id) {
             return redirect()->route('login')->with('error', 'Unauthorized access.');
-        }      
-        $companyId = auth()->user()->company_id;
-        //where('company_id', $companyId)->get();
-            // Fetch roles and permissions
-        $roles = Role::where('company_id', $companyId)->get();
-        $permissions = Permission::all();
-        // Create a query builder for RolePermission model
-        $rolePermissions = RolePermission::query()->where('company_id', $companyId);
-
-        // Handle search query if provided
-        $query = $request->input('search');
-        if ($query) {
-            $rolePermissions->where(function ($queryBuilder) use ($query) {
-                $queryBuilder
-                    ->orWhereHas('role', function ($roleQuery) use ($query) {
-                        $roleQuery->where('name', 'like', '%' . $query . '%');
-                    })
-                    ->orWhereHas('permission', function ($permissionQuery) use ($query) {
-                        $permissionQuery->where('name', 'like', '%' . $query . '%');
-                    });
-            });
         }
 
-        // Execute the query and fetch the results
-        $rolePermissions = $rolePermissions->get();
+        // Fetch roles
+        $companyId = auth()->user()->company_id;
+        $rolesQuery = Role::where('company_id', $companyId);
+
+        // Handle search query if provided
+        $search = $request->input('search');
+        if ($search) {
+            $rolesQuery->where('name', 'like', '%' . $search . '%');
+        }
+
+        $roles = $rolesQuery->get();
+
+        // Create an empty array to store the number of permissions for each role
+        $rolePermissionsCount = [];
+
+        // Loop through each role to count the associated permissions
+        foreach ($roles as $role) {
+            $rolePermissionsCount[$role->id] = RolePermission::where('company_id', $companyId)->where('role_id', $role->id)->count();
+        }
 
         // Define the $editing variable
         $editing = false;
-        // $rolePermissions = RolePermission::where('company_id', $companyId)->get();
-        return view('role_permissions.index', compact('rolePermissions', 'roles', 'permissions','editing'));
+
+        return view('role_permissions.index', compact('roles', 'rolePermissionsCount', 'editing'));
     }
-    
+
+    public function rolePermissionsView(Request $request, $roleId)
+    {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }
+
+        // Fetch roles and permissions
+        $companyId = auth()->user()->company_id;
+        $roles = Role::where('company_id', $companyId)->get();
+        $permissionsQuery = Permission::query();
+
+        // Handle search query if provided
+        $search = $request->input('search');
+        if ($search) {
+            $permissionsQuery->where('label', 'like', '%' . $search . '%');
+        }
+
+        $permissions = $permissionsQuery->get();
+
+        // Fetch role permissions based on the role ID
+        $rolePermissions = RolePermission::where('company_id', $companyId)->where('role_id', $roleId)->get();
+
+        // Define the $editing variable
+        $editing = false;
+
+        return view('role_permissions.view', compact('rolePermissions', 'roles', 'permissions', 'editing'));
+    }
+
+
     public function rolePermissionCreate()
     {
         // Check authentication and company identification
         if (!auth()->check() || !auth()->user()->company_id) {
             return redirect()->route('login')->with('error', 'Unauthorized access.');
-        }      
-        
+        }
+
         // Load roles and permissions
         $roles = Role::where('company_id', auth()->user()->company_id)->get();
         $permissions = Permission::all();
-        
+
         // Load modules and sub-modules
         $modules = Module::all();
         $subModules = SubModule::all();
-        
+
         return view('role_permissions.create', compact('roles', 'permissions', 'modules', 'subModules'));
     }
-    
+
     public function rolePermissionStore(Request $request)
     {
         // Check authentication and company identification
         if (!auth()->check() || !auth()->user()->company_id) {
             return redirect()->route('login')->with('error', 'Unauthorized access.');
         }
-    
+
         // Validate the request
         $request->validate([
             'role_id' => 'required',
             'permission_id' => 'required|array',
+            'permission_id.*' => 'exists:permissions,id', // Validate each permission_id in the array
             // 'module_id' => 'required',
             // 'sub_module_id' => 'required',
         ]);
-    
-        // Retrieve the selected permissions, module, and sub-module IDs from the request
+
+        // Retrieve the selected permissions from the request
         $permissions = $request->input('permission_id', []);
-        $moduleId = $request->module_id;
-        $subModuleId = $request->sub_module_id;
-    
-        // Loop through each combination of permission_id and create a new role permission
+
+        // Loop through each selected permission and create a new role permission
         foreach ($permissions as $permissionId) {
             RolePermission::create([
                 'role_id' => $request->role_id,
@@ -744,19 +806,16 @@ class HomeController extends Controller
                 'company_id' => auth()->user()->company_id,
             ]);
         }
-    
+
         return redirect()->route('role-permissions.index')->with('success', 'Role permissions created successfully!');
     }
-    
-    
-    
-    
-    
+
+
     public function getSubModules($moduleId)
     {
         // Retrieve sub-modules for the selected module
         $subModules = SubModule::where('module_id', $moduleId)->pluck('name', 'id')->toArray();
-    
+
         // Return the sub-modules as JSON response
         return response()->json($subModules);
     }
@@ -766,7 +825,7 @@ class HomeController extends Controller
         // Check authentication and company identification
         if (!auth()->check() || !auth()->user()->company_id) {
             return redirect()->route('login')->with('error', 'Unauthorized access.');
-        }      
+        }
         $companyId = auth()->user()->company_id;
         //where('company_id', $companyId)->get();
 
@@ -780,10 +839,10 @@ class HomeController extends Controller
         // Check authentication and company identification
         if (!auth()->check() || !auth()->user()->company_id) {
             return redirect()->route('login')->with('error', 'Unauthorized access.');
-        }      
+        }
         $companyId = auth()->user()->company_id;
         //where('company_id', $companyId)->get();
-        
+
         // Validate the request
         $request->validate([
             'role_id' => 'required',
@@ -805,7 +864,7 @@ class HomeController extends Controller
         // Check authentication and company identification
         if (!auth()->check() || !auth()->user()->company_id) {
             return redirect()->route('login')->with('error', 'Unauthorized access.');
-        }      
+        }
         $companyId = auth()->user()->company_id;
 
         // Check if the role permission belongs to the authenticated user's company
