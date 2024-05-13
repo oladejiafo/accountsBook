@@ -25,7 +25,7 @@
   top: 0;
   left: 0;
   height: 100vh;
-  z-index: 999;
+  z-index: 888;
   background: #4e6570;
   color: #fff;
   transition: all 0.3s;
@@ -36,7 +36,8 @@
 }
 
 .sidebar.active {
-  margin-left: -250px;
+  /* margin-left: -250px; */
+  transform: translateX(-250px);
 }
 
 .logo-wrapper {
@@ -234,6 +235,20 @@ a.nav-button {
   /* Adjust as needed */
 }
 
+#sidebarToggle {
+  display: block; /* Ensures the button is displayed as a block element */
+  background-color: transparent; /* Transparent background */
+  border: none; /* Removes border */
+  color: #0c0c0c; /* Button text color */
+  font-size: 1.5rem; /* Button font size */
+  cursor: pointer; /* Cursor style */
+  padding: 10px; /* Padding around the button icon */
+}
+
+#sidebarToggle:hover {
+  opacity: 0.7; /* Reduce opacity on hover */
+}
+
 /* ---------------------------------------------------
     CONTENT STYLE
 ----------------------------------------------------- */
@@ -251,15 +266,26 @@ a.nav-button {
 ----------------------------------------------------- */
 
 @media (max-width: 768px) {
-  #sidebar {
-    margin-left: -250px;
-  }
 
-  #sidebar.active {
-    margin-left: 0;
-  }
+    #sidebar {
+      /* Adjust the sidebar width to 0 to hide it */
+      width: 0;
+    }
+  
+    /* Optionally, you can completely hide the sidebar content */
+    /* #sidebar.active {
+      display: none;
+    } */
+    #sidebar.active {
+      transform: translateX(0); /* Keep sidebar visible on mobile */
+    }
+    #content {
+      /* Adjust content margin to occupy the entire width */
+      margin-left: 0;
+    }
+  
+    #sidebarCollapse span {
+      display: none;
+    }
 
-  #sidebarCollapse span {
-    display: none;
-  }
 }

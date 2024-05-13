@@ -6,51 +6,44 @@
 
 </style>
 <!-- Button to toggle sidebar on small screens -->
-<button class="btn btn-custom d-lg-none" id="sidebarToggle">
+{{-- <button class="btn btn-custom d-lg-none" id="sidebarToggle" onclick="toggleSidebar()" style="z-index: 9000;">
     <i class="fas fa-bars"></i>
-</button>
-
-<!-- Dialog Box CSS  -->
-<!-- Your dialog box HTML here -->
+</button> --}}
 
 <main id="wrapper">
-    <nav id="sidebar">
+    {{-- <nav id="sidebar"> --}}
+        <nav id="sidebar">
+            <br>
+            @include('layouts.menu-items')
+    
+        </nav>
         <div class="sidebar-header row align-items-center">
-            <div class="sidebar-header-left col-md-3">
-                <a class="navbar-brand titlefont mb-2" href="{{ route('home') }}">
+            <div class="sidebar-header-left col-md-3 col-sm-12 col-lg-3">
+                <!-- Logo for big screens -->
+                <a class="navbar-brand titlefont mb-2 d-none d-lg-block" href="{{ route('home') }}">
                     <div class="logo-wrapper">
-                        <img src="{{ asset('images/akontledger_logo-bg.png') }}"  class="logo"
-                            alt="Logo">
+                        <img src="{{ asset('images/akontledger_logo-bg.png') }}" class="logo" alt="Logo">
                     </div>
                 </a>
-                {{-- @if (isset($companyName))
-                    <div class="navbar-brandc coyfont text-center" style="color: #333">
-                        {{ $companyName }}
+                <!-- Logo for small screens -->
+                <a class="navbar-brand titlefont mb-2 d-lg-none" href="{{ route('home') }}">
+                    <div class="logo-wrapper">
+                        <img src="{{ asset('images/icon_mi.png') }}" class="logo" alt="Logo">
                     </div>
-                @endif --}}
+                </a>
             </div>
 
-            <div class="col-md-6 text-center">
+            <div class="col-md-6 col-sm-12 col-lg-6 text-center">
+                <!-- Company name -->
                 @if (isset($companyName))
-                <div class="navbar-brandcxx coyfont" style="color: #333">
-                    {{ $companyName }}
-                </div>
-                @endif
-                {{-- <form class="form-inline" action="#" method="GET">
-                    <div class="input-group">
-                        <input type="text" class="form-control" name="query" placeholder="Search"
-                            aria-label="Search" aria-describedby="basic-addon1">
-                        <div class="input-group-prepend">
-                            <button type="submit" class="input-group-text" id="basic-addon1">
-                                <i class="fas fa-search"></i>
-                            </button>
-                        </div>
+                    <div class="navbar-brandcxx coyfont" style="color: #333; font-size: 1.5rem;"> <!-- Adjust font size -->
+                        {{ $companyName }}
                     </div>
-                </form> --}}
+                @endif
             </div>
 
             <!-- User info and logout button -->
-            <div class="user-info-container col-md-3 d-flex justify-content-end">
+            <div class="user-info-container col-md-3 col-md-3 col-sm-12 col-lg-3 d-flex justify-content-end">
                 <div class="user-info">
                     @if (auth()->check())
                     <li class="nav-item dropdown">
@@ -72,10 +65,19 @@
                     
                     @endif
                 </div>
+                <div class="col-md-3 col-sm-12 col-lg-3 d-flex justify-content-end">
+                    <!-- Toggle button for mobile -->
+                    <button class="btn btn-custom d-lg-none" id="sidebarToggle" onclick="toggleSidebar()" style="z-index: 9000;">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
             </div>
         </div> 
 
-        <br>
-        @include('layouts.menu-items')
-
-    </nav>
+    <script>
+        function toggleSidebar() {
+            var sidebar = document.getElementById("sidebar");
+            sidebar.classList.toggle("active");
+          }
+    </script>
+      
