@@ -18,6 +18,12 @@
     
         </nav>
         <div class="sidebar-header row align-items-center">
+            <div class="col-md-3 col-sm-12 col-lg-3 d-flex justify-content-start">
+                <!-- Toggle button for mobile -->
+                <button class="btn btn-custom d-lg-none" id="sidebarToggle" onclick="toggleSidebar()" style="z-index: 9000;">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
             <div class="sidebar-header-left col-md-3 col-sm-12 col-lg-3">
                 <!-- Logo for big screens -->
                 <a class="navbar-brand titlefont mb-2 d-none d-lg-block" href="{{ route('home') }}">
@@ -28,7 +34,7 @@
                 <!-- Logo for small screens -->
                 <a class="navbar-brand titlefont mb-2 d-lg-none" href="{{ route('home') }}">
                     <div class="logo-wrapper">
-                        <img src="{{ asset('images/icon_mi.png') }}" class="logo" alt="Logo">
+                        <img src="{{ asset('images/icon_mi.png') }}"  class="logo" alt="Logo">
                     </div>
                 </a>
             </div>
@@ -43,7 +49,7 @@
             </div>
 
             <!-- User info and logout button -->
-            <div class="user-info-container col-md-3 col-md-3 col-sm-12 col-lg-3 d-flex justify-content-end">
+            <div class="user-info-container col-md-2 col-sm-12 col-lg-3 d-flex justify-content-end">
                 <div class="user-info">
                     @if (auth()->check())
                     <li class="nav-item dropdown">
@@ -65,12 +71,7 @@
                     
                     @endif
                 </div>
-                <div class="col-md-3 col-sm-12 col-lg-3 d-flex justify-content-end">
-                    <!-- Toggle button for mobile -->
-                    <button class="btn btn-custom d-lg-none" id="sidebarToggle" onclick="toggleSidebar()" style="z-index: 9000;">
-                        <i class="fas fa-bars"></i>
-                    </button>
-                </div>
+
             </div>
         </div> 
 
@@ -80,4 +81,3 @@
             sidebar.classList.toggle("active");
           }
     </script>
-      

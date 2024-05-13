@@ -47,7 +47,7 @@
   /* Ensure the logo inherits the color of its parent */
 }
 
-#sidebar .logo {
+#sidebar-header .logo {
   max-width: 230px;
   margin-left: 1rem;
 }
@@ -236,17 +236,7 @@ a.nav-button {
 }
 
 #sidebarToggle {
-  display: block; /* Ensures the button is displayed as a block element */
-  background-color: transparent; /* Transparent background */
-  border: none; /* Removes border */
-  color: #0c0c0c; /* Button text color */
-  font-size: 1.5rem; /* Button font size */
-  cursor: pointer; /* Cursor style */
-  padding: 10px; /* Padding around the button icon */
-}
-
-#sidebarToggle:hover {
-  opacity: 0.7; /* Reduce opacity on hover */
+  display: none; /* Initially hide the toggle button */
 }
 
 /* ---------------------------------------------------
@@ -267,17 +257,61 @@ a.nav-button {
 
 @media (max-width: 768px) {
 
-    #sidebar {
-      /* Adjust the sidebar width to 0 to hide it */
-      width: 0;
+    /* Align items in a row */
+    .sidebar-header .col-md-3,
+    .sidebar-header .col-md-6,
+    .sidebar-header .user-info-container {
+        width: auto !important;
     }
-  
-    /* Optionally, you can completely hide the sidebar content */
-    /* #sidebar.active {
-      display: none;
-    } */
+
+    /* Reduce font size for company name */
+    .navbar-brandcxx.coyfont {
+        font-size: 1.2rem !important; /* Adjust font size */
+    }
+
+    /* Move toggle button to the top-left corner */
+    .col-md-3 {
+        order: -1; /* Move to the beginning of the row */
+    }
+
+    /* Adjust margins and padding for the toggle button */
+    #sidebarToggle {
+        margin-top: 10px;
+        margin-left: 10px;
+        padding: 5px;
+    }
+
+    /* Adjust margins and padding for user info container */
+    .user-info-container {
+        margin-top: 10px;
+        margin-right: 10px;
+    }
+
+    #sidebar {
+      transform: translateX(-250px); /* Initially hide the sidebar */
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 250px;
+      height: 100vh;
+      overflow-y: auto;
+      background-color: #4e6570;
+      color: #fff;
+      z-index: 888;
+      transition: transform 0.3s ease;
+    }
+
     #sidebar.active {
-      transform: translateX(0); /* Keep sidebar visible on mobile */
+      display: block;
+      position: fixed;
+      /* top: 40px;  */
+      left: 0;
+      width: 250px;
+      height: calc(100% - 40px); 
+      /* background-color: #fff;  */
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
+      z-index: 999;
+      transform: translateX(0);
     }
     #content {
       /* Adjust content margin to occupy the entire width */
@@ -287,5 +321,17 @@ a.nav-button {
     #sidebarCollapse span {
       display: none;
     }
-
+    #sidebarToggle {
+      display: block;
+      position: fixed;
+      top: 10px;
+      /* right: 10px; */
+      z-index: 999;
+      background-color: transparent;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 10px;
+      transition: opacity 0.3s ease;
+  }
 }
