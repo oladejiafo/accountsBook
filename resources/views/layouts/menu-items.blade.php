@@ -1,8 +1,24 @@
 <!-- <div class="list-groupx xlist-group-flush list-unstyled sidebar-components" id="scrollable-menu"> -->
 <ul class="list-unstyled sidebar-components" id="scrollable-menu">
-        <!-- <div class="sidebar-toggle hidden-xs d-flex justify-content-end" data-toggle-class="sidebar-left-collapsed" data-target="html" data-fire-event="sidebar-left-toggle">
-            <i class="fa fa-bars" aria-label="Toggle sidebar"></i>
-        </div> -->
+        <li class="col-12 d-lg-none">
+            @if (auth()->check())
+                <a href="#UserSubmenu" data-toggle="collapse" class="dropdown-toggle sidebar-text right-arrow sidebar-button"><i class="fas fa-user-circle" style="margin-right: .75rem"></i>
+                    @if (request()->user())
+                    <span> {{ request()->user()->name }}</span>
+                    @endif
+                </a>
+                <ul class="collapse list-unstyled" id="UserSubmenu">
+                    <li>
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit" class="sidebar-text sidebar-subitem sidebar-button" style="background: none; border: none; padding: 0; font: inherit; cursor: pointer; color: inherit; text-decoration: underline; outline: inherit;">
+                                <i class="fas fa-dot-circle"></i> Logout
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+            @endif
+        </li>   
         @if (auth()->user()->hasPermission('account.dashboard') || auth()->user()->hasPermission('home') || auth()->user()->hasRole('Super_Admin'))
         <!-- Grouping for Dashboards -->
         <li>

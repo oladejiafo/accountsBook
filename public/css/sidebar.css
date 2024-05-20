@@ -266,7 +266,7 @@ a.nav-button {
 
     /* Reduce font size for company name */
     .navbar-brandcxx.coyfont {
-        font-size: 1.2rem !important; /* Adjust font size */
+        font-size: 1.5rem !important; /* Adjust font size */
     }
 
     /* Move toggle button to the top-left corner */
@@ -276,6 +276,12 @@ a.nav-button {
 
     /* Adjust margins and padding for the toggle button */
     #sidebarToggle {
+      background: transparent;
+      border: 1px solid #000 !important;
+      color: #000;
+      border-radius: 4px;
+      cursor: pointer;
+
         margin-top: 10px;
         margin-left: 10px;
         padding: 5px;
