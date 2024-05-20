@@ -45,9 +45,12 @@
                                 <td class="align-middle">{{ $employee->first_name }} {{ $employee->middle_name }} {{ $employee->sur_name }}</td>
                                 <td class="align-middle">{{ $employee->email }}</td>
                                 <td class="align-middle">{{ $employee->phone }}</td>
-                                <td class="align-middle">{{ $employee->department->name }}</td>
-                                <td class="align-middle">{{ $employee->designation->name }}</td>
-                                <td class="align-middle">{{ $employee->branch->name }}</td>
+                                <td class="align-middle">{{ optional($employee->department)->name }}</td>
+
+<td class="align-middle">{{ optional($employee->designation)->name }}</td>
+
+<td class="align-middle"></td>
+
                                 <td class="align-middle">{{ $employee->active_status ? 'Active' : 'Inactive' }}</td>
                                 <td class="align-middle">
                                     <a href="{{ route('employees.show', $employee->id) }}" class="btn btn-info btn-sm">View</a>
