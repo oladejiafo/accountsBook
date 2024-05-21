@@ -6,7 +6,7 @@
 <div class="container">
     
     <div class="row">
-        <div class="col-md-6"  style="color: #4e4e4e; font-style: bold; font-size: 3rem;">Deposits</div>
+        <div class="col-md-6 titles"  style="color: #4e4e4e; font-style: bold;">Deposits</div>
         <div class="col-md-6">
             <div style="float:right;" class="d-flex justify-content-end mt-3">
                 <div>

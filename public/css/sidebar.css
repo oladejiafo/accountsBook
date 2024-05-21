@@ -340,4 +340,36 @@ a.nav-button {
       padding: 10px;
       transition: opacity 0.3s ease;
   }
+
+
+    .sidebar-header {
+        padding: 0 1rem;
+    }
+
+    .sidebar-header-left {
+        justify-content: center;
+    }
+
+    .navbar-brandcxx {
+        display: none;
+    }
+
+    .company-name-mobile {
+        display: block;
+        position: absolute;
+        width: 100%;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        font-size: 1.5rem !important;
+        color: #333;
+        z-index: 1;
+    }
+}
+
+@media (min-width: 768px) {
+    .company-name-mobile {
+        display: none;
+    }
 }

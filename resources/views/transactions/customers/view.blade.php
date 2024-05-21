@@ -5,7 +5,7 @@
         <div class="row justify-content-center">
             <div class="col-md-10">
                 <div class="card mb-4">
-                    <div class="card-header" style="color: #4e4e4e; font-style: bold; font-size: 2rem;">Customer Details</div>
+                    <div class="card-header" style="color: #4e4e4e; font-style: bold; ">Customer Details</div>
                     <div class="content-section">
                         <div class="media">
                             <div class="media-body">
@@ -51,7 +51,7 @@
                 <div class="card">
                     <div class="card-header">Customer Transactions</div>
                     <div class="card-body">
-                        <table class="table">
+                        <table class="table table-responsive">
                             <thead>
                                 <tr>
                                     <th>#</th>

@@ -44,7 +44,7 @@
                         {{ session('status') }}
                     </div>
                     @endif
-                    <div class="container" style="margin-top: 10%">
+                    <div class="container top-margin-10">
                         @yield('content')
                     </div>
                 </div>

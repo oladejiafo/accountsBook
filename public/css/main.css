@@ -581,4 +581,30 @@
     transform: translateX(26px);
 }
 
+.top-margin-10 {
+  margin-top: 10%;
+}
+
+.card-title,
+.card-header, 
+.titles {
+  font-size: 3rem !important;
+}
+
+@media (max-width: 768px) {
+  .top-margin-10 {
+      margin-top: 15%; 
+}
+
+label {
+  font-size: 1.2rem;
+}
+.card-title,
+.card-header, 
+.titles  {
+  font-size: 2rem !important;
+}
+}
+
+
 

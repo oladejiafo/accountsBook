@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
     <div class="card">
-        <div class="card-header" style="color: #4e4e4e; font-style: bold; font-size: 3rem;">Edit Customer</div>
+        <div class="card-header" style="color: #4e4e4e; font-style: bold; ">Edit Customer</div>
 
         <div class="card-body">
             <form method="POST" action="{{ route('customers.update', $customer->id) }}">

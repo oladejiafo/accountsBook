@@ -5,13 +5,14 @@
 @section('content')
 <div>
    
-    <div style="color:#464646; font-style: bold; font-size: 3rem; border-bottom: 1px solid #464646;">
-        {{-- <span>Welcome,  @auth {{ auth()->user()->name }} @else Guest @endauth </span> --}}
-        <h1 style="color: #4e4e4e; font-style: bold; font-size: 3rem;">Dashboard: <span style="font-size: smaller">Inventory Insights</span></h1>
+    <div class="mb-4 d-none d-lg-block" style="color:#464646; font-style: bold; font-size: 3rem; border-bottom: 1px solid #464646;">
+        <h1  style="color: #4e4e4e; font-style: bold; font-size: 3rem;">Dashboard: <span style="font-size: smaller">Account Insight</span></h1>
     </div>
 
- 
-
+    <div class="mb-4 d-lg-none row" style="color:#464646; font-style: bold; font-size: 3rem;">
+        <div class="col-sm-12 col-md-3 col-lg-3 text-center"><h1  style="color: #4e4e4e; font-style: bold; font-size: 3rem;">Dashboard</div> 
+        <div class="col-sm-12 col-md-9 col-lg-9 text-center"><span style="font-size: smaller">Inventory Insights</span></h1></div>
+    </div>
     <br>
 
     <div id="container" style="position: relative; height:45vh; border: 1.2mm ridge #4e6570; border-radius: 30px;" class="align-middle table-bordered">

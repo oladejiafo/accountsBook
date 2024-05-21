@@ -4,9 +4,9 @@
 
 @section('content')
 
-<div class="row" style="color: #575757; font-style: bold; font-size: 3rem;">
-    <div class="col-md-8">Purchases List</div>
-    <div class="col-md-4">
+<div class="row" style="color: #575757; font-style: bold; ">
+    <div class="col-6 titles">Purchases List</div>
+    <div class="col-6">
         <div style="float:right;">
             <a class="btn btn-success" href="{{ route('select-supplier') }}">New Incoming Stock</a>
         </div>
@@ -15,7 +15,7 @@
 
 <br>
 
-<table class="table table-css table-hover table-bordered">
+<table class="table table-css table-hover table-bordered table-responsive">
     <thead class="thead-dark align-middle">
         <tr>
             <th width="10%">Bill No.</th>

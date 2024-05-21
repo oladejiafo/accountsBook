@@ -6,7 +6,7 @@
 @section('content')
     <div class="card">
         <div class="card-header">
-            <h1 class="card-title" style="color: #4e4e4e; font-style: bold; font-size: 3rem;">Returns</h1>
+            <h1 class="card-title" style="color: #4e4e4e; font-style: bold; ">Returns</h1>
         </div>
         <div class="card-body">
             <form action="{{ route('returns.process') }}" method="post">
@@ -83,7 +83,7 @@
                 <!-- Return Products Table -->
                 <div class="form-group">
                     <label for="return_products">Return Products:</label>
-                    <table class="table">
+                    <table class="table table-responsive">
                         <thead>
                             <tr>
                                 <th>Product ID</th>

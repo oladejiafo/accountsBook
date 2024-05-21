@@ -5,8 +5,8 @@
     <div class="card">
             
         <div class="row card-header">
-            <div class="col-md-6"  style="color: #4e4e4e; font-style: bold; font-size: 3rem;">Payments</div>
-            <div class="col-md-6">
+            <div class="col-6"  style="color: #4e4e4e; font-style: bold;">Payments</div>
+            <div class="col-6">
                 <div style="float:right;" class="d-flex justify-content-end mt-3">
                     <div>
                         <a href="{{ route('payments.create') }}" class="btn btn-success mb-3">Create Payment</a>
@@ -27,7 +27,7 @@
         <br>
 
         <div class="card-body">
-            <table class="table table-css table-bordered table-hover">
+            <table class="table table-css table-bordered table-hover table-responsive">
                 <thead class="thead-dark align-middle">
                     <tr>
                         <th width="10%">Payment ID</th>

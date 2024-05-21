@@ -5,7 +5,7 @@
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header" style="color: #4e4e4e; font-style: bold; font-size: 3rem;">Edit Payment</div>
+                <div class="card-header" style="color: #4e4e4e; font-style: bold; ">Edit Payment</div>
 
                 <div class="card-body">
                     <form method="POST" action="{{ route('payments.update', $payment->id) }}">

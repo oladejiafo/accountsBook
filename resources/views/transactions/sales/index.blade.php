@@ -1,16 +1,16 @@
 @extends('layouts.app')
 @section('title', 'Sales List')
 @section('content')
-    <div class="row" style="color: #575757; font-style: bold; font-size: 3rem;">
-        <div class="col-md-8">Sales List</div>
-        <div class="col-md-4">               
+    <div class="row titles" style="color: #575757; font-style: bold; ">
+        <div class="col-8">Sales List</div>
+        <div class="col-4">               
             <div style="float:right;"> <a class="btn btn-success" href="{{ route('sales.create') }}">New Sales</a> </div>
         </div>
     </div>
     
     <br>
 
-    <table class="table table-css table-bordered table-hover"> 
+    <table class="table table-css table-bordered table-hover table-responsive"> 
         <thead class="thead-dark align-middle">
             <tr>
                 <th width="8%">Bill No.</th>

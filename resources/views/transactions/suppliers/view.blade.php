@@ -26,7 +26,7 @@
     </div>
 </div>
 
-<table class="table table-css table-hover table-bordered">
+<table class="table table-css table-hover table-bordered table-responsive">
     <br>
     <thead class="thead-dark align-middle">
         <tr>

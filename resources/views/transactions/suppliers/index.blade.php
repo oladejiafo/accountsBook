@@ -3,16 +3,16 @@
 @section('title', 'Suppliers List')
 
 @section('content')
-<div class="row" style="color: #575757; font-style: bold; font-size: 3rem;">
-    <div class="col-md-8">Suppliers List</div>
-    <div class="col-md-4">
+<div class="row titles" style="color: #575757; font-style: bold; ">
+    <div class="col-8">Suppliers List</div>
+    <div class="col-4">
         <div style="float:right;"> <a class="btn btn-success" href="{{ route('supplier.create') }}">Add New Supplier</a> </div>
     </div>
 </div>
 
 <br>
 
-<table class="table table-css table-hover table-bordered">
+<table class="table table-css table-hover table-bordered table-responsive">
     <thead class="thead-dark align-middle">
         <tr>
             <th width="20%">Name</th>

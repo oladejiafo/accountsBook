@@ -4,7 +4,7 @@
 
 @section('content')
 
-<div style="color:#575757; font-style: bold; font-size: 3rem;  border-bottom: 1px solid white;">Purchase Invoice No : {{ $bill->id }}</div>
+<div class="titles" style="color:#575757; font-style: bold;   border-bottom: 1px solid white;">Purchase Invoice No : {{ $bill->id }}</div>
 
 <form method="post">
     @csrf
@@ -15,7 +15,7 @@
 
         <div id="printArea" class="bg">
 
-            <table class="outer-box inner-box" style="width: 840px; margin-left: auto; margin-right: auto; border-collapse: collapse;">
+            <table class="outer-box inner-box table-responsive" style="width: 840px; margin-left: auto; margin-right: auto; border-collapse: collapse;">
                 <tbody>
 
                     <tr style="height: 1px;">
@@ -39,7 +39,7 @@
 
                     <tr>
                         <td style="border: 1px solid black;">
-                            <table class="outer-box" style="width: 800px; margin-left: auto; margin-right: auto; border-collapse: collapse;">
+                            <table class="outer-box table-responsive" style="width: 800px; margin-left: auto; margin-right: auto; border-collapse: collapse;">
                                 <tbody>
                                     <tr>
                                         <td class="inner-box" style="text-align: center; font-weight: bold; border: 1px solid black;" colspan="3">GSTIN NO - 123456789CASTR0</td>
@@ -77,7 +77,7 @@
 
                     <tr>
                         <td style="border: 1px solid black;">
-                            <table class="outer-box" style="width: 800px; margin-left: auto; margin-right: auto; border-collapse: collapse;">
+                            <table class="outer-box table-responsive" style="width: 800px; margin-left: auto; margin-right: auto; border-collapse: collapse;">
                                 <tbody>
                                     <tr>
                                         <td class="inner-box" style="width: 5%; font-weight: bold; text-align: center; border: 1px solid black;">&nbsp;SL</td>
@@ -105,7 +105,7 @@
                     </tr>
                     <tr>
                         <td style="border: 1px solid black;">
-                            <table class="outer-box" style="width: 800px; margin-left: auto; margin-right: auto; border-collapse: collapse;">
+                            <table class="outer-box table-responsive" style="width: 800px; margin-left: auto; margin-right: auto; border-collapse: collapse;">
                                 <tbody>
                                     <tr>
                                         <td class="inner-box" style="width: 35%; text-align: center; border: 1px solid black;" rowspan="6">

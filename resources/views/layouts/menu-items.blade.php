@@ -1,8 +1,8 @@
 <!-- <div class="list-groupx xlist-group-flush list-unstyled sidebar-components" id="scrollable-menu"> -->
 <ul class="list-unstyled sidebar-components" id="scrollable-menu">
-        <li class="col-12 d-lg-none">
+        <li class="col-12 d-lg-none mt-1">
             @if (auth()->check())
-                <a href="#UserSubmenu" data-toggle="collapse" class="dropdown-toggle sidebar-text right-arrow sidebar-button"><i class="fas fa-user-circle" style="margin-right: .75rem"></i>
+                <a href="#UserSubmenu" data-toggle="collapse" class="dropdown-toggle sidebar-text right-arrow sidebar-button"  style="margin-left: 0px !important"><i class="fas fa-user-circle" style="margin-right: .75rem"></i>
                     @if (request()->user())
                     <span> {{ request()->user()->name }}</span>
                     @endif

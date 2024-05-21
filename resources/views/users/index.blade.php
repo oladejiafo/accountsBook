@@ -5,8 +5,8 @@
 <div class="container">
     
     <div class="row">
-        <div class="col-md-6"  style="color: #4e4e4e; font-style: bold; font-size: 3rem;">Users</div>
-        <div class="col-md-6">
+        <div class="col-6 titles"  style="color: #4e4e4e; font-style: bold;">Users</div>
+        <div class="col-6">
             <div style="float:right;" class="d-flex justify-content-end mt-3">
                 <div>
                     <a href="{{ route('users.create') }}" class="btn btn-success mb-3">Create User</a>
@@ -27,6 +27,7 @@
     
     <br>
 
+    <div class="table-responsive">
     <table class="table table-css table-bordered table-hover">
         <thead class="thead-dark align-middle">
             <tr>
@@ -72,6 +73,7 @@
             @endforeach
         </tbody>
     </table>
+    </div>
     @if ($users->isNotEmpty())
         <div class="pagination">
             {{ $users->links() }}

@@ -5,7 +5,7 @@
 @section('content')
 <div class="container">
     <div class="row">
-        <div class="col-md-12" style="color: #4e4e4e; font-style: bold; font-size: 3rem;">
+        <div class="col-md-12 titles" style="color: #4e4e4e; font-style: bold; font-size: 3rem;">
             @if(isset($ttype))
                 @if($ttype == "Account Receivable")
                     Accounts Receivable Ledger
@@ -37,11 +37,11 @@
             <form method="GET" action="{{ route('ledger.index') }}">
         @endif        
             <div class="form-row">
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-4 col-lg-4 col-sm-12">
                     <input type="text" name="keyword" class="form-control" placeholder="Search... date, keywords etc">
                 </div>
                 @if(!isset($ttype))
-                    <div class="form-group col-md-3">
+                    <div class="form-group  col-md-3 col-lg-3 col-sm-12">
                         <select name="search_account" class="form-control">
                             <option value="all">Select Account Type</option>
                             @foreach($accountCategories as $category)
@@ -50,7 +50,7 @@
                         </select>
                     </div>
                 @endif
-                <div class="form-group col-md-3">
+                <div class="form-group  col-md-3 col-lg-3 col-sm-12">
                     <select name="search_date" class="form-control">
                         <option value="all">Select Duration</option>
                         <option value="today">Today</option>
@@ -63,58 +63,58 @@
                         <option value="last_3_months">Last 3 Months</option>
                     </select>
                 </div>
-                <div class="form-group col-md-2">
-                    <button type="submit" class="btn btn-info">Filter</button>
+                <div class="form-group col-md-2 col-lg-2 col-sm-12 text-right">
+                    <button type="submit" class="btn btn-info" style="width: 100%">Filter</button>
                 </div>
             </div>
         </form>
     </div>
     <div class="row mt-2">
-        <div class="col-md-6">
-                <div class="mb-3 text-center" style="padding-left: 1%; padding-right: 39%">
-                    <strong  class="bg-dark text-white d-block mb-1 pb-2 pt-2">Account Name:</strong>
-                    <div class="bg-light p-1 rounded shadow-sm" style="background-color: rgb(220, 234, 229);border: 1px solid #ccc;">
-                        @if(request()->has('search_account') && request('search_account') != 'all')
-                            @if($transactions->isNotEmpty() && $transactions->first()->account)
-                                {{ $transactions->first()->account->type }}
-                            @else
-                                General Ledger
-                            @endif
+        <div class="col-md-6 col-lg-6 col-sm-12">
+            <div class="mb-3 text-center">
+                <strong class="bg-dark text-white d-block mb-1 pb-2 pt-2">Account Name:</strong>
+                <div class="bg-light p-1 rounded shadow-sm" style="background-color: rgb(220, 234, 229); border: 1px solid #ccc;">
+                    @if(request()->has('search_account') && request('search_account') != 'all')
+                        @if($transactions->isNotEmpty() && $transactions->first()->account)
+                            {{ $transactions->first()->account->type }}
                         @else
                             General Ledger
                         @endif
-                    </div>
+                    @else
+                        General Ledger
+                    @endif
                 </div>
-                <div class="mb-3 text-center" style="padding-left: 1%; padding-right: 39%;">
-                    <strong class="bg-dark text-white d-block mb-1 pb-2 pt-2">Account Code:</strong>
-                    <div class="bg-light p-1 rounded shadow-sm" style="background-color: rgb(220, 234, 229);border: 1px solid #ccc;">
-                        @if(request()->has('search_account') && request('search_account') != 'all')
-                            @if($transactions->isNotEmpty() && $transactions->first()->account)
-                                {{ $transactions->first()->account->code }} &nbsp;
-                            @else
-                                ---
-                            @endif
-                        @else
-                         ---
-                        @endif
-                    </div>
-                </div>
-        </div>
-        <div class="col-md-6 justify-content-end">
-            <div class="mb-3 text-center" style="padding-left: 39%; padding-right: 1%">
-                <strong class="bg-dark text-white d-block mb-1 pb-2 pt-2">Starting Balance:</strong>
-                <div class="bg-light p-1 rounded shadow-sm" style="background-color: rgb(220, 234, 229);border: 1px solid #ccc;">{{ number_format($startingBalance, 2) }}</div>
             </div>
-            <div class="mb-3 text-center" style="padding-left: 39%; padding-right: 1%;">
+            <div class="mb-3 text-center">
+                <strong class="bg-dark text-white d-block mb-1 pb-2 pt-2">Account Code:</strong>
+                <div class="bg-light p-1 rounded shadow-sm" style="background-color: rgb(220, 234, 229); border: 1px solid #ccc;">
+                    @if(request()->has('search_account') && request('search_account') != 'all')
+                        @if($transactions->isNotEmpty() && $transactions->first()->account)
+                            {{ $transactions->first()->account->code }} &nbsp;
+                        @else
+                            ---
+                        @endif
+                    @else
+                        ---
+                    @endif
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-6 col-sm-12">
+            <div class="mb-3 text-center">
+                <strong class="bg-dark text-white d-block mb-1 pb-2 pt-2">Starting Balance:</strong>
+                <div class="bg-light p-1 rounded shadow-sm" style="background-color: rgb(220, 234, 229); border: 1px solid #ccc;">{{ number_format($startingBalance, 2) }}</div>
+            </div>
+            <div class="mb-3 text-center">
                 <strong class="bg-dark text-white d-block mb-1 pb-2 pt-2">Total Adjusted Balance:</strong>
-                <div class="bg-light p-1 rounded shadow-sm" style="background-color: rgb(220, 234, 229);border: 1px solid #ccc;">{{ number_format($totalAdjustedBalance, 2) }}</div>
+                <div class="bg-light p-1 rounded shadow-sm" style="background-color: rgb(220, 234, 229); border: 1px solid #ccc;">{{ number_format($totalAdjustedBalance, 2) }}</div>
             </div>
         </div>
     </div>
     
     <hr>
 
-
+    <div class="table-responsive">
     <table class="table table-css table-bordered table-hover">
         <thead class="thead-light align-middle">
             <tr>
@@ -163,6 +163,7 @@
             @endforeach
         </tbody>
     </table>
+    </div>
 
     @if ($transactions->isNotEmpty())
         <div class="pagination">

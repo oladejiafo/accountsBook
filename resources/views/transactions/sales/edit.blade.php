@@ -4,7 +4,7 @@
 
 @section('content')
 
-<div style="color:#575757; font-style: bold; font-size: 3rem; border-bottom: 1px solid white;">Edit Sale</div>
+<div class="titles" style="color:#575757; font-style: bold;  border-bottom: 1px solid white;">Edit Sale</div>
 
 <br>
 

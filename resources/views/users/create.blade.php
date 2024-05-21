@@ -23,7 +23,7 @@
 <div class="container">
     <div class="card">
         <div class="card-header">
-            <h1 class="card-title" style="color: #4e4e4e; font-style: bold; font-size: 3rem;">Create User</h1>
+            <h1 class="card-title" style="color: #4e4e4e; font-style: bold; ">Create User</h1>
         </div>
         <div class="card-body">
             <form action="{{ route('users.store') }}" method="POST">
@@ -71,10 +71,10 @@
                         @if($counter % 2 == 0)
                             <div class="row mb-2">
                         @endif
-                        <div class="col-md-6">
-                            <div class="form-check">
+                        <div class="col-md-6 col-lg-6 col-sm-6">
+                            <div class="form-check mb-2">
                                 <input class="form-check-input" type="checkbox" id="role_{{ $role->id }}" name="roles[]" value="{{ $role->id }}">
-                                <label class="form-check-label ml-3" style="margin-top: -5px;" for="role_{{ $role->id }}">{{ $role->name }}</label>
+                                <label class="form-check-label ml-3" style="margin-top: -4px;" for="role_{{ $role->id }}">{{ $role->name }}</label>
                             </div>
                         </div>
                         @if($counter % 2 != 0 || $loop->last)
