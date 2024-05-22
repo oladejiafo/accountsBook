@@ -5,7 +5,7 @@
         <div class="row justify-content-center">
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-header" style="color: #4e4e4e; font-style: bold; font-size: 3rem;">Create Role</div>
+                    <div class="card-header" style="color: #4e4e4e; font-style: bold; ">Create Role</div>
 
                     <div class="card-body">
                         <form action="{{ route('roles.store') }}" method="POST">

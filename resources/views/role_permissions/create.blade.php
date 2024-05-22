@@ -21,7 +21,7 @@
     <div class="container">
         <div class="card">
             <div class="card-header">
-                <h1 class="card-title" style="color: #4e4e4e; font-style: bold; font-size: 3rem;">Create Role Permission</h1>
+                <h1 class="card-title" style="color: #4e4e4e; font-style: bold; ">Create Role Permission</h1>
             </div>
             <div class="card-body">
                 <form action="{{ route('role-permissions.store') }}" method="POST">

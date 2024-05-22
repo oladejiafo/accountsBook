@@ -99,7 +99,7 @@
                         <!-- Existing Mappings Listing -->
                         @if($mappings->isNotEmpty())
                             <h2>Existing Transaction Account Mappings</h2>
-                            <table class="table table-css table-bordered table-hover">
+                            <table class="table table-css table-bordered table-hover table-responsive">
                                 <thead class="thead-dark align-middle">
                                     <tr>
                                         <th>Transaction Type</th>

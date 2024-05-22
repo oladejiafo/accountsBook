@@ -6,7 +6,7 @@
 <div class="container">
     <div class="card">
         <div class="card-header">
-            <h1 class="card-title" style="color: #4e4e4e; font-style: bold; font-size: 3rem;">Create Transaction</h1>
+            <h1 class="card-title" style="color: #4e4e4e; font-style: bold;">Create Transaction</h1>
         </div>
         <div class="card-body">
             <form action="{{ route('transactions.store') }}" method="POST">

@@ -5,7 +5,7 @@
 @section('content')
 <div class="container">
     <div class="row">
-        <div class="col-md-12 titles" style="color: #4e4e4e; font-style: bold; font-size: 3rem;">
+        <div class="col-12 titles" style="color: #4e4e4e; font-style: bold; ">
             @if(isset($ttype))
                 @if($ttype == "Account Receivable")
                     Accounts Receivable Ledger

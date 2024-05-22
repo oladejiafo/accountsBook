@@ -6,7 +6,7 @@
 <div class="container">
     <div class="card">
         <div class="card-header">
-            <h1 class="card-title" style="color: #4e4e4e; font-style: bold; font-size: 3rem;">Edit Transfer</h1>
+            <h1 class="card-title" style="color: #4e4e4e; font-style: bold;">Edit Transfer</h1>
         </div>
         <div class="card-body">
             <form action="{{ route('transfers.update', $transfer->id) }}" method="POST">

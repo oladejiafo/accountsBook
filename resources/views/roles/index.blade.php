@@ -5,7 +5,7 @@
 <div class="container">
     
     <div class="row">
-        <div class="col-6"  style="color: #4e4e4e; font-style: bold; ">User Roles</div>
+        <div class="col-6 titles"  style="color: #4e4e4e; font-style: bold; ">User Roles</div>
         <div class="col-6">
             <div style="float:right;" class="d-flex justify-content-end mt-3">
                 <div>

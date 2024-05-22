@@ -6,8 +6,8 @@
 <div class="container">
     
     <div class="row">
-        <div class="col-md-6 titles"  style="color: #4e4e4e; font-style: bold;">Deposits</div>
-        <div class="col-md-6">
+        <div class="col-6 titles"  style="color: #4e4e4e; font-style: bold;">Deposits</div>
+        <div class="col-6">
             <div style="float:right;" class="d-flex justify-content-end mt-3">
                 <div>
                     <a href="{{ route('deposits.create') }}" class="btn btn-success mb-3">Create Deposit</a>
@@ -27,7 +27,7 @@
     </form>
     <br>
 
-    <table class="table table-css table-bordered table-hover">
+    <table class="table table-css table-bordered table-hover table-responsive">
         <thead class="thead-dark align-middle">
             <tr>
                 <th>Date</th>

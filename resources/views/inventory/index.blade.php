@@ -4,9 +4,9 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <div class="row" style="color: #4e4e4e; font-style: bold; font-size: 3rem;">
-                    <div class="col-md-8">Inventory List</div>
-                    <div class="col-md-4">
+                <div class="row" style="color: #4e4e4e; font-style: bold; ">
+                    <div class="col-8 titles">Inventory List</div>
+                    <div class="col-4">
                         <div style="float:right;">
                             <a class="btn btn-success" href="{{ route('new-stock') }}">Add New Stock</a>
                         </div>
@@ -24,7 +24,7 @@
                 </form>
                 <br>
 
-                <table class="table table-css table-bordered table-hover">
+                <table class="table table-css table-bordered table-hover table-responsive">
                     <thead class="thead-dark align-middle">
                         <tr>
                             <th class="align-middle">Stock Category</th>

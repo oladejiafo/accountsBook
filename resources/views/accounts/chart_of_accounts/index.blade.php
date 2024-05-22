@@ -6,8 +6,8 @@
 <div class="container">
     
     <div class="row">
-        <div class="col-md-5"  style="color: #4e4e4e; font-style: bold; font-size: 3rem;">Chart of Accounts</div>
-        <div class="col-md-7">
+        <div class="col-5"  style="color: #4e4e4e; font-style: bold; ">Chart of Accounts</div>
+        <div class="col-7">
             <div style="float:right;" class="d-flex justify-content-end mt-3">
                 <div>
                     <a href="{{ route('chartOfAccounts.create') }}" class="btn btn-success mb-3">Create New Account</a>
@@ -60,7 +60,7 @@
     </form>
     <br>
 
-    <table class="table table-css table-bordered table-hover">
+    <table class="table table-css table-bordered table-hover table-responsive">
         <thead class="thead-dark align-middle">
             <tr>
                 <th>Code</th>

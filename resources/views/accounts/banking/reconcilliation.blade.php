@@ -8,7 +8,7 @@
 <div class="container">
     <div class="card">
         <div class="card-header">
-            <h1 class="card-title" style="color: #4e4e4e; font-style: bold; font-size: 3rem;">Reconciliation</h1>
+            <h1 class="card-title" style="color: #4e4e4e; font-style: bold; ">Reconciliation</h1>
         </div>
         <div class="card-body">
             <!-- Display success message if any -->
@@ -47,7 +47,7 @@
             <!-- Display transactions from various tables -->
             <h3>Transactions</h3>
             <div class="table-responsive">
-                <table class="table table-css table-bordered table-hover">
+                <table class="table table-css table-bordered table-hover ">
                     <thead class="thead-dark align-middle">
                         <tr>
                             <th>Date</th>

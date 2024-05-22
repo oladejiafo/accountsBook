@@ -5,7 +5,7 @@
 @section('content')
 <div class="container">
     <h1>Filtered Chart of Accounts (Type: {{ $type }})</h1>
-    <table class="table">
+    <table class="table table-responsive">
         <thead>
             <tr>
                 <th>Code</th>

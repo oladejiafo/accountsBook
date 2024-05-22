@@ -6,7 +6,7 @@
 <div class="container">
     <div class="card">
         <div class="card-header">
-            <h1 class="card-title" style="color: #4e4e4e; font-weight: bold; font-size: 3rem;">Create Chart of Account</h1>
+            <h1 class="card-title" style="color: #4e4e4e; font-weight: bold; ">Create Chart of Account</h1>
         </div>
         <div class="card-body">
             <form action="{{ route('chartOfAccounts.store') }}" method="POST">

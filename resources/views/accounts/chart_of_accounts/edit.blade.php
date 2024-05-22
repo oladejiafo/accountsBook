@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="container">
-    <h1   style="color: #4e4e4e; font-style: bold; font-size: 3rem;">Edit Chart of Account</h1>
+    <h1  class="titles" style="color: #4e4e4e; font-style: bold; ">Edit Chart of Account</h1>
     <form action="{{ route('chartOfAccounts.update', $chartOfAccount->id) }}" method="POST">
         @csrf
         @method('PUT')

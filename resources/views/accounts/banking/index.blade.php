@@ -6,7 +6,7 @@
 <div class="container">
     <div class="card">
         <div class="card-header">
-            <h1 class="card-title" style="color: #4e4e4e; font-style: bold; font-size: 3rem;">Bank Feeds</h1>
+            <h1 class="card-title" style="color: #4e4e4e; font-style: bold; ">Bank Feeds</h1>
         </div>
         <div class="card-body">
             <div class="row">
@@ -25,7 +25,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <!-- Display bank feed records -->
-                    <table class="table table-css table-bordered table-hover">
+                    <table class="table table-css table-bordered table-hover table-responsive">
                         <thead class="thead-dark align-middle">
                             <tr>
                                 <th>Date</th>
