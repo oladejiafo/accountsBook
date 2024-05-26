@@ -18,7 +18,8 @@
                     </li>
                 </ul>
             @endif
-        </li>   
+        </li> 
+
         @if (auth()->user()->hasPermission('account.dashboard') || auth()->user()->hasPermission('home') || auth()->user()->hasRole('Super_Admin'))
         <!-- Grouping for Dashboards -->
         <li>

@@ -5,7 +5,7 @@
         <div class="row justify-content-center">
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-header" style="color: #4e4e4e; font-style: bold; font-size: 3rem;">Create Tax Setting</div>
+                    <div class="card-header" style="color: #4e4e4e; font-style: bold; ">Create Tax Setting</div>
                     <p class="text-muted">Configure various tax-related settings for your business.</p>
                     <div class="card-body">
                         @if ($errors->any())

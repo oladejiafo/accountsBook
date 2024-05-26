@@ -31,21 +31,17 @@ Route::post('/register/company', [RegisteredUserController::class, 'createCompan
 //     return view('dashboard');
 // })->middleware(['auth'])->name('dashboard');
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
 
 Route::get('/about', [HomeController::class, 'about'])->name('about');
 
-// Route::middleware('auth')->group(function () {
-//     Route::get('/dashboard', [AccountsController::class, 'dashboard'])->name('account.dashboard')->middleware('can:dashboard_view');
-// });
-
 Route::get('/global-search', [HomeController::class, 'globalSearch'])->name('global.search');
+
 
 Route::middleware('auth', 'check.permissions')->group(function () {
     ######### DASHBOARDS
     Route::get('/dashboard', [HomeController::class, 'index'])->name('home');
     Route::get('/inventoryInsights', [HomeController::class, 'insightDashboard'])->name('insight.dashboard');
-    
     Route::get('/AccountInsights', [AccountsController::class, 'dashboard'])->name('account.dashboard');
 
     ########### User routes
@@ -75,7 +71,6 @@ Route::middleware('auth', 'check.permissions')->group(function () {
     Route::delete('/role-permissions/delete/{rolePermission}', [HomeController::class, 'rolePermissionDestroy'])->name('role-permissions.destroy');
 
     Route::get('/get-sub-modules/{moduleId}', [HomeController::class, 'getSubModules'])->name('getSubModules');
-
 
     ############ INVENTORY AND STOCKS
     Route::get('/inventory', [StockController::class, 'index'])->name('inventory');
@@ -131,7 +126,7 @@ Route::middleware('auth', 'check.permissions')->group(function () {
         Route::put('/{customer}/update', [TransactionsController::class, 'customersUpdate'])->name('customers.update');
         Route::delete('/{customer}', [TransactionsController::class, 'customersDestroy'])->name('customers.destroy');
     });
-    Route::get('/fetch-customer-details',[TransactionsController::class, 'fetchCustomerDetails'])->name('fetchCustomerDetails');
+    Route::get('/fetch-customer-details', [TransactionsController::class, 'fetchCustomerDetails'])->name('fetchCustomerDetails');
 
 
     //Payments
@@ -150,7 +145,6 @@ Route::middleware('auth', 'check.permissions')->group(function () {
         Route::get('/general', [AccountsController::class, 'generalLedger'])->name('ledger.general_ledger');
         Route::get('/accounts-receivable', [AccountsController::class, 'accountsReceivable'])->name('ledger.accounts_receivable_ledger');
         Route::get('/accounts-payable', [AccountsController::class, 'accountsPayable'])->name('ledger.accounts_payable_ledger');
-        
     });
 
     Route::prefix('transactions')->group(function () {
@@ -256,7 +250,7 @@ Route::middleware('auth', 'check.permissions')->group(function () {
         Route::get('/settings/{id}/edit', [AccountsController::class, 'taxSettingsEdit'])->name('tax-settings.edit');
         Route::put('/settings/{id}', [AccountsController::class, 'taxSettingsUpdate'])->name('tax-settings.update');
         Route::delete('/settings/{id}', [AccountsController::class, 'taxSettingsDestroy'])->name('tax-settings.destroy');
-        
+
         // Tax Exemptions Routes
         Route::get('/exemptions', [AccountsController::class, 'taxExemptionsIndex'])->name('tax-exemptions.index');
         Route::get('/exemptions/create', [AccountsController::class, 'taxExemptionsCreate'])->name('tax-exemptions.create');
@@ -265,17 +259,15 @@ Route::middleware('auth', 'check.permissions')->group(function () {
         Route::get('/exemptions/{id}/edit', [AccountsController::class, 'taxExemptionsEdit'])->name('tax-exemptions.edit');
         Route::put('/exemptions/{id}', [AccountsController::class, 'taxExemptionsUpdate'])->name('tax-exemptions.update');
         Route::delete('/exemptions/{id}', [AccountsController::class, 'taxExemptionsDestroy'])->name('tax-exemptions.destroy');
-
     });
 
+
+    // Employee Routes
+    Route::get('/employees', [EmployeeController::class, 'index'])->name('employees.index');
+    Route::get('/employees/create', [EmployeeController::class, 'create'])->name('employees.create');
+    Route::post('/employees', [EmployeeController::class, 'store'])->name('employees.store');
+    Route::get('/employees/{employee}', [EmployeeController::class, 'show'])->name('employees.show');
+    Route::get('/employees/{employee}/edit', [EmployeeController::class, 'edit'])->name('employees.edit');
+    Route::put('/employees/{employee}', [EmployeeController::class, 'update'])->name('employees.update');
+    Route::delete('/employees/{employee}', [EmployeeController::class, 'destroy'])->name('employees.destroy');
 });
-
-
-// Employee Routes
-Route::get('/employees', [EmployeeController::class, 'index'])->name('employees.index');
-Route::get('/employees/create', [EmployeeController::class, 'create'])->name('employees.create');
-Route::post('/employees', [EmployeeController::class, 'store'])->name('employees.store');
-Route::get('/employees/{employee}', [EmployeeController::class, 'show'])->name('employees.show');
-Route::get('/employees/{employee}/edit', [EmployeeController::class, 'edit'])->name('employees.edit');
-Route::put('/employees/{employee}', [EmployeeController::class, 'update'])->name('employees.update');
-Route::delete('/employees/{employee}', [EmployeeController::class, 'destroy'])->name('employees.destroy');

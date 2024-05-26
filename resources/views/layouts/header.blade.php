@@ -20,7 +20,50 @@
         align-items: center;
         justify-content: center;
     }
+/* 
+        #sidebar.active {
+            width: 250px;
+        }
+
+        #sidebar {
+            width: 60px;
+        }
+
+        #sidebar.collapsed .sidebar-text {
+            display: none;
+        }
+
+        #sidebar.collapsed .sidebar-button {
+            justify-content: center;
+        }
+
+        #sidebar.collapsed .list-unstyled {
+            padding-left: 0;
+        }
+        #sidebar.collapsed .list-unstyled li {
+            padding-left: 1rem;
+        }
+
+
+    .checkMy {
+    top: 95px;
+    left: 195px;
+    color: white;
+    width: 46px;
+    height: 42px;
+    border: 1px solid #fff !important;
+
+    display: block;
+    position: fixed;
+    background-color: transparent;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 1px;
+    transition: opacity 0.3s ease;
+} */
+
 </style>
+
 
 <main id="wrapper">
     {{-- <nav id="sidebar"> --}}
@@ -29,6 +72,14 @@
         @include('layouts.menu-items')
 
     </nav>
+    <!-- <li class="d-none d-lg-block mt-1">
+        <div class="col-sm-2 d-flex justify-content-start">
+            <button class="btn btn-custom checkMy" id="sidebarToggleLarge" onclick="toggleSidebar()" style="z-index: 9000;">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </li> -->
+
     <div class="sidebar-header row align-items-center">
         <!-- Mobile toggle button -->
         <div class="col-sm-2 d-flex justify-content-start d-lg-none">
@@ -101,3 +152,23 @@
             sidebar.classList.toggle("active");
         }
     </script>
+
+<!-- 
+    <script>
+        function toggleSidebar() {
+            var sidebar = document.getElementById("sidebar");
+            sidebar.classList.toggle("active");
+            var buttons = document.querySelectorAll("#sidebarToggleLarge, #sidebarToggle");
+            buttons.forEach(button => button.classList.toggle("collapsed"));
+        }
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const checkbox = document.getElementById('checkMy');
+
+            checkbox.addEventListener('change', function() {
+                toggleSidebar(); // Toggle sidebar when checkbox changes
+            });
+        });
+    </script> -->
+
+

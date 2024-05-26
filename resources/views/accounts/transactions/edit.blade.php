@@ -13,7 +13,7 @@
                 @csrf
                 @method('PUT')
                 <div class="form-row">
-                    <div class="col">
+                    <div class="col-sm-12 col-md-6 col-lg-6">
                         <div class="form-group">
                             <label for="transaction_name">Transaction Name:</label>
                             <select class="form-control" id="transaction_name" name="transaction_name" required>
@@ -24,7 +24,7 @@
                             
                         </div>
                     </div>
-                    <div class="col">
+                    <div class="col-sm-12 col-md-6 col-lg-6">
                         <div class="form-group">
                             <label for="type">Transaction Type:</label>
                             <select class="form-control" id="type" name="type" required>
@@ -54,13 +54,13 @@
                     </select> 
                 </div>
                 <div class="form-row">
-                    <div class="col">
+                    <div class="col-sm-12 col-md-6 col-lg-6">
                         <div class="form-group">
                             <label for="date">Transaction Date:</label>
                             <input type="date" class="form-control" id="date" name="date" value="{{ $transaction->date }}" required>
                         </div>
                     </div>
-                    <div class="col">
+                    <div class="col-sm-12 col-md-6 col-lg-6">
                         <div class="form-group">
                             <label for="amount">Transaction Amount:</label>
                             <input type="number" class="form-control" id="amount" name="amount" value="{{ $transaction->amount }}" required>
@@ -68,7 +68,7 @@
                     </div>
                 </div>
                 <div class="form-row" id="source_group" style="display: none;">
-                    <div class="col">
+                    <div class="col-sm-12 col-md-6 col-lg-6">
                          <label for="source">Source of Fund:</label>
                          <select class="form-control" id="source" name="source">
                              <option value="Cash" {{ $transaction->source == 'Cash' ? 'selected' : '' }}>Cash</option>
@@ -78,7 +78,7 @@
                              <option value="Other" {{ $transaction->source == 'Other' ? 'selected' : '' }}>Other</option>
                          </select>
                      </div>
-                     <div class="col">
+                     <div class="col-sm-12 col-md-6 col-lg-6">
                          <label for="status">Status:</label>
                          <select class="form-control" id="status" name="status">
                              <option value="Paid" {{ $transaction->status == 'Paid' ? 'selected' : '' }}>Paid</option>

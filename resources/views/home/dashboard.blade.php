@@ -17,6 +17,12 @@
         background-color: #e6f7ff; /* Light blue background for even alerts */
     }
 
+.accountDash {
+    height: 150px !important;
+}
+.accountDash .card-title {
+    font-size: 2.5rem !important;
+}
 </style>
 <div class="container">
     
@@ -38,7 +44,7 @@
                 <!-- Income -->
                 <div class="col-md-4">
                     <div class="card bg-success text-white mb-3">
-                        <div class="card-body">
+                        <div class="card-body accountDash">
                             <h5 class="card-title">Income</h5>
                             <p class="card-text">{{ $defaultCurrency }}{{ number_format($income, 2) }}</p>
                         </div>
@@ -47,7 +53,7 @@
                 <!-- Expenses -->
                 <div class="col-md-4">
                     <div class="card bg-danger text-white mb-3">
-                        <div class="card-body">
+                        <div class="card-body accountDash">
                             <h5 class="card-title">Expenses</h5>
                             <p class="card-text">{{ $defaultCurrency }}{{ number_format($expenses, 2) }}</p>
                         </div>
@@ -56,7 +62,7 @@
                 <!-- Cash Flow -->
                 <div class="col-md-4">
                     <div class="card bg-info text-white mb-3">
-                        <div class="card-body">
+                        <div class="card-body accountDash">
                             <h5 class="card-title">Cash Flow</h5>
                             <p class="card-text">{{ $defaultCurrency }}{{ number_format($cashFlow, 2) }}</p>
                         </div>
@@ -67,7 +73,7 @@
             <div class="row">
                 <div class="col-md-4">
                     <div class="card bg-primary text-white mb-3">
-                        <div class="card-body">
+                        <div class="card-body accountDash">
                             <h5 class="card-title">Assets</h5>
                             <p class="card-text">{{ $defaultCurrency }}{{ number_format($accountBalances['assets'], 2) }}</p>
                         </div>
@@ -75,7 +81,7 @@
                 </div>
                 <div class="col-md-4">
                     <div class="card bg-warning text-white mb-3">
-                        <div class="card-body">
+                        <div class="card-body accountDash">
                             <h5 class="card-title">Liabilities</h5>
                             <p class="card-text">{{ $defaultCurrency }}{{ number_format($accountBalances['liabilities'], 2) }}</p>
                         </div>
@@ -83,7 +89,7 @@
                 </div>
                 <div class="col-md-4">
                     <div class="card bg-secondary text-white mb-3">
-                        <div class="card-body">
+                        <div class="card-body accountDash">
                             <h5 class="card-title">Equity</h5>
                             <p class="card-text">{{ $defaultCurrency }}{{ number_format($accountBalances['equity'], 2) }}</p>
                         </div>

@@ -7,7 +7,7 @@
         <div class="row justify-content-center">
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-header" style="color: #4e4e4e; font-style: bold; font-size: 3rem;">Tax Exemptions</div>
+                    <div class="card-header" style="color: #4e4e4e; font-style: bold;">Tax Exemptions</div>
 
                     <div class="card-body">
                         <p>This section displays a list of tax exemptions available for your company.</p>
@@ -20,7 +20,7 @@
 
                         <a href="{{ route('tax-exemptions.create') }}" class="btn btn-success mb-3" style="float: right">Create Tax Exemption</a>
 
-                        <table class="table table-striped">
+                        <table class="table table-striped table-responsive">
                             <thead>
                                 <tr>
                                     <th>#</th>

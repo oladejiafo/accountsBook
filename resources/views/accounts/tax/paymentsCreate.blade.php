@@ -7,7 +7,7 @@
         <div class="row justify-content-center">
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-header" style="color: #4e4e4e; font-style: bold; font-size: 3rem;">Create Tax Payment</div>
+                    <div class="card-header" style="color: #4e4e4e; font-style: bold; ">Create Tax Payment</div>
                     <p class="text-muted">View and manage tax payments made by your business.</p>
                     <div class="card-body">
                         @if ($errors->any())

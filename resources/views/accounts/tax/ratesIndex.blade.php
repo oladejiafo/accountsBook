@@ -17,7 +17,7 @@
         <div class="row justify-content-center">
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-header" style="color: #4e4e4e; font-style: bold; font-size: 3rem;">Tax Rates</div>
+                    <div class="card-header" style="color: #4e4e4e; font-style: bold;">Tax Rates</div>
                     <p class="text-muted">Configure various tax rates for your business.</p>
                     <div class="card-body">
                         <!-- Nav tabs -->
@@ -77,7 +77,7 @@
                                 <!-- Content for Business Taxes tab -->
                                 <a href="{{ route('tax-rates.create', ['tab' => 'Employee']) }}" class="btn btn-success mb-3 ml-auto justify-content-end" style="float:right;">Create Income Tax Rate</a>
 
-                                <table class="table">
+                                <table class="table  table-responsive">
                                     <thead>
                                         <tr>
                                             <th>Tax Name</th>

@@ -5,7 +5,7 @@
         <div class="row justify-content-center">
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-header" style="color: #4e4e4e; font-style: bold; font-size: 3rem;">Tax Settings</div>
+                    <div class="card-header" style="color: #4e4e4e; font-style: bold; ">Tax Settings</div>
                     <p class="text-muted">Configure various tax-related settings for your business.</p>
                     <div class="card-body">
                         @if (session('success'))
@@ -16,7 +16,7 @@
 
                         <a href="{{ route('tax-settings.create') }}" class="btn btn-success mb-3 ml-auto justify-content-end" style="float:right;">Create Tax Setting</a>
 
-                        <table class="table table-css table-bordered table-hover">
+                        <table class="table table-css table-bordered table-hover table-responsive">
                             <thead class="thead-dark align-middle">
                                 <tr>
                                     <th>#</th>
