@@ -24,6 +24,14 @@ class CreateFixedAssetsTable extends Migration
             $table->string('asset_code')->nullable();
             $table->decimal('purchase_price', 10, 2);
             $table->decimal('current_price', 10, 2);
+
+            $table->string('depreciation_method');
+            $table->integer('useful_life');
+            $table->decimal('salvage_value', 15, 2)->default(0);
+            $table->decimal('current_value', 15, 2)->nullable();
+            $table->string('location')->nullable();
+            $table->enum('status', ['active', 'disposed', 'sold', 'transferred'])->default('active');
+            
             $table->timestamps();
             $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
         });

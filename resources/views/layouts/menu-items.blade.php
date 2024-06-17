@@ -205,6 +205,24 @@
             </ul>
         </li>
         @endif
+        <!-- Grouping for Assets -->
+        <li>
+            <span class="sidebar-textx sidebar-button menutitlefont mr-4 mt-2">Assets</span>
+            <ul class="list-unstyled">
+                <li>
+                    <a href="#hrSubmenu" data-toggle="collapse" class="dropdown-toggle sidebar-text right-arrow sidebar-button"><i class="fas fa-users-cog fa-fw" style="margin-right: .75rem"></i> Assets</a>
+                    <ul class="collapse list-unstyled" id="hrSubmenu">
+                        <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('fixed_assets.create') }}"><i class="fas fa-dot-circle  fa-fw"></i> Add
+                                New
+                                Asset</a> </li>
+                        <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('fixed_assets.index') }}"><i class="fas fa-dot-circle  fa-fw"></i>
+                                Assets
+                                List</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
         <!-- Grouping for HR -->
         <li>
             <span class="sidebar-textx sidebar-button menutitlefont mr-4 mt-2">Human Resources</span>
