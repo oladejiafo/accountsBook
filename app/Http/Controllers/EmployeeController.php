@@ -52,7 +52,7 @@ class EmployeeController extends Controller
         }
     
         // Execute the query and fetch the results
-        $employees = $employees->paginate(15);
+        $employees = $employees->paginate(25);
     
         return view('employees.index', compact('employees'));
     }

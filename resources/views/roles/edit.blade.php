@@ -23,7 +23,7 @@
 
                             <div class="align-middle">
                                 <button type="submit" class="btn btn-lg btn-success">Update User</button>
-                                <button type="reset" class="btn btn-lg btn-danger">Reset</button>
+                                <button type="reset" class="btn btn-lg btn-danger" onclick="resetForm()">Reset</button>
                                 <a href="{{ route('roles.index') }}" class="btn btn-lg btn-secondary">Cancel</a>
                             </div>
                         </form>
@@ -32,4 +32,10 @@
             </div>
         </div>
     </div>
+    <script>
+        function resetForm() {
+            document.getElementById("name").value = "";
+            document.getElementById("description").value = "";
+        }
+    </script>
 @endsection

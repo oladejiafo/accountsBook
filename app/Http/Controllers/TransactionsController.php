@@ -42,7 +42,7 @@ class TransactionsController extends Controller
         }
         $companyId = auth()->user()->company_id;
         //where('company_id', $companyId)->
-        $sales = SaleBill::where('company_id', $companyId)->with('saleItems')->orderBy('created_at', 'desc')->paginate(15);
+        $sales = SaleBill::where('company_id', $companyId)->with('saleItems')->orderBy('created_at', 'desc')->paginate(25);
 
         return view('transactions.sales.index', compact('sales'));
     }
@@ -763,7 +763,7 @@ class TransactionsController extends Controller
             return redirect()->route('login')->with('error', 'Unauthorized access.');
         }
         $companyId = auth()->user()->company_id;
-        $purchases = PurchaseBill::where('company_id', $companyId)->with('items')->orderBy('created_at', 'desc')->paginate(15);
+        $purchases = PurchaseBill::where('company_id', $companyId)->with('items')->orderBy('created_at', 'desc')->paginate(25);
        
         return view('transactions.purchases.index', compact('purchases'));
     }
@@ -820,7 +820,7 @@ class TransactionsController extends Controller
             return redirect()->route('login')->with('error', 'Unauthorized access.');
         }
         $companyId = auth()->user()->company_id;
-        $suppliers = Supplier::where('company_id', $companyId)->orderBy('created_at', 'desc')->paginate(15);
+        $suppliers = Supplier::where('company_id', $companyId)->orderBy('created_at', 'desc')->paginate(25);
        
         return view('transactions.suppliers.index', compact('suppliers'));
     }
@@ -836,7 +836,7 @@ class TransactionsController extends Controller
         $supplier = Supplier::where('company_id', $companyId)->findOrFail($id);
 
         // Retrieve the purchases for the supplier and paginate the results
-        $purchases = $supplier->purchases()->paginate(15);
+        $purchases = $supplier->purchases()->paginate(25);
     
         return view('transactions.suppliers.view', compact('supplier', 'purchases'));
     }
@@ -961,7 +961,7 @@ class TransactionsController extends Controller
         }
         
         // Execute the query and fetch the results
-        $customers = $customers->paginate(15);        
+        $customers = $customers->paginate(25);        
 
         // $customers = Customer::where('company_id', $companyId)->get();
         return view('transactions.customers.index', compact('customers'));
@@ -984,7 +984,7 @@ class TransactionsController extends Controller
         }
 
         $customer = Customer::where('company_id', auth()->user()->company_id)->findOrFail($id);
-        $sales = $customer->sales()->paginate(15);
+        $sales = $customer->sales()->paginate(25);
         return view('transactions.customers.view', compact('customer','sales'));
     }
     
@@ -1094,7 +1094,7 @@ class TransactionsController extends Controller
         }
 
         // Execute the query and fetch the results
-        $payments = $payments->paginate(15);
+        $payments = $payments->paginate(25);
 
         // $payments = Payment::where('company_id', $companyId)->get();
         return view('transactions.payments.index', compact('payments'));

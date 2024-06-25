@@ -69,4 +69,14 @@
             </div>
         </div>
     </div>
+    <script>
+        // Function to reset form fields
+        function resetForm() {
+            document.getElementById("amount").value = "";
+            document.getElementById("transaction_type").value = "";
+            document.getElementById("tax_code_id").value = "";
+            // document.getElementById("tax_category_id").value = "";
+            // document.getElementById("effective_date").value = "";
+        }
+    </script>
 @endsection

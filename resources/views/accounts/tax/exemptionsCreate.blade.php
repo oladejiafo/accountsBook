@@ -42,4 +42,15 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function resetForm() {
+            document.getElementById("name").value = "";
+            document.getElementById("description").value = "";
+            document.getElementById("valid_from").value = "";
+    
+            document.getElementById("valid_to").value = "";
+
+        }
+    </script>
 @endsection

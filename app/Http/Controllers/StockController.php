@@ -48,7 +48,7 @@ class StockController extends Controller
         }
 
         // Execute the query and fetch the results
-        $stocks = $stocks->paginate(15);
+        $stocks = $stocks->paginate(25);
 
         return view('inventory.index', compact('stocks'));
     }

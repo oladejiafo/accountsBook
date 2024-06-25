@@ -341,7 +341,7 @@ class HomeController extends Controller
         }
 
         // Execute the query and fetch the results
-        $users = $users->paginate(15);
+        $users = $users->paginate(25);
 
         return view('users.index', compact('users'));
     }
@@ -562,7 +562,7 @@ class HomeController extends Controller
         }
 
         // Execute the query and fetch the results
-        $roles = $roles->paginate(15);
+        $roles = $roles->paginate(25);
 
         return view('roles.index', compact('roles'));
     }

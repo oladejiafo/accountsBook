@@ -155,4 +155,23 @@
         </div>
     </div>
 </div>
+<script>
+    function resetForm() {
+        document.getElementById("name").value = "";
+        document.getElementById("email").value = "";
+        document.getElementById("phone").value = "";
+
+        document.getElementById("address").value = "";
+        document.getElementById("city").value = "";
+        document.getElementById("country").value = "";
+        
+        document.getElementById("billing_address").value = "";
+        document.getElementById("shipping_address").value = "";
+        document.getElementById("customer_type").value = "";
+        document.getElementById("customer_type").value = "";
+        document.getElementById("notes").value = "";
+        document.getElementById("payment_terms").value = "";
+        document.getElementById("tax_exempt").value = "";
+    }
+</script>
 @endsection

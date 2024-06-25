@@ -30,11 +30,19 @@
 
                     <div class="align-middle">
                         <button type="submit" class="btn btn-lg btn-success">Update User</button>
-                        <button type="reset" class="btn btn-lg btn-danger">Reset</button>
+                        <button type="reset" class="btn btn-lg btn-danger" onclick="resetForm()">Reset</button>
                         <a href="{{ route('role-permissions.index') }}" class="btn btn-lg btn-secondary">Cancel</a>
                     </div>
                 </form>
             </div>
         </div>
     </div>
+
+    <script>
+        // Function to reset form fields
+        function resetForm() {
+            document.getElementById("role_id").value = "";
+            document.getElementById("permission_id").value = "";
+        }
+    </script>
 @endsection

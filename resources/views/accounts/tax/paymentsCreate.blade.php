@@ -56,4 +56,15 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function resetForm() {
+            document.getElementById("amount").value = "";
+            document.getElementById("payment_date").value = "";
+            document.getElementById("tax_type").value = "";
+    
+            document.getElementById("reference").value = "";
+
+        }
+    </script>
 @endsection

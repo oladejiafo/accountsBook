@@ -11,50 +11,61 @@
 
                     <div class="card-body">
                         <p>This section displays a list of tax exemptions available for your company.</p>
-                        
+
                         @if (session('success'))
                             <div class="alert alert-success" role="alert">
                                 {{ session('success') }}
                             </div>
                         @endif
 
-                        <a href="{{ route('tax-exemptions.create') }}" class="btn btn-success mb-3" style="float: right">Create Tax Exemption</a>
+                        <a href="{{ route('tax-exemptions.create') }}" class="btn btn-success mb-3"
+                            style="float: right">Create Tax Exemption</a>
 
-                        <table class="table table-striped table-responsive">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Name</th>
-                                    <th>Description</th>
-                                    <th>Valid From</th>
-                                    <th>Valid To</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse ($taxExemptions as $exemption)
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
                                     <tr>
-                                        <td>{{ $exemption->id }}</td>
-                                        <td>{{ $exemption->name }}</td>
-                                        <td>{{ $exemption->description }}</td>
-                                        <td>{{ $exemption->valid_from }}</td>
-                                        <td>{{ $exemption->valid_to }}</td>
-                                        <td>
-                                            <a href="{{ route('tax-exemptions.edit', $exemption->id) }}" class="btn btn-info">Edit</a>
-                                            <form action="{{ route('tax-exemptions.destroy', $exemption->id) }}" method="POST" style="display: inline-block;">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this tax exemption?')">Delete</button>
-                                            </form>
-                                        </td>
+                                        <th>#</th>
+                                        <th>Name</th>
+                                        <th>Description</th>
+                                        <th>Valid From</th>
+                                        <th>Valid To</th>
+                                        <th>Actions</th>
                                     </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="6">No tax exemptions found.</td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    @forelse ($taxExemptions as $exemption)
+                                        <tr>
+                                            <td>{{ $exemption->id }}</td>
+                                            <td>{{ $exemption->name }}</td>
+                                            <td>{{ $exemption->description }}</td>
+                                            <td>{{ $exemption->valid_from }}</td>
+                                            <td>{{ $exemption->valid_to }}</td>
+                                            <td>
+                                                <a href="{{ route('tax-exemptions.edit', $exemption->id) }}"
+                                                    class="btn btn-info">Edit</a>
+                                                <form action="{{ route('tax-exemptions.destroy', $exemption->id) }}"
+                                                    method="POST" style="display: inline-block;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger"
+                                                        onclick="return confirm('Are you sure you want to delete this tax exemption?')">Delete</button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="6">No tax exemptions found.</td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                            @if ($taxExemptions->isNotEmpty())
+                                <div class="pagination">
+                                    {{ $taxExemptions->links() }}
+                                </div>
+                            @endif
+                        </div>
                     </div>
                 </div>
             </div>

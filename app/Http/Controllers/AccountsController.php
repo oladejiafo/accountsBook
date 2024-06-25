@@ -258,7 +258,7 @@ class AccountsController extends Controller
         }
 
         // Execute the query and get the results
-        $transactions = $transactionsQuery->paginate(30);
+        $transactions = $transactionsQuery->paginate(25);
 
         $totalDebit = 0;
         $totalCredit = 0;
@@ -372,7 +372,7 @@ class AccountsController extends Controller
         }
 
         // Execute the query and get the results
-        $transactions = $transactionsQuery->paginate(30);
+        $transactions = $transactionsQuery->paginate(25);
 
         $totalDebit = 0;
         $totalCredit = 0;
@@ -494,7 +494,7 @@ class AccountsController extends Controller
         }
     
         // Execute the query and get the results
-        $transactions = $transactionsQuery->paginate(30);
+        $transactions = $transactionsQuery->paginate(25);
     
         $totalDebit = 0;
         $totalCredit = 0;
@@ -600,7 +600,7 @@ class AccountsController extends Controller
         }
     
         // Execute the query and get the results
-        $transactions = $transactionsQuery->paginate(30);
+        $transactions = $transactionsQuery->paginate(25);
     
         $totalDebit = 0;
         $totalCredit = 0;
@@ -652,7 +652,7 @@ class AccountsController extends Controller
         }
 
         // Execute the query and fetch the results
-        $transactions = $transactions->paginate(15);
+        $transactions = $transactions->paginate(25);
 
         return view('accounts.transactions.index', compact('transactions'));
     }
@@ -854,7 +854,7 @@ class AccountsController extends Controller
         }
 
         // Execute the query and fetch the results
-        $deposits = $deposits->paginate(15);
+        $deposits = $deposits->paginate(25);
 
         return view('accounts.deposits.index', compact('deposits'));
     }
@@ -992,7 +992,7 @@ class AccountsController extends Controller
         }
 
         // Execute the query and fetch the results
-        $withdrawals = $withdrawals->paginate(15);
+        $withdrawals = $withdrawals->paginate(25);
 
         return view('accounts.withdrawals.index', compact('withdrawals'));
     }
@@ -1129,7 +1129,7 @@ class AccountsController extends Controller
         }
 
         // Execute the query and fetch the results
-        $transfers = $transfers->paginate(15);
+        $transfers = $transfers->paginate(25);
 
         return view('accounts.transfers.index', compact('transfers'));
     }
@@ -1395,7 +1395,7 @@ class AccountsController extends Controller
         }
 
         // Execute the query and fetch the results
-        $chartOfAccounts = $chartOfAccounts->paginate(15);
+        $chartOfAccounts = $chartOfAccounts->paginate(25);
 
         // $chartOfAccounts = ChartOfAccount::where('company_id', $companyId)->get();
         return view('accounts.chart_of_accounts.index', compact('chartOfAccounts'));
@@ -1455,7 +1455,7 @@ class AccountsController extends Controller
         }      
         $companyId = auth()->user()->company_id;        
         // $bankTransactions = BankTransaction::where('user_id', auth()->id())->latest()->get();
-        $bankFeeds = BankTransaction::where('company_id', $companyId)->latest()->paginate(10);
+        $bankFeeds = BankTransaction::where('company_id', $companyId)->latest()->paginate(25);
         return view('accounts.banking.index', compact('bankFeeds'));
     }
 
@@ -1697,7 +1697,7 @@ class AccountsController extends Controller
         //where('company_id', $companyId)->
 
         $tab = request()->query('tab');
-        $taxRates = TaxRate::where('company_id', $companyId)->get();
+        $taxRates = TaxRate::where('company_id', $companyId)->paginate(25);
         return view('accounts.tax.ratesIndex', compact('taxRates', 'tab'));
     }
 
@@ -1831,7 +1831,7 @@ class AccountsController extends Controller
         //where('company_id', $companyId)->
 
         // $tab = request()->query('tab');
-        $taxTransactions = TaxTransaction::where('company_id', $companyId)->get();
+        $taxTransactions = TaxTransaction::where('company_id', $companyId)->paginate(25);
         return view('accounts.tax.transactionsIndex', compact('taxTransactions'));
     }
 
@@ -1958,7 +1958,7 @@ class AccountsController extends Controller
         $companyId = auth()->user()->company_id;
         //where('company_id', $companyId)->
 
-        $taxPayments = TaxPayment::where('company_id', $companyId)->get();
+        $taxPayments = TaxPayment::where('company_id', $companyId)->paginate(25);
         return view('accounts.tax.paymentsIndex', compact('taxPayments'));
     }
 
@@ -2079,7 +2079,7 @@ class AccountsController extends Controller
         $companyId = auth()->user()->company_id;
         //where('company_id', $companyId)->
 
-        $taxSettings = TaxSetting::where('company_id', $companyId)->get();
+        $taxSettings = TaxSetting::where('company_id', $companyId)->paginate(25);
         return view('accounts.tax.settingsIndex', compact('taxSettings'));
     }
 
@@ -2202,7 +2202,7 @@ class AccountsController extends Controller
         $companyId = auth()->user()->company_id;
         //where('company_id', $companyId)->
 
-        $taxExemptions = TaxExemption::where('company_id', $companyId)->get();
+        $taxExemptions = TaxExemption::where('company_id', $companyId)->paginate(25);
         return view('accounts.tax.exemptionsIndex', compact('taxExemptions'));
     }
 

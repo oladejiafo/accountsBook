@@ -47,7 +47,7 @@
                     
                     <div class="align-middle">
                         <button type="submit" class="btn  btn-lg btn-success">Create Role Permission</button>
-                        <button type="reset" class="btn btn-lg btn-danger">Reset</button>
+                        <button type="reset" class="btn btn-lg btn-danger" onclick="resetForm()">Reset</button>
                         <a href="{{ route('role-permissions.index') }}" class="btn btn-lg btn-secondary">Cancel</a>
                     </div>
                 </form>
@@ -55,6 +55,13 @@
         </div>
     </div>
     
+    <script>
+        // Function to reset form fields
+        function resetForm() {
+            document.getElementById("role_id").value = "";
+            document.getElementById("permission_id").value = "";
+        }
+    </script>
     {{-- <script>
         $(document).ready(function () {
             $('#module_id').on('change', function () {

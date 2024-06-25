@@ -141,7 +141,7 @@
 
                     <div class="align-middle">
                         <button type="submit" class="btn btn-lg btn-success">Update Employee</button>
-                        <button type="reset" class="btn btn-lg btn-danger">Reset</button>
+                        {{-- <button type="reset" class="btn btn-lg btn-danger">Reset</button> --}}
                         <a href="{{ route('employees.index') }}" class="btn btn-lg btn-secondary">Cancel</a>
                     </div>
                 </form>

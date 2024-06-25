@@ -44,4 +44,11 @@
             </div>
         </div>
     </div>
+    <script>
+        // Function to reset form fields
+        function resetForm() {
+            document.getElementById("name").value = "";
+            document.getElementById("value").value = "";
+        }
+    </script>
 @endsection

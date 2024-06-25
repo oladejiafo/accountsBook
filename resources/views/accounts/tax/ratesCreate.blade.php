@@ -66,15 +66,12 @@
     <script>
         // Function to reset form fields
         function resetForm() {
-            document.getElementById("account_id").value = "";
-            document.getElementById("date").value = "";
-            document.getElementById("type").value = "";
-            document.getElementById("transaction_name").value = "";
-            document.getElementById("amount").value = "";
-            document.getElementById("description").value = "";
-            document.getElementById("source").value = "";
-            document.getElementById("status").value = "";
-            document.getElementById("to_account_id").value = "";
+            document.getElementById("name").value = "";
+            document.getElementById("rate").value = "";
+            document.getElementById("min_earnings").value = "";
+            document.getElementById("max_earnings").value = "";
+            // document.getElementById("position").value = "";
+            // document.getElementById("effective_date").value = "";
         }
     </script>
 @endsection
