@@ -44,7 +44,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="designation">Designation:</label>
-                                <input type="text" class="form-control" value="{{ $employee->designation->name }}" readonly>
+                                <input type="text" class="form-control" value="{{ $employee->designation->name ?? ''  }}" readonly>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -61,7 +61,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="bank">Bank:</label>
-                                <input type="text" class="form-control" value="{{ $employee->bank->name }}" readonly>
+                                <input type="text" class="form-control" value="{{ $employee->bank ? $employee->bank->name : '' }}" readonly>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -78,13 +78,13 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="branch">Branch:</label>
-                                <input type="text" class="form-control" value="{{ $employee->branch->name }}" readonly>
+                                <input type="text" class="form-control" value="{{ $employee->branch ? $employee->branch->name : '' }}" readonly>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="state_of_origin">State of Origin:</label>
-                                <input type="text" class="form-control" value="{{ $employee->state_of_origin->name }}" readonly>
+                                <input type="text" class="form-control" value="{{ $employee->stateOfOrigin->name }}" readonly>
                             </div>
                         </div>
                     </div>

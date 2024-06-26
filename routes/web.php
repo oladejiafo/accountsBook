@@ -6,6 +6,7 @@ use App\Http\Controllers\StockController;
 
 use App\Http\Controllers\TransactionsController;
 use App\Http\Controllers\AccountsController;
+use App\Http\Controllers\FixedAssetController;
 
 use App\Http\Controllers\EmployeeController;
 
@@ -270,4 +271,9 @@ Route::middleware('auth', 'check.permissions')->group(function () {
     Route::get('/employees/{employee}/edit', [EmployeeController::class, 'edit'])->name('employees.edit');
     Route::put('/employees/{employee}', [EmployeeController::class, 'update'])->name('employees.update');
     Route::delete('/employees/{employee}', [EmployeeController::class, 'destroy'])->name('employees.destroy');
+
+
+    //Assets
+    Route::resource('fixed_assets', FixedAssetController::class);
+
 });

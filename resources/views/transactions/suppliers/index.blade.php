@@ -12,7 +12,8 @@
 
 <br>
 
-<table class="table table-css table-hover table-bordered table-responsive">
+<div class="table-responsive">
+<table class="table table-css table-hover table-bordered ">
     <thead class="thead-dark align-middle">
         <tr>
             <th width="20%">Name</th>
@@ -49,6 +50,7 @@
         @endforelse
     </tbody>
 </table>
+</div>
 
 <div class="align-middle">
     {{ $suppliers->links() }}

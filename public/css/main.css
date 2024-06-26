@@ -153,6 +153,13 @@
     margin: 0;
   }
   
+  .full-width-table {
+    width: 100% !important;
+  }
+  .table {
+    width: 100% !important;
+}
+
   .bg-steel {
     background-color: #2e3141;
     border-width: 0px;

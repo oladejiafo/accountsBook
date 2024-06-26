@@ -28,7 +28,8 @@
                 </form>
                 <br>
 
-                <table class="table table-bordered table-hover table-responsive">
+                <div class="table-responsive">
+                <table class="table table-bordered table-hover ">
                     <thead class="thead-dark align-middle">
                         <tr>
                             <th class="align-middle">#</th>
@@ -81,6 +82,7 @@
                         @endforelse
                     </tbody>
                 </table>
+                </div>
 
                 @if ($employees->isNotEmpty())
                     <div class="pagination">

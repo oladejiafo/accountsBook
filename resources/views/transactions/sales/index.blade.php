@@ -9,8 +9,8 @@
     </div>
     
     <br>
-
-    <table class="table table-css table-bordered table-hover table-responsive"> 
+    <div class="table-responsive">
+    <table class="table table-css table-bordered table-hover"> 
         <thead class="thead-dark align-middle">
             <tr>
                 <th width="8%">Bill No.</th>
@@ -50,6 +50,7 @@
             @endforeach    
         </tbody>        
     </table>
+    </div>
 
     @if ($sales->isNotEmpty())
         <div class="pagination">
