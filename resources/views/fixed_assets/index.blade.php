@@ -3,6 +3,7 @@
 @section('content')
 
 <div class="container">
+@if (auth()->user()->hasPermission('fixed_assets.index') || auth()->user()->hasRole('Super_Admin'))
     <div class="row mb-3">
         <div class="col-md-8">
             <h2 class="titles" style="color: #4e4e4e; font-weight: bold;">Fixed Assets List</h2>
@@ -29,7 +30,8 @@
         </div>
     </form>
 
-    <table class="table table-bordered table-hover table-responsive-md">
+    <div class="table-responsive">
+    <table class="table table-bordered table-hover">
         <thead class="thead-dark">
             <tr>
                 <th class="align-middle text-center">Name</th>
@@ -44,7 +46,7 @@
             <tr>
                 <td class="align-middle">{{ $fixedAsset->name }}</td>
                 <td class="align-middle">{{ $fixedAsset->acquisition_date }}</td>
-                <td class="align-middle">{{ $fixedAsset->cost }}</td>
+                <td class="align-middle">{{ $fixedAsset->purchase_price }}</td>
                 <td class="align-middle">{{ $fixedAsset->status }}</td>
                 <td class="align-middle">
                     <a href="{{ route('fixed_assets.show', $fixedAsset->id) }}" class="btn btn-info btn-sm">Show</a>
@@ -59,10 +61,14 @@
             @endforeach
         </tbody>
     </table>
+    </div>
 
     <!-- Pagination links -->
     <div class="d-flex justify-content-center">
         {{ $fixedAssets->links() }}
     </div>
+    @else
+        <p>You do not have permission to fixed assets.</p>
+    @endif
 </div>
 @endsection

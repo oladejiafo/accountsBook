@@ -17,7 +17,8 @@
 
                         <a href="{{ route('tax-payments.create') }}" class="btn btn-success mb-3 ml-auto justify-content-end" style="float:right;">Create Tax Payment</a>
 
-                        <table class="table table-css table-bordered table-hover table-responsive">
+                        <div class="table-responsive">
+                        <table class="table table-css table-bordered table-hover">
                             <thead class="thead-dark align-middle">
                                 <tr>
                                     <th>#</th>
@@ -52,6 +53,7 @@
                                 @endforelse
                             </tbody>
                         </table>
+                        </div>
                     </div>
                 </div>
             </div>

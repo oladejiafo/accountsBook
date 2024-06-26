@@ -14,8 +14,8 @@
 </div>
 
 <br>
-
-<table class="table table-css table-hover table-bordered table-responsive">
+<div class="table-responsive">
+<table class="table table-css table-hover table-bordered ">
     <thead class="thead-dark align-middle">
         <tr>
             <th width="10%">Bill No.</th>
@@ -61,6 +61,7 @@
         @endforeach
     </tbody>
     </table>
+</div>
 
     <div class="align-middle">
         @if ($purchases->lastPage() > 1)

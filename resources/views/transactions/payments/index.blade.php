@@ -26,7 +26,7 @@
         </form>
         <br>
 
-        <div class="card-body">
+        <div class="card-body table-responsive">
             <table class="table table-css table-bordered table-hover table-responsive">
                 <thead class="thead-dark align-middle">
                     <tr>

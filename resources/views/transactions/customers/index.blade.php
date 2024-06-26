@@ -28,8 +28,8 @@
                 </form>
                 <br>
 
-                <div class="card-body">
-                    <table class="table table-css table-bordered table-hover table-responsive">
+                <div class="card-body table-responsive">
+                    <table class="table table-css table-bordered table-hover ">
                         <thead class="thead-dark align-middle">
                             <tr>
                                 <th>Name</th>

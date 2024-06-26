@@ -4,15 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Models\Employee;
 
-// use App\Models\Branch;
-// use App\Models\State;
-// use App\Models\LGA;
-// use App\Models\Department;
-// use App\Models\Nationality;
+use App\Models\Branch;
+use App\Models\Bank;
+use App\Models\Designation;
+use App\Models\State;
+use App\Models\Lga;
+use App\Models\Department;
+use App\Models\Nationality;
 // use App\Models\Qualification;
-// use App\Models\Profession;
-// use App\Models\Position;
-// use App\Models\PensionManager;
+use App\Models\Profession;
+use App\Models\Position;
+use App\Models\PensionManager;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -166,23 +168,25 @@ class EmployeeController extends Controller
             return redirect()->route('login')->with('error', 'Unauthorized access.');
         }
         $companyId = auth()->user()->company_id;
+        $employee = Employee::with(['bank', 'designation', 'branch', 'stateOfOrigin', 'LGAOfOrigin', 'department'])->find($employee->id);
     
-        // Define variables for dropdown fields
-        $branches = DB::table('branches')->get();
-        $banks = DB::table('banks')->get();
-        $designations = DB::table('designations')->get();
-        $states = DB::table('states')->get();
-        $LGAs = DB::table('LGAs')->get();
-        $departments = DB::table('departments')->get();
-        $nationalities = DB::table('nationalities')->get();
-        // $qualifications = DB::table('qualifications')->get();
-        $professions = DB::table('professions')->get();
-        $positions = DB::table('positions')->get();
-        $pension_managers = DB::table('pension_managers')->get();
-    
-        // Show the details of a specific employee with dropdown fields
-        return view('employees.show', compact('employee', 'banks', 'designations', 'branches', 'states', 'LGAs', 'departments', 'nationalities', 'professions', 'positions', 'pension_managers'));
+    // Define variables for dropdown fields
+    $branches = DB::table('branches')->get();
+    $banks = DB::table('banks')->get();
+    $designations = DB::table('designations')->get();
+    $states = DB::table('states')->get();
+    $LGAs = DB::table('LGAs')->get();
+    $departments = DB::table('departments')->get();
+    $nationalities = DB::table('nationalities')->get();
+    $professions = DB::table('professions')->get();
+    $positions = DB::table('positions')->get();
+    $pension_managers = DB::table('pension_managers')->get();
+
+    // Show the details of a specific employee with dropdown fields
+    return view('employees.show', compact('employee', 'banks', 'designations', 'branches', 'states', 'LGAs', 'departments', 'nationalities', 'professions', 'positions', 'pension_managers'));
+
     }
+    
     
     public function edit(Employee $employee)
     {
@@ -193,17 +197,17 @@ class EmployeeController extends Controller
         $companyId = auth()->user()->company_id;
     
         // Define variables for dropdown fields
-        $branches = DB::table('branches')->get();
-        $banks = DB::table('banks')->get();
-        $designations = DB::table('designations')->get();
-        $states = DB::table('states')->get();
-        $LGAs = DB::table('LGAs')->get();
-        $departments = DB::table('departments')->get();
-        $nationalities = DB::table('nationalities')->get();
-        // $qualifications = DB::table('qualifications')->get();
-        $professions = DB::table('professions')->get();
-        $positions = DB::table('positions')->get();
-        $pension_managers = DB::table('pension_managers')->get();
+        $branches = Branch::where('company_id', $companyId)->get();
+        $banks = Bank::where('company_id', $companyId)->get();
+        $designations = Designation::where('company_id', $companyId)->get();
+        $states = State::where('company_id', $companyId)->get();
+        $LGAs = LGA::where('company_id', $companyId)->get();
+        $departments = Department::where('company_id', $companyId)->get();
+        $nationalities = Nationality::where('company_id', $companyId)->get();
+        // $qualifications = Qualification::where('company_id', $companyId)->get();
+        $professions = Profession::where('company_id', $companyId)->get();
+        $positions = Position::where('company_id', $companyId)->get();
+        $pension_managers = PensionManager::where('company_id', $companyId)->get();
     
         // Return a view for editing a specific employee with dropdown fields
         return view('employees.edit', compact('employee', 'banks', 'designations', 'branches', 'states', 'LGAs', 'departments', 'nationalities', 'professions', 'positions', 'pension_managers'));

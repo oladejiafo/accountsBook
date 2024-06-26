@@ -4,13 +4,16 @@
 
 @section('content')
 <div class="container">
+ @if (auth()->user()->hasPermission('fixed_assets.create') || auth()->user()->hasRole('Super_Admin'))
+
     <div class="card">
-        <div class="card-header"  style="color: #4e4e4e; font-style: bold; ">
+        <div class="card-header" style="color: #4e4e4e; font-style: bold;">
             Create Fixed Asset
         </div>
         <div class="card-body">
             <form action="{{ route('fixed_assets.store') }}" method="POST">
                 @csrf
+                <input type="hidden" name="company_id" value="{{ auth()->user()->company_id }}">
                 <div class="row">
                     <div class="col-md-6 form-group">
                         <label for="name">Name</label>
@@ -72,5 +75,9 @@
             </form>
         </div>
     </div>
+    @else
+        <p>You do not have permission to fixed assets.</p>
+    @endif
+
 </div>
 @endsection

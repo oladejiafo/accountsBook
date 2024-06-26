@@ -20,7 +20,8 @@
 
                         <a href="{{ route('tax-exemptions.create') }}" class="btn btn-success mb-3" style="float: right">Create Tax Exemption</a>
 
-                        <table class="table table-striped table-responsive">
+                        <div class="table-responsive">
+                        <table class="table table-striped">
                             <thead>
                                 <tr>
                                     <th>#</th>
@@ -55,6 +56,7 @@
                                 @endforelse
                             </tbody>
                         </table>
+                        </div>
                     </div>
                 </div>
             </div>

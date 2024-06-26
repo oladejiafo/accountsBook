@@ -76,21 +76,6 @@
                         </tr>
                         @endforeach
 
-                        @foreach ($deposits as $deposit)
-                        <tr>
-                            <td>{{ $deposit->date }}</td>
-                            <td>{{ $deposit->type }}</td>
-                            <td>{{ $deposit->amount }}</td>
-                            <td>{{ $deposit->description }}</td>
-                            <td>
-                                @if ($deposit->is_matched)
-                                    <span class="badge badge-success">Matched</span>
-                                @else
-                                    <span class="badge badge-danger">Not Matched</span>
-                                @endif
-                            </td>
-                        </tr>
-                        @endforeach
                     </tbody>
                 </table>
             </div>

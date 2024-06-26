@@ -206,6 +206,8 @@
         </li>
         @endif
         <!-- Grouping for Assets -->
+
+        @if (auth()->user()->hasPermission('fixed_assets.index') || auth()->user()->hasRole('Super_Admin'))
         <li>
             <span class="sidebar-textx sidebar-button menutitlefont mr-4 mt-2">Assets</span>
             <ul class="list-unstyled">
@@ -223,7 +225,9 @@
                 </li>
             </ul>
         </li>
+        @endif
         <!-- Grouping for HR -->
+        @if (auth()->user()->hasPermission('employees.index') || auth()->user()->hasRole('Super_Admin'))
         <li>
             <span class="sidebar-textx sidebar-button menutitlefont mr-4 mt-2">Human Resources</span>
             <ul class="list-unstyled">
@@ -246,6 +250,7 @@
                 </li>
             </ul>
         </li>
+        @endif
         <!-- Grouping for Reports -->
         {{-- @if (auth()->user()->hasPermission('dashboard_view')) --}}
         <li>

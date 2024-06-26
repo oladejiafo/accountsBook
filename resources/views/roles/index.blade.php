@@ -3,9 +3,9 @@
 @section('title', 'Roles Management')
 @section('content')
 <div class="container">
-    
+
     <div class="row">
-        <div class="col-6 titles"  style="color: #4e4e4e; font-style: bold; ">User Roles</div>
+        <div class="col-6 titles" style="color: #4e4e4e; font-style: bold; ">User Roles</div>
         <div class="col-6">
             <div style="float:right;" class="d-flex justify-content-end mt-3">
                 <div>
@@ -20,45 +20,47 @@
         <div class="input-group search">
             <input type="text" name="search" class="form-control textinput" placeholder="Search for roles">
             <div class="input-group-append">
-               <button type="submit" class="btn btn-pink" style="border-radius:0 .5rem .5rem 0 !important">Search</button>
+                <button type="submit" class="btn btn-pink" style="border-radius:0 .5rem .5rem 0 !important">Search</button>
             </div>
         </div>
     </form>
-    
+
     <br>
 
-    <table class="table table-css table-bordered table-hover table-responsive">
-        <thead class="thead-dark align-middle">
-                                <tr>
-                                    <!-- <th>ID</th> -->
-                                    <th>Name</th>
-                                    <th>Description</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($roles as $role)
-                                    <tr>
-                                        <!-- <td>{{ $role->id }}</td> -->
-                                        <td>{{ $role->name }}</td>
-                                        <td>{{ $role->description }}</td>
-                                        <td>
-                                            <a href="{{ route('roles.edit', $role->id) }}" class="btn btn-info">Edit</a>
-                                            <form action="{{ route('roles.destroy', $role->id) }}" method="POST" style="display: inline-block;">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this role?')">Delete</button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-
-                        {{ $roles->links() }}
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="table-responsive">
+        <table class="table table-css table-bordered table-hover">
+            <thead class="thead-dark align-middle">
+                <tr>
+                    <!-- <th>ID</th> -->
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($roles as $role)
+                <tr>
+                    <!-- <td>{{ $role->id }}</td> -->
+                    <td>{{ $role->name }}</td>
+                    <td>{{ $role->description }}</td>
+                    <td>
+                        <a href="{{ route('roles.edit', $role->id) }}" class="btn btn-info">Edit</a>
+                        <form action="{{ route('roles.destroy', $role->id) }}" method="POST" style="display: inline-block;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this role?')">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
     </div>
+
+    {{ $roles->links() }}
+</div>
+</div>
+</div>
+</div>
+</div>
 @endsection

@@ -24,7 +24,8 @@
                 </form>
                 <br>
 
-                <table class="table table-css table-bordered table-hover table-responsive">
+                <div class="table-responsive">
+                <table class="table table-css table-bordered table-hover">
                     <thead class="thead-dark align-middle">
                         <tr>
                             <th class="align-middle">Stock Category</th>
@@ -62,6 +63,7 @@
                         @endif
                     </tbody>
                 </table>
+                </div>
 
                 @if ($stocks->isNotEmpty())
                     <div class="pagination">

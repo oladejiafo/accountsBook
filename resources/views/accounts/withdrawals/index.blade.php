@@ -27,7 +27,8 @@
     </form>
     <br>
 
-    <table class="table table-css table-bordered table-hover table-responsive">
+    <div class="table-responsive">
+    <table class="table table-css table-bordered table-hover">
         <thead class="thead-dark align-middle">
             <tr>
                 <th>Date</th>
@@ -58,6 +59,7 @@
             @endforeach
         </tbody>
     </table>
+    </div>
 
     @if ($withdrawals->isNotEmpty())
         <div class="pagination">
