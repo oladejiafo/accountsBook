@@ -14,7 +14,9 @@ class ReturnTransaction extends Model
         'quantity',
         'condition',
         'reason',
-        'status',
+        'return_status',
+        'return_date',
+        'reason_for_return',
         'refund_amount',
         'payment_method',
         'transaction_id',
@@ -23,9 +25,9 @@ class ReturnTransaction extends Model
         'shipping_cost',
         'notes',
         'company_id',
-        'customer_id', // Added field for customer ID
-        'approval_required', // Added field for approval requirement
-        'exchange', // Added field for refund/exchange option
+        'customer_id', 
+        'approval_required', 
+        'exchange', 
     ];
     
     public function customer()
@@ -42,6 +44,7 @@ class ReturnTransaction extends Model
     // Define relationship with returned products (assuming you have a returned_products table)
     public function returnedProducts()
     {
-        return $this->hasMany(ReturnedProduct::class);
+        // return $this->hasMany(ReturnedProduct::class);
+        return $this->hasMany(ReturnedProduct::class, 'return_id');
     }
 }

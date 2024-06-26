@@ -8,13 +8,32 @@
     <link rel="icon" href="{{ asset('images/favicon/favicon.ico') }}" type="image/x-icon" />
     <link rel="shortcut icon" href="{{ asset('images/favicon//favicon.ico') }}" type="image/x-icon" />
 
+    <!-- Bootstrap CSS -->
+    {{-- <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}"> --}}
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <!-- Fonts -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap">
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+
+    <!-- Main CSS -->
     <link rel="stylesheet" href="{{ asset('css/main.css') }}">
+    <!-- Sidebar CSS -->
     <link rel="stylesheet" href="{{ asset('css/sidebar.css') }}">
+    <!-- Dialog Box CSS -->
     <link rel="stylesheet" href="{{ asset('css/dialogbox.css') }}">
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    {{-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script> --}}
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    
+    <script src="{{ asset('js/app.js') }}" defer></script>
+    <style>
+
+    </style>
 
 </head>
 <body>
@@ -35,21 +54,11 @@
             <br>
         </div>
     </main>
-
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <!-- Bootstrap JS -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
-    <!-- colResizable Plugin -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/colresizable/1.6.0/colResizable-1.6.min.js"></script>
-    <!-- Other scripts -->
-    <script src="{{ asset('js/main.js') }}" defer></script>
-    <script src="{{ asset('js/app.js') }}" defer></script>
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="{{ asset('js/jquery-3.3.1.slim.min.js') }}"></script>
     <script src="{{ asset('js/popper.min.js') }}"></script>
     <script src="{{ asset('js/bootstrap.min.js') }}"></script>
-
-    <script src="{{ asset('js/jquery-3.3.1.slim.min.js') }}"></script>
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {
             // Check if the user is authenticated
@@ -59,31 +68,45 @@
             if (!isAuthenticated) {
                 window.location.href = "{{ route('login') }}";
             }
+        });
 
-            // Initialize colResizable
-            $(".resizable-table").colResizable({
-                liveDrag: true,
-                postbackSafe: true
-            });
+    </script>
+    <script>
+    // Timeout duration in minutes (should match Laravel session lifetime)
+    const timeoutDuration = 120;
+    
+    // Calculate timeout in milliseconds
+    const timeoutMs = timeoutDuration * 60 * 1000;
+    
+    // Set timeout to redirect to the login page after the session expires
+    const sessionTimeout = setTimeout(function() {
+        // Redirect to the login page
+        window.location.href = '/login';
+    }, timeoutMs);
+    
+    // Reset the timeout if the user interacts with the page
+    document.addEventListener('mousemove', function() {
+        clearTimeout(sessionTimeout);
+        sessionTimeout = setTimeout(function() {
+            // Redirect to the login page
+            window.location.href = '/login';
+        }, timeoutMs);
+    });
 
-            // Session timeout
-            const timeoutDuration = 120;
-            const timeoutMs = timeoutDuration * 60 * 1000;
-            let sessionTimeout = setTimeout(function() {
-                window.location.href = '/login';
-            }, timeoutMs);
+// $(document).ready(function() {
+//     // Toggle sidebar
+//     $('#sidebarToggle').click(function() {
+//         $('#sidebar').toggleClass('d-none');
+//     });
+// });
 
-            document.addEventListener('mousemove', function() {
-                clearTimeout(sessionTimeout);
-                sessionTimeout = setTimeout(function() {
-                    window.location.href = '/login';
-                }, timeoutMs);
-            });
 
-            // Full-width table
+</script>
+<script>
+        $(document).ready(function() {
             $('table.table').addClass('full-width-table');
         });
-    </script>
+</script>
 
 </body>
 </html>

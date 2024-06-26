@@ -196,7 +196,7 @@
                         <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('sales.index') }}"><i class="fas fa-dot-circle  fa-fw"></i>
                                 Sales
                                 Order</a> </li>
-                        <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('returns.show') }}"><i class="fas fa-dot-circle  fa-fw"></i>
+                        <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('returns.index') }}"><i class="fas fa-dot-circle  fa-fw"></i>
                                 Sales
                                 Returns</a> </li>
                     </ul>

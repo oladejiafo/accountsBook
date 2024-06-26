@@ -48,7 +48,8 @@ class StockController extends Controller
         }
 
         // Execute the query and fetch the results
-        $stocks = $stocks->paginate(25);
+        $perPage = $request->input('per_page', 25);
+        $stocks = $stocks->paginate($perPage);
 
         return view('inventory.index', compact('stocks'));
     }

@@ -10,16 +10,17 @@ class ReturnedProduct extends Model
     use HasFactory;
 
     protected $fillable = [
-        'return_transaction_id',
+        'return_id',
         'product_id',
-        'name',
+        'product_name',
         'quantity',
         'condition',
     ];
 
     public function returnTransaction()
     {
-        return $this->belongsTo(ReturnTransaction::class);
+        // return $this->belongsTo(ReturnTransaction::class);
+        return $this->belongsTo(ReturnTransaction::class, 'return_id');
     }
 
     public function product()

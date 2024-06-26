@@ -25,9 +25,10 @@ class FixedAssetController extends Controller
         $search = $request->input('search');
     
         // Fetch fixed assets with search and paginate results
+        $perPage = $request->input('per_page', 25);
         $fixedAssets = FixedAsset::when($search, function($query, $search) {
             return $query->where('name', 'like', "%{$search}%");
-        })->paginate(10);
+        })->paginate($perPage);
     
         // Return view with fixed assets and search query
         return view('fixed_assets.index', compact('fixedAssets', 'search'));
@@ -80,8 +81,6 @@ class FixedAssetController extends Controller
 
         $fixedAsset->company_id = auth()->user()->company_id;
         $fixedAsset->save();
-
-//        FixedAsset::create($request->all());
 
         return redirect()->route('fixed_assets.index')->with('success', 'Fixed asset created successfully.');
     }

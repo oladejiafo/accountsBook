@@ -94,6 +94,28 @@
                     </tbody>
                 </table>
             </div>
+            
+            <!-- Pagination links -->
+            @if ($transactions->isNotEmpty())
+            <div class="row mb-3">
+                <div class="col-md-3  d-flex align-items-center">
+                    <form id="perPageForm" method="GET" action="{{ route('reconciliation.index') }}" class="form-inline">
+                        <label for="per_page" class="mr-2" style="font-size: 13px">Records per page:</label>
+                        <select name="per_page" id="per_page" class="form-control" style="width: 65px" onchange="document.getElementById('perPageForm').submit();">
+                            <option value="5" {{ request('per_page') == 5 ? 'selected' : '' }}>5</option>
+                            <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
+                            <option value="20" {{ request('per_page') == 20 ? 'selected' : '' }}>20</option>
+                            <option value="30" {{ request('per_page') == 30 ? 'selected' : '' }}>30</option>
+                        </select>
+                    </form>
+                </div>
+                <div class="col-md-9 d-flex justify-content-end">
+                    <div class="pagination">
+                        {{ $transactions->appends(['per_page' => request('per_page')])->links() }}
+                    </div>
+                </div>
+            </div>
+            @endif
         </div>
     </div>
 </div>

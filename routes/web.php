@@ -92,12 +92,18 @@ Route::middleware('auth', 'check.permissions')->group(function () {
     Route::put('/sales/{id}', [TransactionsController::class, 'salesUpdate'])->name('sales.update');
 
     //Returns
-    Route::get('/returns', [TransactionsController::class, 'showReturnsForm'])->name('returns.show');
+    Route::get('/returns', [TransactionsController::class, 'returnsIndex'])->name('returns.index');
+    Route::get('/returns/create', [TransactionsController::class, 'showReturnsForm'])->name('returns.create');
+
+    // Route::get('/returns', [TransactionsController::class, 'showReturnsForm'])->name('returns.show');
     Route::post('/returns', [TransactionsController::class, 'processReturn'])->name('returns.process');
     Route::get('/autocomplete/customers', [TransactionsController::class, 'returnCustomers'])->name('autocomplete.customers');
-    // Route::get('/fetchCustomerTransactions', [TransactionsController::class, 'fetchCustomerTransactions'])->name('fetchCustomerTransactions');
     Route::get('/fetch-customer-transactions', [TransactionsController::class, 'fetchCustomerTransactions'])->name('fetchCustomerTransactions');
+    Route::get('/get-products/{customerId}', [TransactionsController::class, 'getProductsByCustomer']);
 
+    Route::get('/returns/{return}/edit', [TransactionsController::class, 'returnsEdit'])->name('returns.edit');
+    Route::put('/returns/{return}', [TransactionsController::class, 'returnsUpdate'])->name('returns.update');
+    Route::delete('/returns/{return}', [TransactionsController::class, 'returnsDestroy'])->name('returns.destroy');
 
     // Define similar routes for other actions
 

@@ -341,7 +341,8 @@ class HomeController extends Controller
         }
 
         // Execute the query and fetch the results
-        $users = $users->paginate(25);
+        $perPage = $request->input('per_page', 25);
+        $users = $users->paginate($perPage);
 
         return view('users.index', compact('users'));
     }
@@ -562,7 +563,8 @@ class HomeController extends Controller
         }
 
         // Execute the query and fetch the results
-        $roles = $roles->paginate(25);
+        $perPage = $request->input('per_page', 25);
+        $roles = $roles->paginate($perPage);
 
         return view('roles.index', compact('roles'));
     }
@@ -660,42 +662,6 @@ class HomeController extends Controller
     }
 
     ///Roles Permissions
-    // public function rolePermissionsIndex(Request $request)
-    // {
-    //     // Check authentication and company identification
-    //     if (!auth()->check() || !auth()->user()->company_id) {
-    //         return redirect()->route('login')->with('error', 'Unauthorized access.');
-    //     }      
-    //     $companyId = auth()->user()->company_id;
-    //     //where('company_id', $companyId)->get();
-    //         // Fetch roles and permissions
-    //     $roles = Role::where('company_id', $companyId)->get();
-    //     $permissions = Permission::all();
-    //     // Create a query builder for RolePermission model
-    //     $rolePermissions = RolePermission::query()->where('company_id', $companyId);
-
-    //     // Handle search query if provided
-    //     $query = $request->input('search');
-    //     if ($query) {
-    //         $rolePermissions->where(function ($queryBuilder) use ($query) {
-    //             $queryBuilder
-    //                 ->orWhereHas('role', function ($roleQuery) use ($query) {
-    //                     $roleQuery->where('name', 'like', '%' . $query . '%');
-    //                 })
-    //                 ->orWhereHas('permission', function ($permissionQuery) use ($query) {
-    //                     $permissionQuery->where('name', 'like', '%' . $query . '%');
-    //                 });
-    //         });
-    //     }
-
-    //     // Execute the query and fetch the results
-    //     $rolePermissions = $rolePermissions->get();
-
-    //     // Define the $editing variable
-    //     $editing = false;
-    //     // $rolePermissions = RolePermission::where('company_id', $companyId)->get();
-    //     return view('role_permissions.index', compact('rolePermissions', 'roles', 'permissions','editing'));
-    // }
     public function rolePermissionsIndex(Request $request)
     {
         // Check authentication and company identification

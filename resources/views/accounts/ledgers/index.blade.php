@@ -163,12 +163,36 @@
             @endforeach
         </tbody>
     </table>
-    </div>
+    </div>   
 
     @if ($transactions->isNotEmpty())
-        <div class="pagination">
-            {{ $transactions->links() }}
-        </div>  
+    <div class="row mb-3">
+        <div class="col-md-3  d-flex align-items-center">
+            {{-- <form id="perPageForm" method="GET" action="{{ route('ledger.index') }}" class="form-inline"> --}}
+            @if($ttype == 'General Ledger')
+                <form id="perPageForm" method="GET" action="{{ route('ledger.general_ledger') }}" class="form-inline">            
+            @elseif($ttype == 'Account Payable')
+                <form id="perPageForm" method="GET" action="{{ route('ledger.accounts_payable_ledger') }}" class="form-inline">            
+            @elseif($ttype == 'Account Receivable')
+                <form id="perPageForm" method="GET" action="{{ route('ledger.accounts_receivable_ledger') }}" class="form-inline">            
+            @else
+                <form id="perPageForm" method="GET" action="{{ route('ledger.index') }}" class="form-inline">
+            @endif       
+                <label for="per_page" class="mr-2" style="font-size: 13px">Records per page:</label>
+                <select name="per_page" id="per_page" class="form-control" style="width: 65px" onchange="document.getElementById('perPageForm').submit();">
+                    <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
+                    <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
+                    <option value="75" {{ request('per_page') == 75 ? 'selected' : '' }}>75</option>
+                    <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
+                </select>
+            </form>
+        </div>
+        <div class="col-md-9 d-flex justify-content-end">
+            <div class="pagination">
+                {{ $transactions->appends(['per_page' => request('per_page')])->links() }}
+            </div>
+        </div>
+    </div>
     @endif
 </div>
 

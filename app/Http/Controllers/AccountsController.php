@@ -196,7 +196,7 @@ class AccountsController extends Controller
 
         // Fetch account categories
         $accountCategories = AccountsCategory::all(); // Assuming AccountCategory is your model for account categories
-// dd(auth()->user()->hasPermission('transactions.index'));
+       // dd(auth()->user()->hasPermission('transactions.index'));
         // Initialize variables
         $keyword = $request->input('keyword');
         $searchAccount = $request->input('search_account');
@@ -258,7 +258,8 @@ class AccountsController extends Controller
         }
 
         // Execute the query and get the results
-        $transactions = $transactionsQuery->paginate(25);
+        $perPage = $request->input('per_page', 25);
+        $transactions = $transactionsQuery->paginate($perPage);
 
         $totalDebit = 0;
         $totalCredit = 0;
@@ -372,7 +373,8 @@ class AccountsController extends Controller
         }
 
         // Execute the query and get the results
-        $transactions = $transactionsQuery->paginate(25);
+        $perPage = $request->input('per_page', 25);
+        $transactions = $transactionsQuery->paginate($perPage);
 
         $totalDebit = 0;
         $totalCredit = 0;
@@ -494,7 +496,8 @@ class AccountsController extends Controller
         }
     
         // Execute the query and get the results
-        $transactions = $transactionsQuery->paginate(25);
+        $perPage = $request->input('per_page', 25);
+        $transactions = $transactionsQuery->paginate($perPage);
     
         $totalDebit = 0;
         $totalCredit = 0;
@@ -600,7 +603,8 @@ class AccountsController extends Controller
         }
     
         // Execute the query and get the results
-        $transactions = $transactionsQuery->paginate(25);
+        $perPage = $request->input('per_page', 25);
+        $transactions = $transactionsQuery->paginate($perPage);
     
         $totalDebit = 0;
         $totalCredit = 0;
@@ -652,7 +656,8 @@ class AccountsController extends Controller
         }
 
         // Execute the query and fetch the results
-        $transactions = $transactions->paginate(25);
+        $perPage = $request->input('per_page', 25);
+        $transactions = $transactions->paginate($perPage);
 
         return view('accounts.transactions.index', compact('transactions'));
     }
@@ -854,7 +859,8 @@ class AccountsController extends Controller
         }
 
         // Execute the query and fetch the results
-        $deposits = $deposits->paginate(25);
+        $perPage = $request->input('per_page', 25);
+        $deposits = $deposits->paginate($perPage);
 
         return view('accounts.deposits.index', compact('deposits'));
     }
@@ -992,7 +998,8 @@ class AccountsController extends Controller
         }
 
         // Execute the query and fetch the results
-        $withdrawals = $withdrawals->paginate(25);
+        $perPage = $request->input('per_page', 25);
+        $withdrawals = $withdrawals->paginate($perPage);
 
         return view('accounts.withdrawals.index', compact('withdrawals'));
     }
@@ -1129,7 +1136,8 @@ class AccountsController extends Controller
         }
 
         // Execute the query and fetch the results
-        $transfers = $transfers->paginate(25);
+        $perPage = $request->input('per_page', 25);
+        $transfers = $transfers->paginate($perPage);
 
         return view('accounts.transfers.index', compact('transfers'));
     }
@@ -1242,33 +1250,33 @@ class AccountsController extends Controller
     }
     
 
-    // Accounts Receivable Module
-    public function accountsReceivableIndex()
-    {
-        // Check authentication and company identification
-        if (!auth()->check() || !auth()->user()->company_id) {
-            return redirect()->route('login')->with('error', 'Unauthorized access.');
-        }      
-        $companyId = auth()->user()->company_id;
+    // // Accounts Receivable Module
+    // public function accountsReceivableIndex()
+    // {
+    //     // Check authentication and company identification
+    //     if (!auth()->check() || !auth()->user()->company_id) {
+    //         return redirect()->route('login')->with('error', 'Unauthorized access.');
+    //     }      
+    //     $companyId = auth()->user()->company_id;
         
-        $receivables = AccountsReceivable::where('company_id', $companyId)->get();
-        return view('accounts_receivable.index', compact('receivables'));
-    }
+    //     $receivables = AccountsReceivable::where('company_id', $companyId)->get();
+    //     return view('accounts_receivable.index', compact('receivables'));
+    // }
 
-    // Implement other functions for accounts receivable module (create, store, edit, update, destroy)
+    // // Implement other functions for accounts receivable module (create, store, edit, update, destroy)
 
-    // Accounts Payable Module
-    public function accountsPayableIndex()
-    {
-        // Check authentication and company identification
-        if (!auth()->check() || !auth()->user()->company_id) {
-            return redirect()->route('login')->with('error', 'Unauthorized access.');
-        }      
-        $companyId = auth()->user()->company_id;
+    // // Accounts Payable Module
+    // public function accountsPayableIndex()
+    // {
+    //     // Check authentication and company identification
+    //     if (!auth()->check() || !auth()->user()->company_id) {
+    //         return redirect()->route('login')->with('error', 'Unauthorized access.');
+    //     }      
+    //     $companyId = auth()->user()->company_id;
         
-        $payables = AccountsPayable::where('company_id', $companyId)->get();
-        return view('accounts_payable.index', compact('payables'));
-    }
+    //     $payables = AccountsPayable::where('company_id', $companyId)->get();
+    //     return view('accounts_payable.index', compact('payables'));
+    // }
 
 
     //Chart of Accounts
@@ -1286,7 +1294,6 @@ class AccountsController extends Controller
         return view('accounts.chart_of_accounts.create', compact( 'categories' ) );
     }
 
-    
     public function storeChartOfAccount(Request $request)
     {
         // Check authentication and company identification
@@ -1394,8 +1401,8 @@ class AccountsController extends Controller
             $chartOfAccounts->where('company_id', $companyId);
         }
 
-        // Execute the query and fetch the results
-        $chartOfAccounts = $chartOfAccounts->paginate(25);
+        $perPage = $request->input('per_page', 25);
+        $chartOfAccounts = $chartOfAccounts->paginate($perPage);
 
         // $chartOfAccounts = ChartOfAccount::where('company_id', $companyId)->get();
         return view('accounts.chart_of_accounts.index', compact('chartOfAccounts'));
@@ -1447,7 +1454,7 @@ class AccountsController extends Controller
         return redirect()->route('chartOfAccounts')->with('success', 'Chart of account deleted successfully.');
     }
 
-    public function indexBankFeeds()
+    public function indexBankFeeds(Request $request)
     {
         // Check authentication and company identification
         if (!auth()->check() || !auth()->user()->company_id) {
@@ -1455,7 +1462,8 @@ class AccountsController extends Controller
         }      
         $companyId = auth()->user()->company_id;        
         // $bankTransactions = BankTransaction::where('user_id', auth()->id())->latest()->get();
-        $bankFeeds = BankTransaction::where('company_id', $companyId)->latest()->paginate(25);
+        $perPage = $request->input('per_page', 25);
+        $bankFeeds = BankTransaction::where('company_id', $companyId)->latest()->paginate($perPage);
         return view('accounts.banking.index', compact('bankFeeds'));
     }
 
@@ -1494,7 +1502,7 @@ class AccountsController extends Controller
         return redirect()->back()->with('error', 'Invalid file uploaded.');
     }
 
-    public function Reconsindex()
+    public function Reconsindex(Request $request)
     {
         // Check authentication and company identification
         if (!auth()->check() || !auth()->user()->company_id) {
@@ -1502,13 +1510,9 @@ class AccountsController extends Controller
         }      
         $companyId = auth()->user()->company_id;
 
-        // Retrieve transactions from various tables based on company_id
-        // $invoices = Invoice::where('company_id', $companyId)->get();
-        // $payments = Payment::where('company_id', $companyId)->get();
-        // $deposits = Deposit::where('company_id', $companyId)->get();
-        // $withdrawals = Withdrawal::where('company_id', $companyId)->get();
-        // $transfers = Transfer::where('company_id', $companyId)->get();
-        $transactions = Transaction::where('company_id', $companyId)->get();
+        $perPage = $request->input('per_page', 10);
+        // $transactions = Transaction::where('company_id', $companyId)->get();
+        $transactions = Transaction::where('company_id', $companyId)->paginate($perPage);
 
         $bankTransactions = BankTransaction::where('company_id', $companyId)->get();
         // Include other relevant tables
@@ -1529,51 +1533,51 @@ class AccountsController extends Controller
         $accountingTransactionId = $request->input('accounting_transaction_id');
 
         try {
-        // Fetch the selected bank transaction and accounting transaction from the database
-        $bankTransaction = BankTransaction::where('company_id', $companyId)->find($bankTransactionId);
-        // $accountingTransaction = Transaction::where('company_id', $companyId)->find($accountingTransactionId);
+            // Fetch the selected bank transaction and accounting transaction from the database
+            $bankTransaction = BankTransaction::where('company_id', $companyId)->find($bankTransactionId);
+            // $accountingTransaction = Transaction::where('company_id', $companyId)->find($accountingTransactionId);
 
-        if (!$bankTransaction) {
-            return redirect()->route('reconciliation.index')->with('error', 'Selected transaction was not found.');
+            if (!$bankTransaction) {
+                return redirect()->route('reconciliation.index')->with('error', 'Selected transaction was not found.');
+            }
+
+            // Fetch the accounting transaction from the relevant table based on its type
+            switch ($bankTransaction->type) {
+                case 'Payment':
+                    $accountingTransaction = Payment::where('company_id', $companyId)->find($accountingTransactionId);
+                    break;
+                case 'sale':
+                    $accountingTransaction = SaleBill::where('company_id', $companyId)->find($accountingTransactionId);
+                    break;
+                case 'purchase':
+                    $accountingTransaction = PurchaseBill::where('company_id', $companyId)->find($accountingTransactionId);
+                    break;
+                // Add cases for other types as needed
+                default:
+                    $accountingTransaction = Transaction::where('company_id', $companyId)->find($accountingTransactionId);
+                    break;
+            }
+            if (!$accountingTransaction) {
+                return redirect()->route('reconciliation.index')->with('error', 'Selected accounting transaction was not found.');
+            }
+
+            // Perform matching logic here
+            $matchCriteria = $this->compareTransactions($bankTransaction, $accountingTransaction);
+
+            // Check if the transactions match
+            if ($matchCriteria) {
+                $accountingTransaction->matched_with_bank_feed = true;
+                $accountingTransaction->save();
+
+                // Redirect back to the reconciliation page with a success message
+                return redirect()->route('reconciliation.index')->with('success', 'Transactions matched successfully.');
+            } else {
+                // Redirect back to the reconciliation page with a warning message
+                return redirect()->route('reconciliation.index')->with('warning', 'Transactions do not match.');
+            }
+        } catch (ModelNotFoundException $e) {
+            return redirect()->route('reconciliation.index')->with('error', 'One or both of the selected transactions were not found.');
         }
-
-        // Fetch the accounting transaction from the relevant table based on its type
-        switch ($bankTransaction->type) {
-            case 'Payment':
-                $accountingTransaction = Payment::where('company_id', $companyId)->find($accountingTransactionId);
-                break;
-            case 'sale':
-                $accountingTransaction = SaleBill::where('company_id', $companyId)->find($accountingTransactionId);
-                break;
-            case 'purchase':
-                $accountingTransaction = PurchaseBill::where('company_id', $companyId)->find($accountingTransactionId);
-                break;
-            // Add cases for other types as needed
-            default:
-                $accountingTransaction = Transaction::where('company_id', $companyId)->find($accountingTransactionId);
-                break;
-        }
-        if (!$accountingTransaction) {
-            return redirect()->route('reconciliation.index')->with('error', 'Selected accounting transaction was not found.');
-        }
-
-        // Perform matching logic here
-        $matchCriteria = $this->compareTransactions($bankTransaction, $accountingTransaction);
-
-        // Check if the transactions match
-        if ($matchCriteria) {
-            $accountingTransaction->matched_with_bank_feed = true;
-            $accountingTransaction->save();
-
-            // Redirect back to the reconciliation page with a success message
-            return redirect()->route('reconciliation.index')->with('success', 'Transactions matched successfully.');
-        } else {
-            // Redirect back to the reconciliation page with a warning message
-            return redirect()->route('reconciliation.index')->with('warning', 'Transactions do not match.');
-        }
-    } catch (ModelNotFoundException $e) {
-        return redirect()->route('reconciliation.index')->with('error', 'One or both of the selected transactions were not found.');
-    }
     }
 
     private function compareTransactions($bankTransaction, $accountingTransaction) {
@@ -1695,7 +1699,7 @@ class AccountsController extends Controller
     }
 
     // Tax Rates
-    public function taxRatesIndex()
+    public function taxRatesIndex(Request $request)
     {
         // Check authentication and company identification
         if (!auth()->check() || !auth()->user()->company_id) {
@@ -1705,7 +1709,8 @@ class AccountsController extends Controller
         //where('company_id', $companyId)->
 
         $tab = request()->query('tab');
-        $taxRates = TaxRate::where('company_id', $companyId)->paginate(25);
+        $perPage = $request->input('per_page', 25);
+        $taxRates = TaxRate::where('company_id', $companyId)->paginate($perPage);
         return view('accounts.tax.ratesIndex', compact('taxRates', 'tab'));
     }
 
@@ -1829,7 +1834,7 @@ class AccountsController extends Controller
         return redirect()->route('tax-rates.index')->with('success', 'Tax rate deleted successfully.');
     }
 
-    public function taxTransactionsIndex()
+    public function taxTransactionsIndex(Request $request)
     {
         // Check authentication and company identification
         if (!auth()->check() || !auth()->user()->company_id) {
@@ -1839,7 +1844,8 @@ class AccountsController extends Controller
         //where('company_id', $companyId)->
 
         // $tab = request()->query('tab');
-        $taxTransactions = TaxTransaction::where('company_id', $companyId)->paginate(25);
+        $perPage = $request->input('per_page', 25);
+        $taxTransactions = TaxTransaction::where('company_id', $companyId)->paginate($perPage);
         return view('accounts.tax.transactionsIndex', compact('taxTransactions'));
     }
 
@@ -1957,7 +1963,7 @@ class AccountsController extends Controller
     }
 
     // Tax Payments Index
-    public function taxPaymentsIndex()
+    public function taxPaymentsIndex(Request $request)
     {
         // Check authentication and company identification
         if (!auth()->check() || !auth()->user()->company_id) {
@@ -1966,7 +1972,8 @@ class AccountsController extends Controller
         $companyId = auth()->user()->company_id;
         //where('company_id', $companyId)->
 
-        $taxPayments = TaxPayment::where('company_id', $companyId)->paginate(25);
+        $perPage = $request->input('per_page', 25);
+        $taxPayments = TaxPayment::where('company_id', $companyId)->paginate($perPage);
         return view('accounts.tax.paymentsIndex', compact('taxPayments'));
     }
 
@@ -2078,7 +2085,7 @@ class AccountsController extends Controller
 
 
     // Tax Settings Index
-    public function taxSettingsIndex()
+    public function taxSettingsIndex(Request $request)
     {
         // Check authentication and company identification
         if (!auth()->check() || !auth()->user()->company_id) {
@@ -2087,7 +2094,8 @@ class AccountsController extends Controller
         $companyId = auth()->user()->company_id;
         //where('company_id', $companyId)->
 
-        $taxSettings = TaxSetting::where('company_id', $companyId)->paginate(25);
+        $perPage = $request->input('per_page', 25);
+        $taxSettings = TaxSetting::where('company_id', $companyId)->paginate($perPage);
         return view('accounts.tax.settingsIndex', compact('taxSettings'));
     }
 
@@ -2201,7 +2209,7 @@ class AccountsController extends Controller
         return redirect()->route('tax-settings.index')->with('success', 'Tax setting deleted successfully.');
     }
 
-    public function taxExemptionsIndex()
+    public function taxExemptionsIndex(Request $request)
     {
         // Check authentication and company identification
         if (!auth()->check() || !auth()->user()->company_id) {
@@ -2210,7 +2218,8 @@ class AccountsController extends Controller
         $companyId = auth()->user()->company_id;
         //where('company_id', $companyId)->
 
-        $taxExemptions = TaxExemption::where('company_id', $companyId)->paginate(25);
+        $perPage = $request->input('per_page', 25);
+        $taxExemptions = TaxExemption::where('company_id', $companyId)->paginate($perPage);
         return view('accounts.tax.exemptionsIndex', compact('taxExemptions'));
     }
 

@@ -13,7 +13,8 @@ use App\Models\SaleBillDetails;
 use App\Models\Stock;
 use App\Models\Supplier;
 use App\Models\ReturnTransaction;
-use App\Models\ReturnProduct;
+use App\Models\ReturnedProduct;
+use App\Models\ReturnedProduct as ReturnModel;
 use App\Models\Customer;
 use App\Models\Payment;
 use App\Models\Bank;
@@ -26,15 +27,21 @@ use App\Models\ChartOfAccount;
 use App\Notifications\ReturnProcessedNotification;  
 use App\Notifications\ReturnApprovalNotification;
 
+// use App\Mail\ReturnApprovalNotification;
+// use App\Mail\ReturnProcessedNotification;
+
 use App\Http\Requests\SaleFormRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rule;
+
+use Illuminate\Support\Facades\Log;
 
 class TransactionsController extends Controller
 {
     //SALES
-    public function salesIndex()
+    public function salesIndex(Request $request)
     {
         // Check authentication and company identification
         if (!auth()->check() || !auth()->user()->company_id) {
@@ -42,7 +49,8 @@ class TransactionsController extends Controller
         }
         $companyId = auth()->user()->company_id;
         //where('company_id', $companyId)->
-        $sales = SaleBill::where('company_id', $companyId)->with('saleItems')->orderBy('created_at', 'desc')->paginate(25);
+        $perPage = $request->input('per_page', 25);
+        $sales = SaleBill::where('company_id', $companyId)->with('saleItems')->orderBy('created_at', 'desc')->paginate($perPage);
 
         return view('transactions.sales.index', compact('sales'));
     }
@@ -394,11 +402,15 @@ class TransactionsController extends Controller
     
         $companyId = auth()->user()->company_id;
        
-        // Retrieve all return transactions
-        $returnTransactions = ReturnTransaction::where('company_id', $companyId)->get();
+        // // Retrieve all return transactions
+        // $returnTransactions = ReturnTransaction::where('company_id', $companyId)->get();
     
-        return view('transactions.returns.show', compact('returnTransactions'));
+        $customers = Customer::where('company_id', $companyId)->get(); 
+
+        return view('transactions.returns.create', compact('customers'));
+        // return view('transactions.returns.show', compact('returnTransactions'));
     }
+    
     public function processReturn(Request $request)
     {
         // Check authentication and company identification
@@ -407,64 +419,92 @@ class TransactionsController extends Controller
         }
         $companyId = auth()->user()->company_id;
     
-        // Validate the request data
-        $validatedData = $request->validate([
-            'return_date' => 'required|date',
+        // // Validate the request data
+        // $validatedData = $request->validate([
+        //     'return_date' => 'required|date',
+        //     'customer_id' => 'required|exists:customers,id',
+        //     'return_status' => 'required|in:Pending,Authorized,Received,Refunded,Completed',
+        //     'reason_for_return' => 'required|string',
+        //     'refund_amount' => 'required|numeric|min:0',
+        //     'payment_method' => 'required|string',
+        //     'transaction_id' => 'required|string',
+        //     'carrier' => 'nullable|string',
+        //     'tracking_number' => 'nullable|string',
+        //     'shipping_cost' => 'nullable|numeric|min:0',
+        //     'notes' => 'nullable|string',
+
+        //     'product_id' => 'required|array',
+        //     'product_id.*' => 'exists:stocks,id',
+        //     'quantity' => 'required|array',
+        //     'quantity.*' => 'numeric|min:1',
+        //     'condition' => 'required|array',
+        //     'condition.*' => 'in:Resalable,Used,Damaged',
+        // ]);
+    
+        $request->validate([
             'customer_id' => 'required|exists:customers,id',
-            'return_status' => 'required|in:Pending,Authorized,Received,Refunded,Completed',
-            'reason_for_return' => 'required|string',
-            'refund_amount' => 'required|numeric|min:0',
-            'payment_method' => 'required|string',
-            'transaction_id' => 'required|string',
-            'carrier' => 'nullable|string',
-            'tracking_number' => 'nullable|string',
-            'shipping_cost' => 'nullable|numeric|min:0',
-            'notes' => 'nullable|string',
-
-            'product_id' => 'required|array',
-            'product_id.*' => 'exists:stocks,id',
-            'quantity' => 'required|array',
-            'quantity.*' => 'numeric|min:1',
-            'condition' => 'required|array',
-            'condition.*' => 'in:Resalable,Used,Damaged',
+            'items.*.product_id' => 'required|exists:stocks,id',
+            'items.*.quantity' => 'required|integer|min:1',
+            'items.*.price' => 'nullable',
+            'items.*.condition' => 'required',
+            'items.*.reason' => 'required',
         ]);
-    
-        // Create a new return transaction record
+
+        // // Create a new return transaction record
+        // $returnTransaction = ReturnTransaction::create([
+        //     // Assign other return transaction fields from the validated data
+        //     'company_id' => auth()->user()->company_id,
+        //     'return_date' => $validatedData['return_date'],
+        //     'customer_id' => $validatedData['customer_id'],
+        //     'return_status' => $validatedData['return_status'],
+        //     'reason_for_return' => $validatedData['reason_for_return'],
+        //     'refund_amount' => $validatedData['refund_amount'],
+        //     'payment_method' => $validatedData['payment_method'],
+        //     'transaction_id' => $validatedData['transaction_id'],
+        //     'carrier' => $validatedData['carrier'],
+        //     'tracking_number' => $validatedData['tracking_number'],
+        //     'shipping_cost' => $validatedData['shipping_cost'],
+        //     'notes' => $validatedData['notes'],
+        //     'approval_required' => $request->has('approval_required') ? 1 : 0,
+        // ]);
+
         $returnTransaction = ReturnTransaction::create([
-            // Assign other return transaction fields from the validated data
-            'company_id' => auth()->user()->company_id,
-            'return_date' => $validatedData['return_date'],
-            'customer_id' => $validatedData['customer_id'],
-            'return_status' => $validatedData['return_status'],
-            'reason_for_return' => $validatedData['reason_for_return'],
-            'refund_amount' => $validatedData['refund_amount'],
-            'payment_method' => $validatedData['payment_method'],
-            'transaction_id' => $validatedData['transaction_id'],
-            'carrier' => $validatedData['carrier'],
-            'tracking_number' => $validatedData['tracking_number'],
-            'shipping_cost' => $validatedData['shipping_cost'],
-            'notes' => $validatedData['notes'],
-            'approval_required' => $request->has('approval_required') ? 1 : 0,
+            'customer_id' => $request->customer_id,
+            'company_id' => $companyId,
+            'return_status' => 'pending', 
+            'reason_for_return' => $request->reason,
+            'refund_amount' => $request->price,
+            'approval_required' => $request->has('approval_required'),
+            'return_date' => $request->return_date,
         ]);
-    
-        // Associate return products with the return transaction
-        foreach ($validatedData['product_id'] as $key => $productId) {
-            ReturnProduct::create([
-                'return_transaction_id' => $returnTransaction->id,
-                'product_id' => $productId,
-                'quantity' => $validatedData['quantity'][$key],
-                'condition' => $validatedData['condition'][$key],
-                'product_name' => $validatedData['name'][$key], // Assuming 'name' is passed in the form
-                // Other fields as needed
-                'unit_price' => $validatedData['price'][$key], // Fetch product price from database
-                'company_id' => $companyId, 
-
-            ]);
         
-            // Update inventory levels
-            $product = Stock::where('company_id', $companyId)->findOrFail($productId);
-            $product->quantity += $validatedData['quantity'][$key];
-            $product->save();
+        // Associate return products with the return transaction
+        foreach ($request->items as $item) {
+
+            $product = Stock::find($item['product_id']); 
+
+            if ($product) {
+                $productName = $product->name; 
+            } else {
+                continue; 
+            }
+
+            ReturnedProduct::create([
+                'return_id' => $returnTransaction->id,
+                'company_id' => $companyId,
+                'product_id' => $item['product_id'],
+                'product_name' => $productName,
+                'quantity' => $item['quantity'],
+                'condition' => $item['condition'],
+                // 'reason' => $item['reason'],
+            ]);
+
+            // Update stock quantity
+            $stock = Stock::where('company_id', $companyId)->find($item['product_id']);
+            if ($stock) {
+                $stock->quantity += $item['quantity'];
+                $stock->save();
+            }
         }
             
         // Approval logic goes here
@@ -474,23 +514,17 @@ class TransactionsController extends Controller
                 'approval_status' => 'Pending',
             ]);
     
-            // Notify the approver here
-            // Fetch all email addresses of users who have the authority to approve returns
             $approversEmails = User::where('company_id', $companyId)->where('role', 'approver')->pluck('email')->toArray();
-    
-            // Notify all the approvers
             \Mail::to($approversEmails)->send(new ReturnApprovalNotification($returnTransaction));
     
             return redirect()->back()->with('success', 'Return request submitted for approval.');
         } else {
-            // No approval required, continue with refund process
-    
-            // Calculate refund amount based on return products
             $totalRefundAmount = 0;
+            if ($returnTransaction->returnProducts->count() > 0) {
             foreach ($returnTransaction->returnProducts as $returnProduct) {
-                // Calculate refund amount for each product (e.g., based on quantity and product price)
                 $refundAmountForProduct = $returnProduct->quantity * $returnProduct->unit_price;
                 $totalRefundAmount += $refundAmountForProduct;
+            }
             }
     
             // Update customer balance (if applicable)
@@ -543,9 +577,6 @@ class TransactionsController extends Controller
     
             // Reverse payments (if applicable)
             if ($returnTransaction->payment_method === 'Credit Card') {
-                // If payment method is credit card, initiate refund through payment gateway
-                // $paymentGateway = new PaymentGateway(); 
-                // $refundResponse = $paymentGateway->refund($returnTransaction->transaction_id, $totalRefundAmount);
                 if ($refundResponse->success) {
                     // Payment reversal successful
                     // You may update the refund transaction status or log refund details
@@ -575,49 +606,225 @@ class TransactionsController extends Controller
             return redirect()->back()->with('success', 'Return processed successfully.');
         }
     }
-    
     public function fetchCustomerTransactions(Request $request)
+    { 
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return response()->json(['error' => 'Unauthorized access.'], 401);
+        }
+
+        $companyId = auth()->user()->company_id;
+
+        $customerID = $request->input('customerID');
+        dd($customerID);
+
+        if (isset($customerID)) {
+
+            $transactions = Transaction::where('customer_id', $customerID)
+                                ->orderBy('created_at', 'desc')
+                                ->get();
+
+            // Prepare the transactions data to be returned
+            // $formattedTransactions = $transactions->map(function ($transaction) {
+            //     return [
+            //         'id' => $transaction->id,
+            //         'date' => $transaction->created_at->format('m-d-Y'), 
+            //         'description' => $transaction->description, 
+            //     ];
+            // });
+
+            return response()->json(['transactions' => $transactions]);
+            $responseHTML = view('partials.transactions_table', compact('transactions'))->render();
+    
+            return response()->json([
+                'html' => $responseHTML
+            ]);
+                        // return response()->json(['customers' => $customers, 'transactions' => $formattedTransactions]);
+        } else {
+            // If no customers are found, return an error response
+            return response()->json(['error' => 'No matching customers found'], 404);
+        }
+    }
+
+    public function returnsIndex(Request $request)
     {
         // Check authentication and company identification
         if (!auth()->check() || !auth()->user()->company_id) {
             return redirect()->route('login')->with('error', 'Unauthorized access.');
         }
-
+    
         $companyId = auth()->user()->company_id;
-        
-        $customerName = $request->input('name');
-    
-        $customers = Customer::where('company_id', $companyId)->where('name', 'LIKE', '%' . $customerName . '%')->get();
+        //where('company_id', $companyId)->
+     
+        $returnsQuery = ReturnTransaction::where('company_id', $companyId);
 
-        if ($customers->isNotEmpty()) {
-            // If customers are found, retrieve their IDs and transactions
-            $customerIds = $customers->pluck('id')->toArray();
-            $transactions = Transaction::whereIn('customer_id', $customerIds)->get(); // Adjust this according to your actual relationship
-            
-            // Return the transactions or any other data you need in the response
-            return response()->json(['customers' => $customers, 'transactions' => $transactions]);
-        } else {
-            // If no customers are found, return an empty response or an error message
-            return response()->json(['error' => 'No matching customers found'], 404);
+        // Apply search filter if search query is present
+        if ($request->has('search')) {
+            $search = $request->query('search');
+            $returnsQuery->where(function($query) use ($search) {
+                $query->whereHas('customer', function($subquery) use ($search) {
+                    $subquery->where('name', 'like', "%$search%")
+                            ->orWhere('email', 'like', "%$search%")
+                            ->orWhere('phone', 'like', "%$search%");
+                });
+            });
         }
+        // Paginate customers based on the per_page query parameter or default
+        $perPage = $request->query('per_page', 25);
+        $customers = $returnsQuery->paginate($perPage);
 
-        // $customerId = $request->input('customerId');
-    
-        // // Retrieve the customer's transactions
-        // $customer = Customer::find($customerId);
-        // $transactions = $customer->transactions()->orderBy('created_at', 'desc')->limit(5)->get();
-    
-        // // Prepare the transactions data to be returned as JSON
-        // $formattedTransactions = $transactions->map(function ($transaction) {
-        //     return [
-        //         'id' => $transaction->id,
-        //         'date' => $transaction->created_at->format('m-d-Y'), // Format the date as needed
-        //         'description' => $transaction->description, // Assuming there's a 'description' field in your transaction model
-        //     ];
-        // });
-    
-        // return response()->json($formattedTransactions);
+        $products = Stock::where('company_id', $companyId)->get();
+
+        return view('transactions.returns.index', [
+            'customers' => $customers,
+            'products' => $products,
+        ]);
     }
+
+    public function getProductsByCustomer($customerId)
+    {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }
+    
+        $companyId = auth()->user()->company_id;
+        //where('company_id', $companyId)->
+     
+        $products = SaleItem::join('sale_bills', 'sale_items.sale_bill_id', '=', 'sale_bills.id')
+                            ->join('stocks', 'sale_items.stock_id', '=', 'stocks.id')
+                            ->where('sale_bills.customer_id', $customerId)
+                            ->where('company_id', $companyId)
+                            ->select('stocks.id', 'stocks.name','sale_items.quantity', 'sale_items.totalprice')
+                            ->distinct()
+                            ->get();
+
+        $formattedProducts = $products->map(function ($product) {
+            return [
+                'id' => $product->id,
+                'name' => $product->name,
+                'quantity' => $product->quantity,
+                'totalprice' => $product->totalprice,
+            ];
+        });
+                                    
+        return response()->json([
+            'products' => $formattedProducts,
+        ]);
+    }
+
+    public function returnsEdit($id)
+    {
+        // Check if user is authenticated and has a company ID
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }
+    
+        // Fetch the return transaction by ID and ensure it belongs to the user's company
+        $return = ReturnTransaction::where('id', $id)
+                        ->where('company_id', auth()->user()->company_id)
+                        ->first();
+    
+        // If return transaction not found or doesn't belong to the company, redirect with error
+        if (!$return) {
+            return redirect()->route('returns.index')->with('error', 'Return not found or unauthorized access.');
+        }
+      // Fetch all customers belonging to the user's company
+      $customers = Customer::where('company_id', auth()->user()->company_id)->get();
+      $products = Stock::where('company_id', auth()->user()->company_id)->get();
+        // Load the edit view with the return transaction data
+        return view('transactions.returns.edit', compact('return', 'customers','products'));
+    }
+    
+
+    public function returnsUpdate(Request $request, $id)
+    { 
+        // Validate incoming data
+        $validatedData = $request->validate([
+            'customer_id' => 'required|exists:customers,id',
+            'return_date' => 'required|date',
+            'reason' => 'required|string',
+            'price' => 'required|numeric|min:0',
+            'reason_for_return' => 'nullable|string',
+            'refund_amount' => 'nullable|numeric|min:0',
+
+            'items.*.product_id' => 'required|exists:stocks,id',
+            'items.*.quantity' => 'required|integer|min:1',
+            'items.*.condition' => 'required|string',
+            'items.*.product_name' => 'required|string',
+        ]);
+    
+        // Check if user is authenticated and has a company ID
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }
+    
+        $return = ReturnTransaction::where('id', $id)
+        ->where('company_id', auth()->user()->company_id)
+        ->first();
+        // Check if the return belongs to the user's company
+        if (!$return) {
+            return redirect()->route('returns.index')->with('error', 'Return not found or unauthorized access.');
+        }
+    
+
+        // Update return details
+        $return->customer_id = $request->customer_id;
+        $return->return_date = $request->return_date;
+        $return->reason_for_return = $request->reason;
+        $return->refund_amount = $request->price;
+        // $return->approval_required = $request->has('approval_required');
+        $return->save();
+    
+        // Update or create associated returned products
+        foreach ($request->items as $item) {
+            // Update or create returned product
+            $returnedProduct = ReturnedProduct::updateOrCreate(
+                [
+                    'return_id' => $return->id,
+                    'product_id' => $item['product_id'],
+                ],
+                [
+                    'company_id' => auth()->user()->company_id,
+                    'product_name' => $item['product_name'], 
+                    'quantity' => $item['quantity'],
+                    // 'total_price' => $item['price'], 
+                    'condition' => $item['condition'],
+                    // 'reason' => $item['reason'],
+                ]
+            );
+
+            // Update stock quantity (if needed)
+            $stock = Stock::where('company_id', auth()->user()->company_id)
+                        ->where('id', $item['product_id'])
+                        ->first();
+
+            if ($stock) {
+                // Calculate new stock quantity after return update
+                $newQuantity = $stock->quantity + $item['quantity'];
+                $stock->update(['quantity' => $newQuantity]);
+            }
+        }
+        return redirect()->route('returns.index')->with('success', 'Return updated successfully.');
+    }
+    
+
+    public function returnsDestroy(ReturnModel $return)
+    {
+        // Check if user is authenticated and has a company ID
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }
+    
+        // Check if the return belongs to the user's company
+        if ($return->company_id !== auth()->user()->company_id) {
+            return redirect()->route('returns.index')->with('error', 'Unauthorized access.');
+        }
+    
+        $return->delete();
+        return redirect()->route('returns.index')->with('success', 'Return deleted successfully.');
+    }
+    
 
     public function returnCustomers(Request $request)
     {
@@ -756,14 +963,15 @@ class TransactionsController extends Controller
         // return redirect()->route('purchase.index')->with('success', 'Purchase added successfully');
     }
     
-    public function purchasesIndex()
+    public function purchasesIndex(Request $request)
     {
         // Check authentication and company identification
         if (!auth()->check() || !auth()->user()->company_id) {
             return redirect()->route('login')->with('error', 'Unauthorized access.');
         }
         $companyId = auth()->user()->company_id;
-        $purchases = PurchaseBill::where('company_id', $companyId)->with('items')->orderBy('created_at', 'desc')->paginate(25);
+        $perPage = $request->input('per_page', 25);
+        $purchases = PurchaseBill::where('company_id', $companyId)->with('items')->orderBy('created_at', 'desc')->paginate($perPage);
        
         return view('transactions.purchases.index', compact('purchases'));
     }
@@ -813,14 +1021,15 @@ class TransactionsController extends Controller
         return redirect()->route('purchases.index')->with('success', 'Purchase deleted successfully.');
     }
 
-    public function supplierIndex()
+    public function supplierIndex(Request $request)
     {
         // Check authentication and company identification
         if (!auth()->check() || !auth()->user()->company_id) {
             return redirect()->route('login')->with('error', 'Unauthorized access.');
         }
         $companyId = auth()->user()->company_id;
-        $suppliers = Supplier::where('company_id', $companyId)->orderBy('created_at', 'desc')->paginate(25);
+        $perPage = $request->input('per_page', 25);
+        $suppliers = Supplier::where('company_id', $companyId)->orderBy('created_at', 'desc')->paginate($perPage);
        
         return view('transactions.suppliers.index', compact('suppliers'));
     }
@@ -961,7 +1170,8 @@ class TransactionsController extends Controller
         }
         
         // Execute the query and fetch the results
-        $customers = $customers->paginate(25);        
+        $perPage = $request->input('per_page', 25);
+        $customers = $customers->paginate($perPage);        
 
         // $customers = Customer::where('company_id', $companyId)->get();
         return view('transactions.customers.index', compact('customers'));
@@ -1094,7 +1304,8 @@ class TransactionsController extends Controller
         }
 
         // Execute the query and fetch the results
-        $payments = $payments->paginate(25);
+        $perPage = $request->input('per_page', 25);
+        $payments = $payments->paginate($perPage);
 
         // $payments = Payment::where('company_id', $companyId)->get();
         return view('transactions.payments.index', compact('payments'));

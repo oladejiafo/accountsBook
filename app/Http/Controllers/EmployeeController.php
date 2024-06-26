@@ -54,7 +54,8 @@ class EmployeeController extends Controller
         }
     
         // Execute the query and fetch the results
-        $employees = $employees->paginate(25);
+        $perPage = $request->input('per_page', 25);
+        $employees = $employees->paginate($perPage);
     
         return view('employees.index', compact('employees'));
     }
@@ -169,21 +170,21 @@ class EmployeeController extends Controller
         }
         $companyId = auth()->user()->company_id;
         $employee = Employee::with(['bank', 'designation', 'branch', 'stateOfOrigin', 'LGAOfOrigin', 'department'])->find($employee->id);
-    
-    // Define variables for dropdown fields
-    $branches = DB::table('branches')->get();
-    $banks = DB::table('banks')->get();
-    $designations = DB::table('designations')->get();
-    $states = DB::table('states')->get();
-    $LGAs = DB::table('LGAs')->get();
-    $departments = DB::table('departments')->get();
-    $nationalities = DB::table('nationalities')->get();
-    $professions = DB::table('professions')->get();
-    $positions = DB::table('positions')->get();
-    $pension_managers = DB::table('pension_managers')->get();
+        
+        // Define variables for dropdown fields
+        $branches = DB::table('branches')->get();
+        $banks = DB::table('banks')->get();
+        $designations = DB::table('designations')->get();
+        $states = DB::table('states')->get();
+        $LGAs = DB::table('LGAs')->get();
+        $departments = DB::table('departments')->get();
+        $nationalities = DB::table('nationalities')->get();
+        $professions = DB::table('professions')->get();
+        $positions = DB::table('positions')->get();
+        $pension_managers = DB::table('pension_managers')->get();
 
-    // Show the details of a specific employee with dropdown fields
-    return view('employees.show', compact('employee', 'banks', 'designations', 'branches', 'states', 'LGAs', 'departments', 'nationalities', 'professions', 'positions', 'pension_managers'));
+        // Show the details of a specific employee with dropdown fields
+        return view('employees.show', compact('employee', 'banks', 'designations', 'branches', 'states', 'LGAs', 'departments', 'nationalities', 'professions', 'positions', 'pension_managers'));
 
     }
     
