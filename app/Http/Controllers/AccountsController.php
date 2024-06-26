@@ -1518,44 +1518,50 @@ class AccountsController extends Controller
     }
 
     public function matchTransactions(Request $request)
-    {
+    { 
         // Check authentication and company identification
         if (!auth()->check() || !auth()->user()->company_id) {
             return redirect()->route('login')->with('error', 'Unauthorized access.');
         }      
         $companyId = auth()->user()->company_id;
         // Retrieve data from the form submission
-        $bankTransactionId = $request->input('bank_transaction');
-        $accountingTransactionId = $request->input('account_transaction');
+        $bankTransactionId = $request->input('bank_transaction_id');
+        $accountingTransactionId = $request->input('accounting_transaction_id');
 
+        try {
         // Fetch the selected bank transaction and accounting transaction from the database
-        $bankTransaction = BankTransaction::where('company_id', $companyId)->findOrFail($bankTransactionId);
-        $accountingTransaction = Transaction::where('company_id', $companyId)->findOrFail($accountingTransactionId);
+        $bankTransaction = BankTransaction::where('company_id', $companyId)->find($bankTransactionId);
+        // $accountingTransaction = Transaction::where('company_id', $companyId)->find($accountingTransactionId);
+
+        if (!$bankTransaction) {
+            return redirect()->route('reconciliation.index')->with('error', 'Selected transaction was not found.');
+        }
 
         // Fetch the accounting transaction from the relevant table based on its type
         switch ($bankTransaction->type) {
-            case 'payment':
-                $accountingTransaction = Payment::where('company_id', $companyId)->findOrFail($accountingTransactionId);
+            case 'Payment':
+                $accountingTransaction = Payment::where('company_id', $companyId)->find($accountingTransactionId);
                 break;
             case 'sale':
-                $accountingTransaction = SaleBill::where('company_id', $companyId)->findOrFail($accountingTransactionId);
+                $accountingTransaction = SaleBill::where('company_id', $companyId)->find($accountingTransactionId);
                 break;
             case 'purchase':
-                $accountingTransaction = PurchaseBill::where('company_id', $companyId)->findOrFail($accountingTransactionId);
+                $accountingTransaction = PurchaseBill::where('company_id', $companyId)->find($accountingTransactionId);
                 break;
             // Add cases for other types as needed
             default:
-                $accountingTransaction = Transaction::where('company_id', $companyId)->findOrFail($accountingTransactionId);
+                $accountingTransaction = Transaction::where('company_id', $companyId)->find($accountingTransactionId);
                 break;
+        }
+        if (!$accountingTransaction) {
+            return redirect()->route('reconciliation.index')->with('error', 'Selected accounting transaction was not found.');
         }
 
         // Perform matching logic here
-        // Example: Compare amount, date, and description to determine if they match
         $matchCriteria = $this->compareTransactions($bankTransaction, $accountingTransaction);
 
         // Check if the transactions match
         if ($matchCriteria) {
-            // For demonstration purposes, let's assume we mark the accounting transaction as matched with the bank feed
             $accountingTransaction->matched_with_bank_feed = true;
             $accountingTransaction->save();
 
@@ -1565,11 +1571,13 @@ class AccountsController extends Controller
             // Redirect back to the reconciliation page with a warning message
             return redirect()->route('reconciliation.index')->with('warning', 'Transactions do not match.');
         }
+    } catch (ModelNotFoundException $e) {
+        return redirect()->route('reconciliation.index')->with('error', 'One or both of the selected transactions were not found.');
+    }
     }
 
     private function compareTransactions($bankTransaction, $accountingTransaction) {
         // Implement your matching logic here
-        // Example: Compare amount, date, and description
         if ($bankTransaction->amount === $accountingTransaction->amount &&
             $bankTransaction->date === $accountingTransaction->date &&
             $bankTransaction->description === $accountingTransaction->description) {

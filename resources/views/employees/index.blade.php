@@ -7,9 +7,11 @@
                 <div class="row" style="color: #4e4e4e; font-style: bold;">
                     <div class="col-8 titles">Employee List</div>
                     <div class="col-4">
+                        @can('create',\App\Models\Employee::class)
                         <div style="float:right;">
                             <a class="btn btn-success" href="{{ route('employees.create') }}">Add New Employee</a>
                         </div>
+                        @endcan
                     </div>
                 </div>
 
@@ -58,14 +60,18 @@
                                 <td class="align-middle">
                                     <a href="{{ route('employees.show', $employee->id) }}"
                                         class="btn btn-info btn-sm">View</a>
+                                    @can('update',$employee)
                                     <a href="{{ route('employees.edit', $employee->id) }}"
                                         class="btn btn-primary btn-sm">Edit</a>
+                                    @endcan
+                                    @can('delete',$employee)
                                     <form action="{{ route('employees.destroy', $employee->id) }}" method="POST"
                                         style="display: inline-block;">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                                     </form>
+                                    @endcan
                                 </td>
                             </tr>
                         @empty

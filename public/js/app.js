@@ -49,6 +49,48 @@
     flushing = false;
   }
   
+
+  // Search box
+  document.addEventListener('DOMContentLoaded', function () {
+    function createClearButton() {
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'btn-clear d-none';
+        btn.innerHTML = '&times;';
+        btn.setAttribute('aria-label', 'Clear search');
+        return btn;
+    }
+
+    var searchInputs = document.querySelectorAll('.input-group.search .textinput');
+    searchInputs.forEach(function(input) {
+        var clearBtn = createClearButton();
+        input.parentNode.appendChild(clearBtn);
+
+        input.setAttribute('autocomplete', 'off');
+
+        function toggleClearButton() {
+            clearBtn.classList.toggle('d-none', !input.value);
+        }
+
+        // Show the clear button when input has value on focus, input, and keyup events
+        input.addEventListener('change', toggleClearButton);
+        input.addEventListener('focus', toggleClearButton);
+        input.addEventListener('input', toggleClearButton);
+
+        // Clear the input when clear button is clicked
+        clearBtn.addEventListener('click', function () {
+            input.value = '';
+            clearBtn.classList.add('d-none');
+            input.focus();
+        });
+
+        toggleClearButton();
+        
+    });
+});
+
+
+
   // packages/alpinejs/src/reactivity.js
   var reactive;
   var effect;

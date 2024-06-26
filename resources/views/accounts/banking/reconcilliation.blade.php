@@ -22,13 +22,13 @@
                 <div class="form-group">
                     <label for="bank_transaction_id">Select Bank Transaction:</label>
                     <select class="form-control" id="bank_transaction_id" name="bank_transaction_id" required>
-                        <option>General Transactions</option>
-                        <option>Payments</option>
-                        <option>Deposits</option>
-                        <!-- Populate options with bank transactions -->
-                        {{-- @foreach ($bankTransactions as $bankTransaction)
-                            <option value="{{ $bankTransaction->id }}">{{ $bankTransaction->description }} - {{ $bankTransaction->amount }}</option>
-                        @endforeach --}}
+                        {{-- <option value=1>General Transactions</option>
+                        <option value=2>Payments</option>
+                        <option value=3>Deposits</option>
+                        <!-- Populate options with bank transactions --> --}}
+                        @foreach ($bankTransactions as $bankTransaction)
+                            <option value="{{ $bankTransaction->id }}">{{ $bankTransaction->description ?: $bankTransaction->type }} - {{ $bankTransaction->amount }}</option>
+                        @endforeach
                     </select>
                 </div>
                 <div class="form-group">
@@ -36,11 +36,11 @@
                     <select class="form-control" id="accounting_transaction_id" name="accounting_transaction_id" required>
                         <!-- Populate options with accounting transactions -->
                         @foreach ($accountingTransactions as $accountingTransaction)
-                            <option value="{{ $accountingTransaction->id }}">{{ $accountingTransaction->description }} - {{ $accountingTransaction->amount }}</option>
+                            <option value="{{ $accountingTransaction->id }}">{{ $accountingTransaction->description ?: $accountingTransaction->transaction_name }} - {{ $accountingTransaction->amount }}</option>
                         @endforeach
                     </select>
                 </div>
-                <button type="submit" class="btn btn-primary">Match Transactions</button>
+                <div class="float-right mt-2 mb-2"><button type="submit" class="btn btn-success">Match Transactions</button></div>
             </form>
             
 
@@ -76,7 +76,7 @@
                         </tr>
                         @endforeach
 
-                        @foreach ($deposits as $deposit)
+                        {{-- @foreach ($deposits as $deposit)
                         <tr>
                             <td>{{ $deposit->date }}</td>
                             <td>{{ $deposit->type }}</td>
@@ -90,7 +90,7 @@
                                 @endif
                             </td>
                         </tr>
-                        @endforeach
+                        @endforeach --}}
                     </tbody>
                 </table>
             </div>
