@@ -27,6 +27,7 @@ class CreateCustomersTable extends Migration
             $table->string('customer_type')->nullable();
             $table->text('notes')->nullable();
             $table->string('payment_terms')->nullable();
+            $table->decimal('balance', 11, 2)->default(0.00);
             $table->boolean('tax_exempt')->default(false);
             // Add custom fields as needed
             $table->timestamps();

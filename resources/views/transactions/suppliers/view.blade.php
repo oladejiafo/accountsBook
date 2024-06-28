@@ -28,14 +28,14 @@
 
 <table class="table table-css table-hover table-bordered table-responsive">
     <br>
-    <thead class="thead-dark align-middle">
+    <thead class="thead-light align-middle">
         <tr>
             <th width="10%">Bill No.</th>
             <th width="15%">Stocks</th>
             <th width="15%">Quantity</th>
             <th width="15%">Total Purchased Price</th>
             <th width="15%">Purchased Date</th>
-            <th width="30%">Actions</th>
+            <th width="30%"></th>
         </tr>
     </thead>
 

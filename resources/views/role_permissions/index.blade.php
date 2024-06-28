@@ -27,11 +27,11 @@
 <br>
 <div class="table-responsive">
 <table class="table table-css table-bordered table-hover">
-    <thead class="thead-dark align-middle">
+    <thead class="thead-light align-middle">
         <tr>
             <th>Role</th>
             <th>Number of Permissions</th>
-            <th>Action</th>
+            <th></th>
         </tr>
     </thead>
     <tbody class="align-middle">

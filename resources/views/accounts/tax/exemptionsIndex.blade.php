@@ -23,14 +23,14 @@
 
                         <div class="table-responsive">
                             <table class="table table-striped">
-                                <thead>
+                                <thead class="thead-light">
                                     <tr>
                                         <th>#</th>
                                         <th>Name</th>
                                         <th>Description</th>
                                         <th>Valid From</th>
                                         <th>Valid To</th>
-                                        <th>Actions</th>
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>

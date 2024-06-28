@@ -599,21 +599,6 @@
 }
 
 
-
-/* Search bar */
-.btn-clear {
-  position: absolute;
-  top: 50%;
-  right: 7%; 
-  transform: translateY(-50%);
-  background: transparent;
-  border: none;
-  font-size: 1.8rem;
-  font-weight: bold;
-  cursor: pointer;
-  color: #000;
-}
-
 /* Style for the resizer grips */
 .grip {
   background-color: transparent; /* Make the grip invisible */

@@ -30,12 +30,12 @@
 
                 <div class="card-body table-responsive">
                     <table class="table table-css table-bordered table-hover ">
-                        <thead class="thead-dark align-middle">
+                        <thead class="thead-light align-middle">
                             <tr>
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>Phone</th>
-                                <th>Actions</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>

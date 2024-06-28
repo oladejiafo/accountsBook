@@ -30,4 +30,10 @@ class Stock extends Model
     {
         return $this->hasMany(SaleItem::class, 'stock_id');
     }
+
+    public function getSearchResult(): SearchResult
+    {
+        $url = route('edit-stock', $this->id);
+        return new SearchResult($this, $this->name, $url);
+    }
 }

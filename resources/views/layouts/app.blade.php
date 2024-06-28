@@ -27,6 +27,7 @@
                         {{ session('status') }}
                     </div>
                     @endif
+                    
                     <div class="container top-margin-10">
                         @yield('content')
                     </div>

@@ -16,8 +16,8 @@
     </div>
 
     <div class="table-responsive">
-        <table class="table table-striped table-bordered">
-            <thead class="thead-dark">
+        <table class="table table-hover table-css table-bordered">
+            <thead class="thead-light">
                 <tr>
                     <th width="10%">Bill No.</th>
                     <th width="15%">Supplier</th>
@@ -25,7 +25,7 @@
                     <th width="10%">Quantity Purchased</th>
                     <th width="15%">Total Purchased Price</th>
                     <th width="10%">Purchased Date</th>
-                    <th width="25%">Actions</th>
+                    <th width="25%"></th>
                 </tr>
             </thead>
             <tbody>

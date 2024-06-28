@@ -11,7 +11,7 @@
     <br>
     <div class="table-responsive">
     <table class="table table-css table-bordered table-hover"> 
-        <thead class="thead-dark align-middle">
+        <thead class="thead-light align-middle">
             <tr>
                 <th width="8%">Bill No.</th>
                 <th width="12%">Date</th>
@@ -20,7 +20,7 @@
                 <th width="10%">Quantity Sold</th>
                 <th width="10%">Total Price</th>
                 <th width="10%">Payment Status</th>
-                <th width="20%">Actions</th>
+                <th width="20%"></th>
             </tr>
         </thead>
 

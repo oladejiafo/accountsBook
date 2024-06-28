@@ -14,13 +14,13 @@
 
 <div class="table-responsive">
 <table class="table table-css table-hover table-bordered ">
-    <thead class="thead-dark align-middle">
+    <thead class="thead-light align-middle">
         <tr>
             <th width="20%">Name</th>
             <th width="15%">Phone</th>
             <th width="15%">Email</th>
             <th width="20%">GSTIN No</th>
-            <th width="30%">Actions</th>
+            <th width="30%"></th>
         </tr>
     </thead>
     <tbody>

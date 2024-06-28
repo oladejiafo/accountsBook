@@ -99,13 +99,14 @@
                         <!-- Existing Mappings Listing -->
                         @if($mappings->isNotEmpty())
                             <h2>Existing Transaction Account Mappings</h2>
-                            <table class="table table-css table-bordered table-hover table-responsive">
-                                <thead class="thead-dark align-middle">
+                            <div class="table-responsive">
+                            <table class="table table-css table-bordered table-hover">
+                                <thead class="thead-light align-middle">
                                     <tr>
                                         <th>Transaction Type</th>
                                         <th>Debit Account</th>
                                         <th>Credit Account</th>
-                                        <th>Actions</th>
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -130,6 +131,7 @@
                                     @endforeach
                                 </tbody>
                             </table>
+                            </div>
                         @endif
                     </div>
                 </div>

@@ -418,29 +418,7 @@ class TransactionsController extends Controller
             return redirect()->route('login')->with('error', 'Unauthorized access.');
         }
         $companyId = auth()->user()->company_id;
-    
-        // // Validate the request data
-        // $validatedData = $request->validate([
-        //     'return_date' => 'required|date',
-        //     'customer_id' => 'required|exists:customers,id',
-        //     'return_status' => 'required|in:Pending,Authorized,Received,Refunded,Completed',
-        //     'reason_for_return' => 'required|string',
-        //     'refund_amount' => 'required|numeric|min:0',
-        //     'payment_method' => 'required|string',
-        //     'transaction_id' => 'required|string',
-        //     'carrier' => 'nullable|string',
-        //     'tracking_number' => 'nullable|string',
-        //     'shipping_cost' => 'nullable|numeric|min:0',
-        //     'notes' => 'nullable|string',
 
-        //     'product_id' => 'required|array',
-        //     'product_id.*' => 'exists:stocks,id',
-        //     'quantity' => 'required|array',
-        //     'quantity.*' => 'numeric|min:1',
-        //     'condition' => 'required|array',
-        //     'condition.*' => 'in:Resalable,Used,Damaged',
-        // ]);
-    
         $request->validate([
             'customer_id' => 'required|exists:customers,id',
             'items.*.product_id' => 'required|exists:stocks,id',
@@ -449,24 +427,6 @@ class TransactionsController extends Controller
             'items.*.condition' => 'required',
             'items.*.reason' => 'required',
         ]);
-
-        // // Create a new return transaction record
-        // $returnTransaction = ReturnTransaction::create([
-        //     // Assign other return transaction fields from the validated data
-        //     'company_id' => auth()->user()->company_id,
-        //     'return_date' => $validatedData['return_date'],
-        //     'customer_id' => $validatedData['customer_id'],
-        //     'return_status' => $validatedData['return_status'],
-        //     'reason_for_return' => $validatedData['reason_for_return'],
-        //     'refund_amount' => $validatedData['refund_amount'],
-        //     'payment_method' => $validatedData['payment_method'],
-        //     'transaction_id' => $validatedData['transaction_id'],
-        //     'carrier' => $validatedData['carrier'],
-        //     'tracking_number' => $validatedData['tracking_number'],
-        //     'shipping_cost' => $validatedData['shipping_cost'],
-        //     'notes' => $validatedData['notes'],
-        //     'approval_required' => $request->has('approval_required') ? 1 : 0,
-        // ]);
 
         $returnTransaction = ReturnTransaction::create([
             'customer_id' => $request->customer_id,
@@ -520,37 +480,27 @@ class TransactionsController extends Controller
             return redirect()->back()->with('success', 'Return request submitted for approval.');
         } else {
             $totalRefundAmount = 0;
-            if ($returnTransaction->returnProducts->count() > 0) {
-            foreach ($returnTransaction->returnProducts as $returnProduct) {
-                $refundAmountForProduct = $returnProduct->quantity * $returnProduct->unit_price;
-                $totalRefundAmount += $refundAmountForProduct;
+
+            if ($returnTransaction->returnProducts && $returnTransaction->returnProducts->count() > 0) {
+                foreach ($returnTransaction->returnProducts as $returnProduct) {
+                    $refundAmountForProduct = $returnProduct->quantity * $returnProduct->unit_price;
+                    $totalRefundAmount += $refundAmountForProduct;
+                }
             }
-            }
-    
             // Update customer balance (if applicable)
             $customer = $returnTransaction->customer;
             if ($customer) {
                 $customer->balance += $totalRefundAmount;
                 $customer->save();
             }
-    
-            // Record refund transaction
-            RefundTransaction::create([
-                'return_transaction_id' => $returnTransaction->id,
-                'amount' => $totalRefundAmount,
-                'payment_method' => 'Credit Card', // Example payment method
-                'transaction_id' => 'REF123456', // Example transaction ID
-                'refund_date' => now(), // Example refund date
-                'notes' => 'Refund processed successfully', // Example notes
-                'company_id' => $companyId,
-            ]);
-    
+
             // Update return status
             $returnTransaction->update([
                 'return_status' => 'Completed',
+                'notes' => 'Refund processed successfully', 
             ]);
     
-            // Notification logic goes here
+            // Notify approvers
             $approversEmails = User::where('company_id', $companyId)->where('role', 'approver')->pluck('email')->toArray();
             \Mail::to($approversEmails)->send(new ReturnProcessedNotification($returnTransaction));
     
@@ -558,54 +508,147 @@ class TransactionsController extends Controller
             $customerEmail = $returnTransaction->customer->email;
             \Mail::to($customerEmail)->send(new ReturnProcessedNotification($returnTransaction));
     
-            // Reverse sales transactions (if applicable)
+            // Reverse sales transactions
+            if ($returnTransaction->returnProducts) {
             foreach ($returnTransaction->returnProducts as $returnProduct) {
-                // Add conditions to identify the original sales transaction
+                 // Find the original sales transaction
                 $originalSalesTransaction = SaleItem::where([
                     'stock_id' => $returnProduct->product_id,
                     'company_id' => $companyId,
                 ])->first();
-    
-                // Update fields to reflect the return, such as quantity or amount
+
                 if ($originalSalesTransaction) {
+                    // Reverse the sales transaction by updating the quantities and amounts
                     $originalSalesTransaction->update([
                         'quantity' => $originalSalesTransaction->quantity - $returnProduct->quantity,
                         'totalprice' => $originalSalesTransaction->totalprice - ($returnProduct->unit_price * $returnProduct->quantity),
                     ]);
+        
+                    // Debit the sales account and credit the revenue account (or vice versa depending on your accounting setup)
+                    $debitTransaction = new Transaction();
+                    $debitTransaction->reference_number = $returnTransaction->id;
+                    $debitTransaction->account_id = $originalSalesTransaction->sale_bill_id; 
+                    $debitTransaction->amount = $returnProduct->unit_price * $returnProduct->quantity;
+                    $debitTransaction->type = 'debit'; 
+                    $debitTransaction->date = now();
+                    $debitTransaction->company_id = $returnTransaction->company_id;
+                    $debitTransaction->name = "Sales Return";
+                    $debitTransaction->description = "Reverse sales transaction due to return";
+                    $debitTransaction->save();
+        
+                    $creditTransaction = new Transaction();
+                    $creditTransaction->reference_number = $returnTransaction->id;
+                    $creditTransaction->account_id = $originalSalesTransaction->sale_bill_id; 
+                    $creditTransaction->amount = $returnProduct->unit_price * $returnProduct->quantity;
+                    $creditTransaction->type = 'credit'; 
+                    $creditTransaction->date = now();
+                    $creditTransaction->company_id = $returnTransaction->company_id;
+                    $creditTransaction->name = "Sales Return";
+                    $creditTransaction->description = "Reverse sales transaction due to return";
+                    $creditTransaction->save();
                 }
+           
+            }
             }
     
-            // Reverse payments (if applicable)
+            // Auto Reverse payments (if applicable)
             if ($returnTransaction->payment_method === 'Credit Card') {
+                $refundResponse = $this->processCreditCardRefund($returnTransaction, $totalRefundAmount);
                 if ($refundResponse->success) {
                     // Payment reversal successful
                     // You may update the refund transaction status or log refund details
                 } else {
                     // Payment reversal failed
                     // Handle error scenario, log error, display message, etc.
+                    return redirect()->back()->with('error', 'Credit card refund failed.');
                 }
+            } elseif ($returnTransaction->payment_method === 'Cash') {
+                // For cash refunds, update refund transaction status and log refund details
+                $this->processCashRefund($returnTransaction, $totalRefundAmount);
+            } elseif ($returnTransaction->payment_method === 'Bank Transfer') {
+                // For bank transfer refunds, update refund transaction status and log refund details
+                $this->processBankTransferRefund($returnTransaction, $totalRefundAmount);
             } else {
-                // Handle other payment methods (e.g., store credit, cash refund)
-                if ($returnTransaction->payment_method === 'Cash') {
-                    // For cash refunds, update refund transaction status and log refund details
-                    // $cashRefund = new CashRefund(); 
-                    // $cashRefund->processRefund($returnTransaction, $totalRefundAmount);
-                } elseif ($returnTransaction->payment_method === 'Bank Transfer') {
-                    // For bank transfer refunds, update refund transaction status and log refund details
-                    // $bankTransferRefund = new BankTransferRefund(); 
-                    // $bankTransferRefund->processRefund($returnTransaction, $totalRefundAmount);
-                } else {
-                    // Handle other payment methods (e.g., store credit)
-                    // Update refund transaction status or log refund details as necessary
-                }
+                // Handle other payment methods (e.g., store credit)
+                // Update refund transaction status or log refund details as necessary
+                $this->processOtherPaymentRefund($returnTransaction, $totalRefundAmount);
             }
-    
+
             // Update financial reporting (if applicable)
             // Code to update financial reporting goes here
     
             return redirect()->back()->with('success', 'Return processed successfully.');
         }
     }
+
+    private function processCreditCardRefund($returnTransaction, $totalRefundAmount)
+    {
+        // // Implement your credit card refund logic here
+        // $paymentGateway = new PaymentGateway(); // Hypothetical payment gateway class
+        // $response = $paymentGateway->refund([
+        //     'transaction_id' => $returnTransaction->transaction_id, // ID of the original transaction
+        //     'amount' => $totalRefundAmount,
+        // ]);
+    
+        // return (object)['success' => $response->isSuccessful(), 'message' => $response->getMessage()];
+    }
+    
+    private function processCashRefund($returnTransaction, $totalRefundAmount)
+    {
+        // // Update necessary records and log details
+        // RefundTransaction::create([
+        //     'return_transaction_id' => $returnTransaction->id,
+        //     'amount' => $totalRefundAmount,
+        //     'payment_method' => 'Cash',
+        //     'transaction_id' => 'CASH_REFUND_' . $returnTransaction->id,
+        //     'refund_date' => now(),
+        //     'notes' => 'Cash refund processed successfully',
+        //     'company_id' => $returnTransaction->company_id,
+        // ]);
+    
+        // return (object)['success' => true, 'message' => 'Cash refund processed successfully.'];
+    }
+    
+
+    private function processBankTransferRefund($returnTransaction, $totalRefundAmount)
+    {
+        // // Implement your bank transfer refund logic here
+        // // This could be an API call to your bank or a manual process
+        // // For example purposes, we'll assume a manual process
+    
+        // RefundTransaction::create([
+        //     'return_transaction_id' => $returnTransaction->id,
+        //     'amount' => $totalRefundAmount,
+        //     'payment_method' => 'Bank Transfer',
+        //     'transaction_id' => 'BANK_TRANSFER_REFUND_' . $returnTransaction->id,
+        //     'refund_date' => now(),
+        //     'notes' => 'Bank transfer refund processed successfully',
+        //     'company_id' => $returnTransaction->company_id,
+        // ]);
+    
+        // return (object)['success' => true, 'message' => 'Bank transfer refund processed successfully.'];
+    }
+    
+    private function processOtherPaymentRefund($returnTransaction, $totalRefundAmount)
+    {
+        // // Update customer's store credit balance
+        // $customer = $returnTransaction->customer;
+        // $customer->store_credit += $totalRefundAmount;
+        // $customer->save();
+    
+        // RefundTransaction::create([
+        //     'return_transaction_id' => $returnTransaction->id,
+        //     'amount' => $totalRefundAmount,
+        //     'payment_method' => 'Store Credit',
+        //     'transaction_id' => 'STORE_CREDIT_REFUND_' . $returnTransaction->id,
+        //     'refund_date' => now(),
+        //     'notes' => 'Store credit refund processed successfully',
+        //     'company_id' => $returnTransaction->company_id,
+        // ]);
+    
+        // return (object)['success' => true, 'message' => 'Store credit refund processed successfully.'];
+    }    
+
     public function fetchCustomerTransactions(Request $request)
     { 
         // Check authentication and company identification
@@ -694,7 +737,7 @@ class TransactionsController extends Controller
         $products = SaleItem::join('sale_bills', 'sale_items.sale_bill_id', '=', 'sale_bills.id')
                             ->join('stocks', 'sale_items.stock_id', '=', 'stocks.id')
                             ->where('sale_bills.customer_id', $customerId)
-                            ->where('company_id', $companyId)
+                            ->where('stocks.company_id', $companyId)
                             ->select('stocks.id', 'stocks.name','sale_items.quantity', 'sale_items.totalprice')
                             ->distinct()
                             ->get();

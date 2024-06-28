@@ -30,7 +30,7 @@
 
                 <div class="table-responsive">
                 <table class="table table-bordered table-hover ">
-                    <thead class="thead-dark align-middle">
+                    <thead class="thead-light align-middle">
                         <tr>
                             <th class="align-middle">#</th>
                             <th class="align-middle">Full Name</th>
@@ -40,7 +40,7 @@
                             <th class="align-middle">Designation</th>
                             <th class="align-middle">Branch</th>
                             <th class="align-middle">Status</th>
-                            <th class="align-middle">Actions</th>
+                            <th class="align-middle"></th>
                         </tr>
                     </thead>
                     <tbody>

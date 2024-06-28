@@ -8,7 +8,7 @@
         <div class="col-md-12">
             <div class="card">
 
-                <div class="row card-header">
+                <div class="row card-header mb-2">
                     <div class="col-6" style="color: #4e4e4e; font-style: bold;">Returns</div>
                     <div class="col-6">
                         <div style="float:right;" class="d-flex justify-content-end mt-3">
@@ -21,23 +21,23 @@
 
                 <div style="border-bottom: 1px solid white;"></div>
                 <!-- Optional: Add a search form -->
-                <!-- <form method="GET" action="{{ route('returns.index') }}">
+                <form method="GET" action="{{ route('returns.index') }}">
                     <div class="input-group search">
                         <input type="text" name="search" class="form-control textinput" placeholder="Search for returns">
                         <div class="input-group-append">
                             <button type="submit" class="btn btn-pink" style="border-radius:0 .5rem .5rem 0 !important">Search</button>
                         </div>
                     </div>
-                </form> -->
-                <br>
+                </form>
+                <br>               
 
                 <div class="card-body table-responsive">
                     <table class="table table-bordered table-hover">
-                        <thead class="thead-dark align-middle">
+                        <thead class="thead-light align-middle">
                             <tr>
                                 <th>Customer</th>
                                 <th>Return Date</th>
-                                <th>Actions</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>

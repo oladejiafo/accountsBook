@@ -28,7 +28,7 @@
 
         <div class="card-body table-responsive">
             <table class="table table-css table-bordered table-hover">
-                <thead class="thead-dark align-middle">
+                <thead class="thead-light align-middle">
                     <tr>
                         <th width="10%">Payment ID</th>
                         <th width="20%">Customer</th>
@@ -37,7 +37,7 @@
                         {{-- <th width="15%">Payment Method</th> --}}
                         <th width="15%">Bank</th>
                         <th width="10%">CFO Verified</th>
-                        <th width="25%">Actions</th>
+                        <th width="25%"></th>
                     </tr>
                 </thead>
                 <tbody>

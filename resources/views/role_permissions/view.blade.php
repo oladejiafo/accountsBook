@@ -27,7 +27,7 @@
 <br>
 
 <table class="table table-css table-bordered table-hover table-responsive">
-    <thead class="thead-dark align-middle">
+    <thead class="thead-light align-middle">
         <tr>
             <th width="30%">Role</th>
             <th width="70%">Permissions</th>

@@ -183,7 +183,7 @@
                         const selectedOption = productSelect.options[productSelect.selectedIndex];
                         if (selectedOption) {
                             quantityInput.value = selectedOption.dataset.quantity || 1;
-                            priceInput.value = selectedOption.dataset.totalprice || '--';
+                            priceInput.value = selectedOption.dataset.totalprice || 0;
                         }
                     })
                     .catch(error => {
@@ -197,7 +197,7 @@
         productSelect.addEventListener('change', function() {
             const selectedOption = productSelect.options[productSelect.selectedIndex];
             const quantity = selectedOption.dataset.quantity || 1; 
-            const totalprice = selectedOption.dataset.totalprice || "--"; 
+            const totalprice = selectedOption.dataset.totalprice || 0; 
             quantityInput.value = quantity;
             priceInput.value = totalprice;
         });

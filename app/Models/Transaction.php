@@ -11,6 +11,12 @@ class Transaction extends Model
 
     protected $fillable = ['company_id', 'type', 'date', 'amount', 'description', 'reference_number', 'transaction_name', 'recipient_name', 'recipient_account_no', 'status', 'source', 'bank_id', 'from_account_id', 'to_account_id', 'account_id', 'approved_by', 'approved_at'];
 
+    public function getSearchResult(): SearchResult
+    {
+        $url = route('transactions.edit', $this->id);
+        return new SearchResult($this, $this->name, $url);
+    }
+
     public function account()
     {
         return $this->belongsTo(ChartOfAccount::class, 'account_id');

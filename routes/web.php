@@ -37,6 +37,7 @@ require __DIR__ . '/auth.php';
 Route::get('/about', [HomeController::class, 'about'])->name('about');
 
 Route::get('/global-search', [HomeController::class, 'globalSearch'])->name('global.search');
+Route::get('/search', [SearchController::class, 'index'])->name('search.index');
 
 
 Route::middleware('auth', 'check.permissions')->group(function () {

@@ -26,14 +26,14 @@
 
                 <div class="table-responsive">
                 <table class="table table-css table-bordered table-hover">
-                    <thead class="thead-dark align-middle">
+                    <thead class="thead-light align-middle">
                         <tr>
                             <th class="align-middle">Stock Category</th>
                             <th class="align-middle" width="20%">Stock Name</th>
                             <th class="align-middle">Current Stock in Inventory</th>
                             <th class="align-middle">Unit Price</th>
                             <th class="align-middle">Location</th>
-                            <th class="align-middle">Actions</th>
+                            <th class="align-middle"></th>
                         </tr>
                     </thead>
                     <tbody>

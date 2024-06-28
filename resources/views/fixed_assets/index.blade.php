@@ -32,13 +32,13 @@
 
     <div class="table-responsive">
     <table class="table table-bordered table-hover">
-        <thead class="thead-dark">
+        <thead class="thead-light">
             <tr>
                 <th class="align-middle text-center">Name</th>
                 <th class="align-middle text-center">Acquisition Date</th>
                 <th class="align-middle text-center">Cost</th>
                 <th class="align-middle text-center">Status</th>
-                <th class="align-middle text-center">Actions</th>
+                <th class="align-middle text-center"></th>
             </tr>
         </thead>
         <tbody>

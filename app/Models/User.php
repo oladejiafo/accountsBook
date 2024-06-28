@@ -52,6 +52,12 @@ class User extends Authenticatable
         'otp_expire_at' => 'datetime',
     ];
 
+    public function getSearchResult(): SearchResult
+    {
+        $url = route('users.show', $this->id);
+        return new SearchResult($this, $this->name, $url);
+    }
+
     public function roles()
     {
         return $this->morphToMany(Role::class, 'model', 'model_has_roles', 'model_id', 'role_id')

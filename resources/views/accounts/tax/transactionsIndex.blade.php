@@ -21,14 +21,14 @@
 
                         <div class="table-responsive">
                             <table class="table table-css table-bordered table-hover">
-                                <thead class="thead-dark align-middle">
+                                <thead class="thead-light align-middle">
                                     <tr>
                                         {{-- <th>#</th> --}}
                                         <th>Amount</th>
                                         <th>Transaction Type</th>
                                         <th>Tax Code</th>
                                         {{-- <th>Tax Category ID</th> --}}
-                                        <th>Actions</th>
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>

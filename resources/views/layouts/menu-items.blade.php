@@ -20,6 +20,11 @@
             @endif
         </li> 
 
+        <li>
+            <div id="app">
+                <search-autosuggest></search-autosuggest>
+            </div>
+        </li>
         @if (auth()->user()->hasPermission('account.dashboard') || auth()->user()->hasPermission('home') || auth()->user()->hasRole('Super_Admin'))
         <!-- Grouping for Dashboards -->
         <li>
