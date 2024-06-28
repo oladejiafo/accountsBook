@@ -20,15 +20,26 @@
             @endif
         </li> 
 
-        <li>
+        {{-- <li>
             <div id="app">
-                <search-autosuggest></search-autosuggest>
+                <form class="form-inline my-2 my-lg-0">
+                    <div class="input-group">
+                        <input id="searchInput" class="form-control" type="search" placeholder="Search" aria-label="Search">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                <ul id="searchResults" style="display: none;"></ul>
             </div>
-        </li>
+
+        </li> --}}
         @if (auth()->user()->hasPermission('account.dashboard') || auth()->user()->hasPermission('home') || auth()->user()->hasRole('Super_Admin'))
         <!-- Grouping for Dashboards -->
         <li>
-            <a href="{{ route('home') }}">
+            <a href="{{ route('home') }}" style="text-decoration: none;">
                 <span class="sidebar-textx sidebar-button menutitlefont mr-4 mt-2">DASHBOARDS</span>
             </a>
             <ul class="list-unstyled">

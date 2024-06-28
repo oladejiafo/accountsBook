@@ -41,27 +41,26 @@
             </button>
         </div>
 
-        <!-- Logo Section -->
-        <div class="sidebar-header-left col-12 col-md-3 d-flex justify-content-center">
-            <!-- Logo for big screens -->
-            <a class="navbar-brand titlefont mb-0 d-none d-lg-block" href="{{ route('home') }}">
-                <div class="logo-wrapper">
-                    <img src="{{ asset('images/akontledger_logo-bg.png') }}" class="logo" alt="Logo">
-                </div>
-            </a>
-            <!-- Logo for small screens -->
-            <a class="navbar-brand titlefont mb-0 d-lg-none d-sm-flex justify-content-end" href="{{ route('home') }}">
-                <div class="logo-wrapper ml-5">
-                    <img src="{{ asset('images/icon_mi.png') }}" class="logo" alt="Logo">
-                </div>
-            </a>
-        </div>
+    <!-- Logo Section for big screens -->
+    <div class="col-12 col-md-3 d-none d-lg-flex justify-content-center justify-content-lg-start">
+        <a class="navbar-brand titlefont mb-0" href="{{ route('home') }}">
+            <div class="logo-wrapper">
+                <img src="{{ asset('images/akontledger_logo-bg.png') }}" class="logo" alt="Logo">
+            </div>
+        </a>
+    </div>
+
+    <!-- Logo Section for small screens -->
+    <div class="col-12 d-lg-none d-flex justify-content-end">
+        <a class="navbar-brand titlefont mb-0" href="{{ route('home') }}">
+            <div class="logo-wrapper">
+                <img src="{{ asset('images/icon_mi.png') }}" class="logo" alt="Logo">
+            </div>
+        </a>
+    </div>
 
         <!-- User Info and Logout Button -->
         <div class="user-info-container col-md-3 col-sm-12 col-lg-3 d-none d-lg-flex justify-content-end">
-            <div id="app">
-                <search-autosuggest></search-autosuggest>
-            </div>
             <div class="user-info">
                 @if (auth()->check())
                     <li class="nav-item dropdown">
@@ -86,12 +85,25 @@
         </div>
 
         <!-- Company Name Section for large screens -->
-        <div class="col-md-6 col-sm-6 col-lg-6 text-center">
+        <div class="col-md-6 col-sm-6 col-lg-6  d-flex flex-column align-items-center justify-content-center">
             @if (isset($companyName))
                 <div class="navbar-brandcxx coyfont" style="color: #333; font-size: 1.5rem;">
                     {{ $companyName }}
                 </div>
             @endif
+            <div class="navbar-brandcxx" style="color: #333; font-size: 1.5rem; margin-top: 10px;">
+                <form class="form-inline my-2 my-lg-0">
+                    <div class="input-group">
+                        <input id="searchInput" class="form-control" type="search" placeholder="Search" aria-label="Search">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                <ul id="searchResults" class="search-results" style="display: none;"></ul>
+            </div>
         </div>
 
         <!-- Company Name Section for mobile screens -->
@@ -100,6 +112,19 @@
                 {{ $companyName }}
             </div>
         @endif
+        <div class="searchBox navbar-brandcxx  d-block d-sm-none text-center mt-3 mb-5" style="color: #333; font-size: 1.5rem; margin-top: 10px;">
+            <form class="form-inline my-2 my-lg-0">
+                <div class="input-group">
+                    <input id="searchInputMobile" class="form-control" type="search" placeholder="Search" aria-label="Search">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="button">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+            <ul id="searchResultsMobile" class="search-results" style="display: none;"></ul>
+        </div>
     </div>
 
     <script>
@@ -128,3 +153,44 @@
     </script> -->
 
 
+<style>
+    .search-results {
+    position: absolute;
+    top: 100%;
+    left: inherit;
+    width: inherit;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 0 0 5px 5px;
+    max-height: 200px; 
+    overflow-y: auto; 
+    z-index: 1000; 
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.search-results li {
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+.search-results li a {
+    text-decoration: none;
+    color: #333;
+    font-size: 12px;
+}
+
+.search-results li:hover {
+    background-color: #f1f1f1;
+}
+
+.searchBox {
+    position: relative;
+    top: -22px !important;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 300px;
+}
+</style>

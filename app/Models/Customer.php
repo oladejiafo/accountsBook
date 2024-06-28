@@ -4,8 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Searchable\Searchable;
+use Spatie\Searchable\SearchResult;
 
-class Customer extends Model
+class Customer extends Model implements Searchable
 {
     use HasFactory;
     
@@ -15,6 +17,13 @@ class Customer extends Model
         'payment_terms', 'tax_exempt','balance'
     ];
 
+    public function getSearchResult(): SearchResult
+    {
+        $title = $this->name;
+        $url = route('customers.show', $this->id);
+        return new SearchResult($this, $title, $url);
+    }
+    
     /**
      * Get the company that owns the customer.
      */

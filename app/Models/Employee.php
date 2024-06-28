@@ -4,8 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Searchable\Searchable;
+use Spatie\Searchable\SearchResult;
 
-class Employee extends Model
+class Employee extends Model implements Searchable
 {
     use HasFactory;
     protected $fillable = [
@@ -68,6 +70,13 @@ class Employee extends Model
         'visa_expiry'
     ];
 
+    public function getSearchResult(): SearchResult
+    {
+        $title = $this->staff_number;
+        $url = route('employees.show', $this->id);
+        return new SearchResult($this, $title, $url);
+    }
+
     public function department()
     {
         return $this->belongsTo(Department::class);
@@ -84,44 +93,44 @@ class Employee extends Model
     }
 
     public function bank()
-{
-    return $this->belongsTo(Bank::class);
-}
+    {
+        return $this->belongsTo(Bank::class);
+    }
 
-public function stateOfOrigin()
-{
-    return $this->belongsTo(State::class, 'state_of_origin_id');
-}
+    public function stateOfOrigin()
+    {
+        return $this->belongsTo(State::class, 'state_of_origin_id');
+    }
 
-public function LGAOfOrigin()
-{
-    return $this->belongsTo(LGA::class, 'LGA_of_origin_id');
-}
+    public function LGAOfOrigin()
+    {
+        return $this->belongsTo(LGA::class, 'LGA_of_origin_id');
+    }
 
-public function nationality()
-{
-    return $this->belongsTo(Nationality::class);
-}
+    public function nationality()
+    {
+        return $this->belongsTo(Nationality::class);
+    }
 
-public function qualifications()
-{
-    return $this->belongsTo(Qualification::class, 'qualifications_id');
-}
+    public function qualifications()
+    {
+        return $this->belongsTo(Qualification::class, 'qualifications_id');
+    }
 
-public function profession()
-{
-    return $this->belongsTo(Profession::class);
-}
+    public function profession()
+    {
+        return $this->belongsTo(Profession::class);
+    }
 
-public function position()
-{
-    return $this->belongsTo(Position::class);
-}
+    public function position()
+    {
+        return $this->belongsTo(Position::class);
+    }
 
-public function pensionManager()
-{
-    return $this->belongsTo(PensionManager::class, 'pension_managers_id');
-}
+    public function pensionManager()
+    {
+        return $this->belongsTo(PensionManager::class, 'pension_managers_id');
+    }
 
 
     public function createdBy()

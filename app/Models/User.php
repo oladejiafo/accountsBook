@@ -10,6 +10,7 @@ use App\Models\RolePermission;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Collection;
 
+
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
@@ -51,12 +52,6 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'otp_expire_at' => 'datetime',
     ];
-
-    public function getSearchResult(): SearchResult
-    {
-        $url = route('users.show', $this->id);
-        return new SearchResult($this, $this->name, $url);
-    }
 
     public function roles()
     {

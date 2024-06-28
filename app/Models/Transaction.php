@@ -5,7 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Transaction extends Model
+use Spatie\Searchable\Searchable;
+use Spatie\Searchable\SearchResult;
+
+
+class Transaction extends Model implements Searchable
 {
     use HasFactory;
 
@@ -13,8 +17,9 @@ class Transaction extends Model
 
     public function getSearchResult(): SearchResult
     {
+        $title = $this->transaction_name ?? 'Unnamed Transaction';
         $url = route('transactions.edit', $this->id);
-        return new SearchResult($this, $this->name, $url);
+        return new SearchResult($this, $title, $url);
     }
 
     public function account()

@@ -16,7 +16,11 @@ const mix = require('laravel-mix');
 //         //
 //     ]);
 mix.js('resources/js/app.js', 'public/js')
+    .js('resources/js/search.js', 'public/js') 
     .sass('resources/sass/app.scss', 'public/css')
     .copy('node_modules/bootstrap/dist/js/bootstrap.bundle.js', 'public/js/bootstrap.js')
-    .vue(); 
+    .vue()
+    .postCss('resources/css/app.css', 'public/css', [
+        require('tailwindcss'),
+    ]); 
 // Include Bootstrap JavaScript

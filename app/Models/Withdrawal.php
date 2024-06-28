@@ -4,12 +4,21 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Searchable\Searchable;
+use Spatie\Searchable\SearchResult;
 
-class Withdrawal extends Model
+class Withdrawal extends Model implements Searchable
 {
     use HasFactory;
 
     protected $fillable = ['company_id', 'type', 'date', 'amount', 'description', 'account_id'];
+
+    public function getSearchResult(): SearchResult
+    {
+        $title = $this->type;
+        $url = route('withdrawals.edit', $this->id);
+        return new SearchResult($this, $title, $url);
+    }
 
     public function account()
     {

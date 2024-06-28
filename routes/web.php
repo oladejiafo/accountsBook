@@ -11,6 +11,7 @@ use App\Http\Controllers\FixedAssetController;
 use App\Http\Controllers\EmployeeController;
 
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\SearchController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes

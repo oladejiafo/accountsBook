@@ -4,8 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Searchable\Searchable;
+use Spatie\Searchable\SearchResult;
 
-class ReturnTransaction extends Model
+class ReturnTransaction extends Model implements Searchable
 {
     use HasFactory;
 
@@ -30,6 +32,13 @@ class ReturnTransaction extends Model
         'exchange', 
     ];
     
+    // public function getSearchResult(): SearchResult
+    // {
+    //     $title = $this->product_id;
+    //     $url = route('returns.edit', $this->id);
+    //     return new SearchResult($this, $title, $url);
+    // }
+
     public function customer()
     {
         return $this->belongsTo(Customer::class);

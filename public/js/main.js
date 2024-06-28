@@ -37,27 +37,55 @@ document.addEventListener("DOMContentLoaded", function () {
         toggleClearButton();
     });
 
-    // Select all tables and add the resizable-table class
-    document.querySelectorAll("table.table").forEach(function (table) {
-        table.classList.add("resizable-table");
-    });
+    // // Select all tables and add the resizable-table class
+    // document.querySelectorAll("table.table").forEach(function (table) {
+    //     table.classList.add("resizable-table");
+    // });
 
-    // Initialize colResizable on tables with the resizable-table class
-    if (typeof $ !== "undefined" && $.fn.colResizable) {
-        $(".table").colResizable({
-            liveDrag: true,
-            postbackSafe: true,
-            gripInnerHtml: "<div class='grip'></div>",
-            draggingClass: "dragging",
+    // // Initialize colResizable on tables with the resizable-table class
+    // if (typeof $ !== "undefined" && $.fn.colResizable) {
+    //     $(".table").colResizable({
+    //         liveDrag: true,
+    //         postbackSafe: true,
+    //         gripInnerHtml: "<div class='grip'></div>",
+    //         draggingClass: "dragging",
+    //     });
+    // }
+
+// Function to initialize colResizable if on medium and larger screens
+function initializeColResizable() {
+    if (window.innerWidth >= 768) { // Adjust breakpoint as needed (768px for md)
+        document.querySelectorAll("table.table").forEach(function (table) {
+            if ($.fn.colResizable) {
+                $(table).colResizable({
+                    liveDrag: true,
+                    postbackSafe: true,
+                    gripInnerHtml: "<div class='grip'></div>",
+                    draggingClass: "dragging",
+                });
+            }
         });
     }
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function () {
+    initializeColResizable();
+});
+
+// Reinitialize on window resize (optional)
+window.addEventListener('resize', function () {
+    initializeColResizable();
+});
+
+
+///////////////////////////////////////////////////////////////////////////////////
 
     // Add resizer grips to each table row
     document.querySelectorAll("table.table tbody tr").forEach(function (row) {
         let grip = document.createElement("div");
         grip.className = "row-grip";
-        row.style.position = "relative"; // Ensure the row has a relative position
-        row.appendChild(grip);
+        row.style.position = "relative"; 
     });
 
     // Function to handle row resizing

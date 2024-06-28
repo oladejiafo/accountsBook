@@ -4,8 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Searchable\Searchable;
+use Spatie\Searchable\SearchResult;
 
-class Payment extends Model
+class Payment extends Model implements Searchable
 {
     use HasFactory;
 
@@ -31,6 +33,13 @@ class Payment extends Model
         'recipient_type',
         'remark',
     ];
+
+    public function getSearchResult(): SearchResult
+    {
+        $title = $this->invoice_number;
+        $url = route('payments.edit', $this->id);
+        return new SearchResult($this, $title, $url);
+    }
 
     public function company()
     {

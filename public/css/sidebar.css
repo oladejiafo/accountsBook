@@ -326,6 +326,10 @@ a.nav-button {
       z-index: 888;
       transition: transform 0.3s ease;
     }
+    .sidebar-header {
+      max-height: 75px;
+    }
+
 
     #sidebar.active {
       display: block;
@@ -386,6 +390,8 @@ a.nav-button {
         color: #333;
         z-index: 1;
     }
+
+
 }
 
 @media (min-width: 768px) {

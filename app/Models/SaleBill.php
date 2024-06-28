@@ -4,8 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Searchable\Searchable;
+use Spatie\Searchable\SearchResult;
 
-class SaleBill extends Model
+class SaleBill extends Model implements Searchable
 {
     use HasFactory;
 
@@ -21,6 +23,13 @@ class SaleBill extends Model
         'paid_at',
         'payment_status',
     ];
+
+    public function getSearchResult(): SearchResult
+    {
+        $title = $this->name;
+        $url = route('sales.show', $this->id);
+        return new SearchResult($this, $title, $url);
+    }
 
     public function saleBillDetails()
     {

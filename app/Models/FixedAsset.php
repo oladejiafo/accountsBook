@@ -4,8 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Searchable\Searchable;
+use Spatie\Searchable\SearchResult;
 
-class FixedAsset extends Model
+class FixedAsset extends Model implements Searchable
 {
     use HasFactory;
     protected $fillable = [
@@ -22,6 +24,13 @@ class FixedAsset extends Model
         'current_value', 'location', 'status'
 
     ];
+
+    public function getSearchResult(): SearchResult
+    {
+        $title = $this->asset_code;
+        $url = route('fixed_assets.edit', $this->id);
+        return new SearchResult($this, $title, $url);
+    }
 
     public function branch()
     {

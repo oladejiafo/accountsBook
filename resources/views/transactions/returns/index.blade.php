@@ -32,7 +32,7 @@
                 <br>               
 
                 <div class="card-body table-responsive">
-                    <table class="table table-bordered table-hover">
+                    <table class="table table-bordered table-hover resizable-table">
                         <thead class="thead-light align-middle">
                             <tr>
                                 <th>Customer</th>

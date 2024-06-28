@@ -4,8 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Searchable\Searchable;
+use Spatie\Searchable\SearchResult;
 
-class PurchaseItem extends Model
+class PurchaseItem extends Model implements Searchable
 {
     use HasFactory;
 
@@ -17,6 +19,13 @@ class PurchaseItem extends Model
         'totalprice',
     ];
     
+    public function getSearchResult(): SearchResult
+    {
+        $title = $this->name;
+        $url = route('stock_id.show', $this->id);
+        return new SearchResult($this, $title, $url);
+    }
+
     public function bill()
     {
         return $this->belongsTo(PurchaseBill::class, 'billno', 'id');
