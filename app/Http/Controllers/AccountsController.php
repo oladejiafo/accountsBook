@@ -662,6 +662,21 @@ class AccountsController extends Controller
         return view('accounts.transactions.index', compact('transactions'));
     }
 
+    public function transactionShow($id)
+    {
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }      
+        $companyId = auth()->user()->company_id;
+
+        $transactionTypes = TransactionType::where('company_id', $companyId)->get();
+        $transaction = Transaction::where('company_id', $companyId)->findOrFail($id);
+        $transaction->load('account');
+        $accounts = ChartOfAccount::where('company_id', $companyId)->orderBy('category')->get();
+
+        return view('accounts.transactions.show', compact('transaction','accounts','transactionTypes'));
+    }
+
     public function transactionsCreate()
     {
         // Check authentication and company identification
@@ -864,6 +879,20 @@ class AccountsController extends Controller
 
         return view('accounts.deposits.index', compact('deposits'));
     }
+    public function depositShow($id)
+    {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }
+        
+        $companyId = auth()->user()->company_id;
+    
+        $deposit = Transaction::where('company_id', $companyId)->where('transaction_name','=', 'Deposit')->findOrFail($id);
+        $accounts = ChartOfAccount::where('company_id', $companyId)->orderBy('category')->get();
+    
+        return view('accounts.deposits.show', compact('deposit', 'accounts'));
+    }
 
     public function depositsCreate()
     {
@@ -916,7 +945,7 @@ class AccountsController extends Controller
         $companyId = auth()->user()->company_id;
         // where('company_id', $companyId)->
 
-        $deposit = Transaction::where('company_id', $companyId)->findOrFail($id);
+        $deposit = Transaction::where('company_id', $companyId)->where('transaction_name','=', 'Deposit')->findOrFail($id);
         $accounts = ChartOfAccount::where('company_id', $companyId)->orderBy('category')->get();
         return view('accounts.deposits.edit', compact('deposit','accounts'));
     }
@@ -1004,6 +1033,20 @@ class AccountsController extends Controller
         return view('accounts.withdrawals.index', compact('withdrawals'));
     }
 
+    public function withdrawalShow($id)
+    {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }
+        
+        $companyId = auth()->user()->company_id;
+    
+        $withdrawal = Transaction::where('company_id', $companyId)->where('transaction_name','=', 'Withdrawal')->findOrFail($id);
+        $accounts = ChartOfAccount::where('company_id', $companyId)->orderBy('category')->get();
+        return view('accounts.withdrawals.show', compact('withdrawal','accounts'));
+    }
+
     public function withdrawalsCreate()
     {
         // Check authentication and company identification
@@ -1055,7 +1098,7 @@ class AccountsController extends Controller
         $companyId = auth()->user()->company_id;
         // where('company_id', $companyId)->
 
-        $withdrawal = Transaction::where('company_id', $companyId)->findOrFail($id);
+        $withdrawal = Transaction::where('company_id', $companyId)->where('transaction_name','=', 'Withdrawal')->findOrFail($id);
         $accounts = ChartOfAccount::where('company_id', $companyId)->orderBy('category')->get();
         return view('accounts.withdrawals.edit', compact('withdrawal','accounts'));
     }
@@ -1142,6 +1185,21 @@ class AccountsController extends Controller
         return view('accounts.transfers.index', compact('transfers'));
     }
 
+    public function transferShow($id)
+    {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }
+        
+        $companyId = auth()->user()->company_id;
+    
+        $transactionTypes = TransactionType::where('company_id', $companyId)->get();
+        $transfer = Transaction::where('company_id', $companyId)->where('transaction_name','=', 'Transfer')->findOrFail($id);
+        $accounts = ChartOfAccount::where('company_id', $companyId)->orderBy('category')->get();
+        return view('accounts.transfers.show', compact('transfer','accounts','transactionTypes'));
+    }
+
     public function transfersCreate()
     {
         // Check authentication and company identification
@@ -1195,7 +1253,7 @@ class AccountsController extends Controller
         $companyId = auth()->user()->company_id;
         // where('company_id', $companyId)->
         $transactionTypes = TransactionType::where('company_id', $companyId)->get();
-        $transfer = Transaction::where('company_id', $companyId)->findOrFail($id);
+        $transfer = Transaction::where('company_id', $companyId)->where('transaction_name','=', 'Transfer')->findOrFail($id);
         $accounts = ChartOfAccount::where('company_id', $companyId)->orderBy('category')->get();
         return view('accounts.transfers.edit', compact('transfer','accounts','transactionTypes'));
     }
@@ -1292,6 +1350,22 @@ class AccountsController extends Controller
         $categories = AccountsCategory::orderBy('category')->get();
 
         return view('accounts.chart_of_accounts.create', compact( 'categories' ) );
+    }
+
+    
+    public function chartOfAccountShow($id)
+    {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }
+        
+        $companyId = auth()->user()->company_id;
+
+        $chartOfAccount = ChartOfAccount::where('company_id', $companyId)->find($id);
+        $categories = AccountsCategory::orderBy('category')->get();
+
+        return view('accounts.chart_of_accounts.show', compact( 'chartOfAccount','categories')) ;
     }
 
     public function storeChartOfAccount(Request $request)

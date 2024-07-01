@@ -67,43 +67,38 @@ class SearchController extends Controller
                 $formattedResults[] = [
                     'title' => $result->searchable->name,
                     'type' => 'Stock',
-                    'url' => route('edit-stock', $result->searchable->id),
+                    'url' => route('show-stock', $result->searchable->id),
                 ];
             } elseif ($result->searchable instanceof Transaction) {
                 $formattedResults[] = [
                     'title' => $result->searchable->transaction_name,
                     'type' => 'Transaction',
-                    'url' => route('transactions.edit', $result->searchable->id),
+                    'url' => route('transactions.show', $result->searchable->id),
                 ];
-            // } elseif ($result->searchable instanceof Ledger) {
-            //     $formattedResults[] = [
-            //         'title' => $result->searchable->type,
-            //         'type' => 'Ledger',
-            //         'url' => route('ledger.index'), // Adjust as per your routes
-            //     ];
+
             } elseif ($result->searchable instanceof ChartOfAccount) {
                 $formattedResults[] = [
                     'title' => $result->searchable->name,
                     'type' => 'Chart of Account',
-                    'url' => route('chartOfAccounts.edit', $result->searchable->id), // Adjust as per your routes
+                    'url' => route('chartOfAccounts.show', $result->searchable->id), // Adjust as per your routes
                 ];
             } elseif ($result->searchable instanceof Transfer) {
                 $formattedResults[] = [
                     'title' => 'Transfer ' . $result->searchable->description, 
                     'type' => 'Transfer',
-                    'url' => route('transfers.edit', $result->searchable->id), // Adjust as per your routes
+                    'url' => route('transfers.show', $result->searchable->id), // Adjust as per your routes
                 ];
             } elseif ($result->searchable instanceof Deposit) {
                 $formattedResults[] = [
                     'title' => 'Deposit ' . $result->searchable->type,
                     'type' => 'Deposit',
-                    'url' => route('deposits.edit', $result->searchable->id), // Adjust as per your routes
+                    'url' => route('deposits.show', $result->searchable->id), // Adjust as per your routes
                 ];
             } elseif ($result->searchable instanceof Withdrawal) {
                 $formattedResults[] = [
                     'title' => 'Withdrawal ' . $result->searchable->type,
                     'type' => 'Withdrawal',
-                    'url' => route('withdrawals.edit', $result->searchable->id), // Adjust as per your routes
+                    'url' => route('withdrawals.show', $result->searchable->id), // Adjust as per your routes
                 ];
             } elseif ($result->searchable instanceof PurchaseItem) {
                 $formattedResults[] = [
@@ -121,7 +116,7 @@ class SearchController extends Controller
                 $formattedResults[] = [
                     'title' => 'Payment ' . $result->searchable->invoice_number,
                     'type' => 'Payment',
-                    'url' => route('payments.edit', $result->searchable->id), // Adjust as per your routes
+                    'url' => route('payments.show', $result->searchable->id), // Adjust as per your routes
                 ];
             } elseif ($result->searchable instanceof Customer) {
                 $formattedResults[] = [
@@ -139,7 +134,7 @@ class SearchController extends Controller
                 $formattedResults[] = [
                     'title' => $result->searchable->asset_code,
                     'type' => 'Fixed Asset',
-                    'url' => route('fixed_assets.edit', $result->searchable->id), // Adjust as per your routes
+                    'url' => route('fixed_assets.show', $result->searchable->id), // Adjust as per your routes
                 ];
             } elseif ($result->searchable instanceof Employee) {
                 $formattedResults[] = [

@@ -9,6 +9,7 @@ use App\Http\Controllers\AccountsController;
 use App\Http\Controllers\FixedAssetController;
 
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\PayrollController;
 
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\SearchController;
@@ -77,6 +78,7 @@ Route::middleware('auth', 'check.permissions')->group(function () {
 
     ############ INVENTORY AND STOCKS
     Route::get('/inventory', [StockController::class, 'index'])->name('inventory');
+    Route::get('/stock/{id}', [StockController::class, 'show'])->name('show-stock');
     Route::get('/stock/new', [StockController::class, 'create'])->name('new-stock');
     Route::post('/stock/store', [StockController::class, 'store'])->name('store-stock');
     Route::get('/stock/{id}/edit', [StockController::class, 'edit'])->name('edit-stock');
@@ -97,7 +99,7 @@ Route::middleware('auth', 'check.permissions')->group(function () {
     Route::get('/returns', [TransactionsController::class, 'returnsIndex'])->name('returns.index');
     Route::get('/returns/create', [TransactionsController::class, 'showReturnsForm'])->name('returns.create');
 
-    // Route::get('/returns', [TransactionsController::class, 'showReturnsForm'])->name('returns.show');
+    Route::get('/returns/{id}', [TransactionsController::class, 'showReturnsForm'])->name('returns.show');
     Route::post('/returns', [TransactionsController::class, 'processReturn'])->name('returns.process');
     Route::get('/autocomplete/customers', [TransactionsController::class, 'returnCustomers'])->name('autocomplete.customers');
     Route::get('/fetch-customer-transactions', [TransactionsController::class, 'fetchCustomerTransactions'])->name('fetchCustomerTransactions');
@@ -140,6 +142,7 @@ Route::middleware('auth', 'check.permissions')->group(function () {
 
     //Payments
     Route::get('/payments', [TransactionsController::class, 'paymentsIndex'])->name('payments.index');
+    Route::get('/payments/{id}', [TransactionsController::class, 'paymentShow'])->name('payments.show');
     Route::get('/payments/create/{saleId?}', [TransactionsController::class, 'paymentsCreate'])->name('payments.create');
     Route::post('/payments', [TransactionsController::class, 'paymentsStore'])->name('payments.store');
     Route::get('/payments/{payment}/edit', [TransactionsController::class, 'paymentsEdit'])->name('payments.edit');
@@ -158,6 +161,7 @@ Route::middleware('auth', 'check.permissions')->group(function () {
 
     Route::prefix('transactions')->group(function () {
         Route::get('/', [AccountsController::class, 'transactionsIndex'])->name('transactions.index');
+        Route::get('/{id}', [AccountsController::class, 'transactionShow'])->name('transactions.show');
         Route::get('/create', [AccountsController::class, 'transactionsCreate'])->name('transactions.create');
         Route::post('/store', [AccountsController::class, 'transactionsStore'])->name('transactions.store');
         Route::get('/edit/{id}', [AccountsController::class, 'transactionsEdit'])->name('transactions.edit');
@@ -168,6 +172,7 @@ Route::middleware('auth', 'check.permissions')->group(function () {
 
     Route::prefix('deposits')->group(function () {
         Route::get('/', [AccountsController::class, 'depositsIndex'])->name('deposits.index');
+        Route::get('/{id}', [AccountsController::class, 'depositShow'])->name('deposits.show');
         Route::get('/create', [AccountsController::class, 'depositsCreate'])->name('deposits.create');
         Route::post('/store', [AccountsController::class, 'depositsStore'])->name('deposits.store');
         Route::get('/edit/{id}', [AccountsController::class, 'depositsEdit'])->name('deposits.edit');
@@ -177,6 +182,7 @@ Route::middleware('auth', 'check.permissions')->group(function () {
 
     Route::prefix('withdrawals')->group(function () {
         Route::get('/', [AccountsController::class, 'withdrawalsIndex'])->name('withdrawals.index');
+        Route::get('/{id}', [AccountsController::class, 'withdrawalShow'])->name('withdrawals.show');
         Route::get('/create', [AccountsController::class, 'withdrawalsCreate'])->name('withdrawals.create');
         Route::post('/store', [AccountsController::class, 'withdrawalsStore'])->name('withdrawals.store');
         Route::get('/edit/{id}', [AccountsController::class, 'withdrawalsEdit'])->name('withdrawals.edit');
@@ -186,6 +192,7 @@ Route::middleware('auth', 'check.permissions')->group(function () {
 
     Route::prefix('transfers')->group(function () {
         Route::get('/', [AccountsController::class, 'transfersIndex'])->name('transfers.index');
+        Route::get('/{id}', [AccountsController::class, 'transferShow'])->name('transfers.show');
         Route::get('/create', [AccountsController::class, 'transfersCreate'])->name('transfers.create');
         Route::post('/store', [AccountsController::class, 'transfersStore'])->name('transfers.store');
         Route::get('/edit/{id}', [AccountsController::class, 'transfersEdit'])->name('transfers.edit');
@@ -196,7 +203,7 @@ Route::middleware('auth', 'check.permissions')->group(function () {
 
     Route::get('/chart-of-accounts', [AccountsController::class, 'chartOfAccounts'])->name('chartOfAccounts');
     Route::post('/chart-of-accounts/upload', [AccountsController::class, 'uploadChartOfAccounts'])->name('chartOfAccounts.upload');
-
+    Route::get('/chart-of-accounts/{id}', [AccountsController::class, 'chartOfAccountShow'])->name('chartOfAccounts.show');
     Route::get('/chart-of-accounts/create', [AccountsController::class, 'createChartOfAccount'])->name('chartOfAccounts.create');
     Route::post('/chart-of-accounts/store', [AccountsController::class, 'storeChartOfAccount'])->name('chartOfAccounts.store');
     Route::get('/chart-of-accounts/edit/{id}', [AccountsController::class, 'editChartOfAccount'])->name('chartOfAccounts.edit');
@@ -280,6 +287,11 @@ Route::middleware('auth', 'check.permissions')->group(function () {
     Route::put('/employees/{employee}', [EmployeeController::class, 'update'])->name('employees.update');
     Route::delete('/employees/{employee}', [EmployeeController::class, 'destroy'])->name('employees.destroy');
 
+    // Payroll routes
+    Route::get('/payrolls', [PayrollController::class, 'index'])->name('payrolls.index');
+    Route::get('/payrolls/create', [PayrollController::class, 'create'])->name('payrolls.create');
+    Route::post('/payrolls', [PayrollController::class, 'store'])->name('payrolls.store');
+    Route::post('/payrolls/{id}/rollback', [PayrollController::class, 'rollback'])->name('payrolls.rollback');
 
     //Assets
     Route::resource('fixed_assets', FixedAssetController::class);

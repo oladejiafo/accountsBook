@@ -45,6 +45,7 @@
                                 <td>{{ $customer->email }}</td>
                                 <td>{{ $customer->phone }}</td>
                                 <td>
+                                    <a href="{{ route('customers.show', $customer->id) }}" class="btn btn-secondary btn-sm">View</a>
                                     <a href="{{ route('customers.edit', $customer->id) }}" class="btn btn-info btn-sm">Edit</a>
                                     <form action="{{ route('customers.destroy', $customer->id) }}" method="POST" style="display: inline;">
                                         @csrf

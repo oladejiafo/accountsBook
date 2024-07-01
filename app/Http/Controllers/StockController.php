@@ -72,6 +72,26 @@ class StockController extends Controller
         return view('inventory.create', compact('title', 'form','categories', 'stockLocations'));
     }
 
+    public function show($id)
+    {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }
+
+        $companyId = Auth::user()->company_id ?? 1;
+        $title = "View Stock";
+        $form = null; 
+        // Get the categories specific to the logged-in user's company
+        $categories = Category::where('company_id', $companyId)->pluck('name', 'id');
+        
+        // Get the stock locations specific to the logged-in user's company
+        $stockLocations = StockLocation::where('company_id', $companyId)->get();
+        $stock = Stock::where('company_id', $companyId)->findOrFail($id);
+
+        return view('inventory.show', compact('stock','title', 'form','categories', 'stockLocations'));
+    }
+
     public function edit($id)
     {
         // Check authentication and company identification
@@ -126,8 +146,6 @@ class StockController extends Controller
         // Redirect back to the inventory page or any other desired page
         return redirect()->route('inventory')->with('success', 'Stock added successfully.');
     }
-    
-
 
     public function update(Request $request, $id)
     {

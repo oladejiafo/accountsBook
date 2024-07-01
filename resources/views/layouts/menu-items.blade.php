@@ -228,8 +228,8 @@
             <span class="sidebar-textx sidebar-button menutitlefont mr-4 mt-2">Assets</span>
             <ul class="list-unstyled">
                 <li>
-                    <a href="#hrSubmenu" data-toggle="collapse" class="dropdown-toggle sidebar-text right-arrow sidebar-button"><i class="fas fa-users-cog fa-fw" style="margin-right: .75rem"></i> Assets</a>
-                    <ul class="collapse list-unstyled" id="hrSubmenu">
+                    <a href="#assetSubmenu" data-toggle="collapse" class="dropdown-toggle sidebar-text right-arrow sidebar-button"><i class="fas fa-users-cog fa-fw" style="margin-right: .75rem"></i> Assets</a>
+                    <ul class="collapse list-unstyled" id="assetSubmenu">
                         <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{{ route('fixed_assets.create') }}"><i class="fas fa-dot-circle  fa-fw"></i> Add
                                 New
                                 Asset</a> </li>
@@ -260,7 +260,7 @@
                     </ul>
                 </li>
                 <li>
-                    <a class="sidebar-text sidebar-button" href="{{ route('inventory') }}">
+                    <a class="sidebar-text sidebar-button" href="{{ route('payrolls.index') }}">
                         <i class="fa fa-credit-card fa-fw" style="margin-right: .75rem"></i> Payroll
                     </a>
                 </li>

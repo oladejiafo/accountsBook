@@ -58,7 +58,8 @@
                 <td>{{ $transaction->description }}</td>
                 <td>{{ number_format($transaction->amount,2) }}</td>
                 <td>
-                    
+                    <a href="{{ route('transactions.show', $transaction->id) }}" class="btn btn-sm btn-secondary">View</a>
+
                     @can('update',$transaction)
                       <a href="{{ route('transactions.edit', $transaction->id) }}" class="btn btn-sm btn-info">Edit</a>
                     @endcan

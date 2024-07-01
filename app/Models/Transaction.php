@@ -15,6 +15,10 @@ class Transaction extends Model implements Searchable
 
     protected $fillable = ['company_id', 'type', 'date', 'amount', 'description', 'reference_number', 'transaction_name', 'recipient_name', 'recipient_account_no', 'status', 'source', 'bank_id', 'from_account_id', 'to_account_id', 'account_id', 'approved_by', 'approved_at'];
 
+    protected $dates = [
+        'date',
+    ];
+
     public function getSearchResult(): SearchResult
     {
         $title = $this->transaction_name ?? 'Unnamed Transaction';

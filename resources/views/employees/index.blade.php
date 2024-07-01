@@ -60,10 +60,10 @@
                                 <td class="align-middle">{{ $employee->active_status ? 'Active' : 'Inactive' }}</td>
                                 <td class="align-middle">
                                     <a href="{{ route('employees.show', $employee->id) }}"
-                                        class="btn btn-info btn-sm">View</a>
+                                        class="btn btn-secondary btn-sm">View</a>
                                     @can('update',$employee)
                                     <a href="{{ route('employees.edit', $employee->id) }}"
-                                        class="btn btn-primary btn-sm">Edit</a>
+                                        class="btn btn-info btn-sm">Edit</a>
                                     @endcan
                                     @can('delete',$employee)
                                     <form action="{{ route('employees.destroy', $employee->id) }}" method="POST"

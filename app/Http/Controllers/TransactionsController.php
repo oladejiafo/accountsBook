@@ -393,24 +393,6 @@ class TransactionsController extends Controller
         return view('transactions.purchases.selectSupplier', compact('suppliers')); // Change 'select_supplier' to match your actual blade file name
     }
     
-    public function showReturnsForm()
-    {
-        // Check authentication and company identification
-        if (!auth()->check() || !auth()->user()->company_id) {
-            return redirect()->route('login')->with('error', 'Unauthorized access.');
-        }
-    
-        $companyId = auth()->user()->company_id;
-       
-        // // Retrieve all return transactions
-        // $returnTransactions = ReturnTransaction::where('company_id', $companyId)->get();
-    
-        $customers = Customer::where('company_id', $companyId)->get(); 
-
-        return view('transactions.returns.create', compact('customers'));
-        // return view('transactions.returns.show', compact('returnTransactions'));
-    }
-    
     public function processReturn(Request $request)
     {
         // Check authentication and company identification
@@ -754,6 +736,27 @@ class TransactionsController extends Controller
         return response()->json([
             'products' => $formattedProducts,
         ]);
+    }
+
+    public function showReturnsForm($id)
+    {
+        // Check if user is authenticated and has a company ID
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }
+    
+        $return = ReturnTransaction::where('id', $id)
+                        ->where('company_id', auth()->user()->company_id)
+                        ->first();
+    
+        if (!$return) {
+            return redirect()->route('returns.index')->with('error', 'Return not found or unauthorized access.');
+        }
+        
+        $customers = Customer::where('company_id', auth()->user()->company_id)->get();
+        $products = Stock::where('company_id', auth()->user()->company_id)->get();
+        
+        return view('transactions.returns.show', compact('return', 'customers','products'));
     }
 
     public function returnsEdit($id)
@@ -1436,7 +1439,20 @@ class TransactionsController extends Controller
     
         return redirect()->route('payments.index')->with('success', 'Payment created successfully.');
     }
+    public function paymentShow($id)
+    {
+        // Check authentication and company identification
+        if (!auth()->check() || !auth()->user()->company_id) {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }
     
+        $companyId = auth()->user()->company_id;
+        $customers = Customer::where('company_id', $companyId)->get();
+        $banks = Bank::where('company_id', $companyId)->get();
+        $stocks = Stock::where('company_id', $companyId)->get();
+        $payment = Payment::where('company_id', $companyId)->find($id);
+        return view('transactions.payments.show', compact('payment', 'stocks','customers','banks','payment'));
+    }
 
     public function paymentsEdit(Payment $payment)
     {

@@ -51,11 +51,12 @@
                         <td>{{ $transfer->description }}</td>
                         <td>{{ number_format($transfer->amount,2) }}</td>
                         <td>
-                            <a href="{{ route('transfers.edit', $transfer->id) }}" class="btn btn-sm btn-info">Edit Transfer</a>
+                            <a href="{{ route('transfers.show', $transfer->id) }}" class="btn btn-sm btn-secondary">View</a>
+                            <a href="{{ route('transfers.edit', $transfer->id) }}" class="btn btn-sm btn-info">Edit</a>
                             <form action="{{ route('transfers.destroy', $transfer->id) }}" method="POST" style="display: inline-block;">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this record?')">Delete Transfer</button>
+                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this record?')">Delete</button>
                             </form>
                         </td>
                     </tr>

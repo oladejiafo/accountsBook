@@ -49,6 +49,7 @@
                         <td>{{ $deposit->description }}</td>
                         <td>{{ number_format($deposit->amount, 2) }}</td>
                         <td>
+                            <a href="{{ route('deposits.show', $deposit->id) }}" class="btn btn-sm btn-secondary">View</a>
                             <a href="{{ route('deposits.edit', $deposit->id) }}" class="btn btn-sm btn-info">Edit
                                 Deposit</a>
                             <form action="{{ route('deposits.destroy', $deposit->id) }}" method="POST"

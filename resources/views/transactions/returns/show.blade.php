@@ -1,229 +1,69 @@
-<!-- resources/views/returns/show.blade.php -->
-
 @extends('layouts.app')
 
-@section('title', 'Sales Return')
+@section('title', 'Show Return')
+
 @section('content')
-    <div class="card">
-        <div class="card-header">
-            <h1 class="card-title" style="color: #4e4e4e; font-style: bold; ">Returns</h1>
-        </div>
-        <div class="card-body">
-            <form action="{{ route('returns.process') }}" method="post">
-                @csrf
-                <!-- Customer Information -->
-                <div class="form-group row">
-                    <label for="customer_name" class="col-sm-3 col-form-label panel-body-text">Customer Name:</label>
-                    <div class="col-sm-9">
-                        <input type="text" name="customer_name" id="customer_name" class="form-control" autocomplete="on" required>
-                    </div>
-                </div>
 
-                <div class="form-group row">
-                    <label for="customer_email" class="col-sm-3 col-form-label">Customer Email:</label>
-                    <div class="col-sm-9">
-                        <input type="email" name="customer_email" id="customer_email" class="form-control" readonly>
-                    </div>
-                </div>
-    
-                <!-- Transaction Information -->
-                <div class="form-group row">
-                    <label for="customer_transactions" class="col-sm-3 col-form-label">Customer Transactions:</label>
-                    
-                    <div class="col-sm-9">
-                        <ul id="customer_transactions" class="list-group">
-                            <!-- Transactions will be listed here -->
-                        </ul>
-                    </div>
-                </div>
+<div class="titles" style="color:#575757; font-weight: bold; border-bottom: 1px solid white;">Return Details</div>
 
-                <!-- Return Transaction Fields -->
-                <div class="form-group row">
-                    <label for="reason_for_return" class="col-sm-3 col-form-label">Reason for Return:</label>
-                    <div class="col-sm-9">
-                        <textarea name="reason_for_return" id="reason_for_return" class="form-control"></textarea>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label for="condition" class="col-sm-3 col-form-label">Condition of Goods:</label>
-                    <div class="col-sm-9">
-                        <select name="condition" id="condition" class="form-control">
-                            <option value="">Select Condition</option>
-                            <option value="Resalable">Resalable</option>
-                            <option value="Used">Used</option>
-                            <option value="Damaged">Damaged</option>
-                            <!-- Add more options as needed -->
-                        </select>
-                    </div>
-                </div>
-                
-                <div class="form-group row">
-                    <label for="refund_amount" class="col-sm-3 col-form-label">Refund Amount:</label>
-                    <div class="col-sm-9">
-                        <input type="number" name="refund_amount" id="refund_amount" class="form-control">
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label for="exchange" class="col-sm-3 col-form-label">Refund or Exchange:</label>
-                    <div class="col-sm-9">
-                        <select name="exchange" id="exchange" class="form-control">
-                            <option value="refund">Refund</option>
-                            <option value="exchange">Exchange</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="exchange" class="col-sm-3 col-form-label">Approval Required:</label>
-                    <label class="switch">
-                        <input id="approval_required" type="checkbox" class="form-check-input @error('approval_required') is-invalid @enderror" name="approval_required" {{ old('approval_required') ? 'checked' : '' }}>
-                        <span class="slider round"></span>
-                    </label>
-                </div>
-                
-                <!-- Return Products Table -->
-                <div class="form-group">
-                    <label for="return_products">Return Products:</label>
-                    <table class="table table-responsive">
-                        <thead>
-                            <tr>
-                                <th>Product ID</th>
-                                <th>Product Name</th>
-                                <th>Quantity Returned</th>
-                                <th>Condition</th>
-                                <th>Reason for Return</th>
-                                <th>Return Status</th>
-                                <th>Refund Amount</th>
-                                <th>Approval Required</th>
-                                <th>Exchange</th>
-                                <th>&nbsp;</th>
-                            </tr>
-                        </thead>
-                        
-                        <tbody id="returnProducts">
-                            <!-- One row visible by default -->
-                            <tr class="returned-product">
-                                <td><input type="text" name="product_id[]" class="form-control"></td>
-                                <td><input type="text" name="name[]" class="form-control"></td>
-                                <td><input type="number" name="quantity[]" class="form-control"></td>
-                                <td><input type="text" name="condition[]" class="form-control"></td>
-                                <td><input type="text" name="reason_for_return[]" class="form-control"></td>
-                                <td><input type="text" name="return_status[]" class="form-control"></td>
-                                <td><input type="number" name="refund_amount[]" class="form-control"></td>
-                                <td><input type="checkbox" name="approval_required[]" value="1"></td>
-                                <td>
-                                    <select name="exchange[]" class="form-control">
-                                        <option value="refund">Refund</option>
-                                        <option value="exchange">Exchange</option>
-                                    </select>
-                                </td>
-                                <td>
-                                    <button class="form-control btn btn-danger remove-form-row">-</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+<br>
 
-                <button type="button" class="btn btn-success" id="addProduct">Add Product</button>
-                <button type="submit" class="btn btn-warning">Process Return</button>
-            </form>
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-text">Customer Details</div>
+    <div class="panel-body">
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="customer_name" class="panel-body-text">Customer:</label>
+                <input type="text" class="form-control" id="customer_name" value="{{ $return->customer->name }}" readonly>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="return_date" class="panel-body-text">Return date:</label>
+                <input type="date" class="form-control" id="return_date" value="{{ $return->return_date }}" readonly>
+            </div>
         </div>
     </div>
+</div>
 
-    
-    <script type="text/javascript" src="{{ asset('js/jquery-3.2.1.slim.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('js/dialogbox.js') }}"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script type="text/javascript"> 
-        var custom_alert = new custom_alert();
-        $(document).ready(function() {
+<div class="panel panel-default">
+    <div class="panel-heading panel-heading-text">Returned Items</div>
+    <div class="panel-body">
+        @foreach($return->returnedProducts as $index => $item)
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="product_{{ $index }}" class="panel-body-text">Product:</label>
+                    <input type="text" class="form-control" id="product_{{ $index }}" value="{{ $item->product->name }}" readonly>
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="quantity_{{ $index }}" class="panel-body-text">Quantity:</label>
+                    <input type="number" class="form-control" id="quantity_{{ $index }}" value="{{ $item->quantity }}" readonly>
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="price_{{ $index }}" class="panel-body-text">Total Price:</label>
+                    <input type="number" class="form-control" id="price_{{ $index }}" value="{{ $item->price }}" readonly>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="condition_{{ $index }}" class="panel-body-text">Condition:</label>
+                    <input type="text" class="form-control" id="condition_{{ $index }}" value="{{ $item->condition }}" readonly>
+                </div>
+                <div class="form-group col-md-12">
+                    <label for="reason_{{ $index }}" class="panel-body-text">Reason:</label>
+                    <textarea class="form-control" id="reason_{{ $index }}" rows="2" readonly>{{ $item->reason }}</textarea>
+                </div>
+            </div>
+            <hr>
+        @endforeach
+    </div>
+</div>
 
-            $('#customer_name').on('input', function() {
-                var customerName = $(this).val();
-                if (customerName.length >= 3) {
-                    $.ajax({
-                        url: '{{ route("fetchCustomerDetails") }}',
-                        method: 'GET',
-                        data: {
-                            name: customerName
-                        },
-                        success: function(response) {
-                            // Update customer details fields
-                            updateCustomerDetails(response);
-                        },
-                        error: function(xhr, status, error) {
-                            console.error(error);
-                            // Handle errors or display a message to the user
-                        }
-                    });
-                }
-            });
-        });
+<div class="align-middle mt-3">
+    <a href="{{ route('returns.edit', $return->id) }}" class="btn btn-lg btn-primary mr-2">Edit</a>
+    <form action="{{ route('returns.destroy', $return->id) }}" method="POST" style="display: inline-block;">
+        @csrf
+        @method('DELETE')
+        <button type="submit" class="btn btn-lg btn-danger mr-2" onclick="return confirm('Are you sure you want to delete this return?')">Delete</button>
+    </form>
+    <a href="{{ route('returns.index') }}" class="btn btn-lg btn-secondary">Back to Returns</a>
+</div>
 
-        $('#addProduct').click(function() {
-            $('#returnProducts').append(`
-                <tr class="returned-product">
-                    <td><input type="text" name="product_id[]" class="form-control"></td>
-                    <td><input type="text" name="name[]" class="form-control"></td>
-                    <td><input type="number" name="quantity[]" class="form-control"></td>
-                    <td><input type="text" name="condition[]" class="form-control"></td>
-                    <td><input type="text" name="reason_for_return[]" class="form-control"></td>
-                    <td><input type="text" name="return_status[]" class="form-control"></td>
-                    <td><input type="number" name="refund_amount[]" class="form-control"></td>
-                    <td><input type="checkbox" name="approval_required[]" value="1"></td>
-                    <td>
-                        <select name="exchange[]" class="form-control">
-                            <option value="refund">Refund</option>
-                            <option value="exchange">Exchange</option>
-                        </select>
-                    </td>
-                    <td>
-                        <!-- Button to remove row -->
-                        <button class="form-control btn btn-danger remove-form-row">-</button>
-                    </td>
-                    <!-- Add more columns as needed -->
-                </tr>
-            `);
-        });
 
-        // Remove button functionality
-        $('#returnProducts').on('click', '.remove-form-row', function() {
-            // Check if there's more than one row
-            if ($('#returnProducts tr.returned-product').length > 1) {
-                $(this).closest('tr').remove();
-            } else {
-                // alert("At least one product must remain.");
-                custom_alert.render('Field cannot be deleted');
-            }
-        });
-
-        // Function to update customer details
-        function updateCustomerDetails(customer) {
-            $('#customer_email').val(customer.email);
-            fetchTransactions(customer.id);
-        }
-
-        // Function to fetch transactions for a customer
-        function fetchTransactions(customerId) {
-            $.ajax({
-                url: '{{ route("fetchCustomerTransactions") }}',
-                method: 'GET',
-                data: {
-                    customer_id: customerId
-                },
-                success: function(response) {
-                    // Clear previous transactions
-                    $('#customer_transactions').empty();
-                    // Display transactions
-                    response.transactions.forEach(function(transaction) {
-                        $('#customer_transactions').append('<li class="list-group-item">' + transaction + '</li>');
-                    });
-                },
-                error: function(xhr, status, error) {
-                    console.error(error);
-                    // Handle errors or display a message to the user
-                }
-            });
-        }
-    </script>
 @endsection

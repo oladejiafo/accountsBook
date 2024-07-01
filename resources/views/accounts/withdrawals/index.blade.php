@@ -48,11 +48,12 @@
                 <td>{{ $withdrawal->description }}</td>
                 <td>{{ number_format($withdrawal->amount,2) }}</td>
                 <td>
-                    <a href="{{ route('withdrawals.edit', $withdrawal->id) }}" class="btn btn-sm btn-info">Edit Withdrawal</a>
+                    <a href="{{ route('withdrawals.show', $withdrawal->id) }}" class="btn btn-sm btn-secondary">View</a>
+                    <a href="{{ route('withdrawals.edit', $withdrawal->id) }}" class="btn btn-sm btn-info">Edit</a>
                     <form action="{{ route('withdrawals.destroy', $withdrawal->id) }}" method="POST" style="display: inline-block;">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this record?')">Delete Withdrawal</button>
+                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this record?')">Delete</button>
                     </form>
                 </td>
             </tr>

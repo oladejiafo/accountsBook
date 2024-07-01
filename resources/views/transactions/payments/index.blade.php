@@ -51,6 +51,7 @@
                         <td class="align-middle">{{ $payment->bank ? $payment->bank->name : 'N/A' }}</td>
                         <td class="align-middle">{{ $payment->payment_verified_by_cfo ? 'Yes' : 'No' }}</td>
                         <td class="align-middle">
+                            <a href="{{ route('payments.show', $payment->id) }}" class="btn btn-secondary btn-sm">View</a>
                             <a href="{{ route('payments.edit', $payment->id) }}" class="btn btn-info btn-sm">Edit</a>
                             <form action="{{ route('payments.destroy', $payment->id) }}" method="POST" class="d-inline">
                                 @csrf

@@ -51,11 +51,12 @@
                                     <td class="align-middle">{{ $defaultCurrency }}{{ number_format($stock->price, 2) }}</td>
                                     <td class="align-middle">{{ $stock->storeLocation->name }}</td>
                                     <td class="align-middle">
-                                        <a href="{{ route('edit-stock', $stock->id) }}" class="btn btn-info btn-sm">Edit Details</a>
+                                        <a href="{{ route('show-stock', $stock->id) }}" class="btn btn-secondary btn-sm">View</a>
+                                        <a href="{{ route('edit-stock', $stock->id) }}" class="btn btn-info btn-sm">Edit</a>
                                         <form action="{{ route('delete-stock', $stock->id) }}" method="POST" style="display: inline-block;">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-danger btn-sm">Delete Stock</button>
+                                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                                         </form>
                                     </td>
                                 </tr>

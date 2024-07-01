@@ -47,6 +47,7 @@
                                 <td>{{ $customer->return_date }}</td>
      
                                 <td>
+                                    <a href="{{ route('returns.show', $customer->id) }}" class="btn btn-secondary btn-sm">View</a>
                                     <a href="{{ route('returns.edit', $customer->id) }}" class="btn btn-info btn-sm">Edit</a>
                                     <form action="{{ route('returns.destroy', $customer->id) }}" method="POST" style="display: inline;">
                                         @csrf

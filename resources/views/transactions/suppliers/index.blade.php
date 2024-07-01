@@ -34,11 +34,12 @@
             <td class="align-middle">{{ $supplier->gstin }}</td>
             <td class="align-middle">
                 <div class="align-middle">
-                    <a href="{{ route('supplier.edit', $supplier->id) }}" class="btn btn-info btn-sm">Edit Details</a>
+                    <a href="{{ route('supplier', $supplier->id) }}" class="btn btn-secondary btn-sm">View</a>
+                    <a href="{{ route('supplier.edit', $supplier->id) }}" class="btn btn-info btn-sm">Edit</a>
                     <form action="{{ route('supplier.destroy', $supplier->id) }}" method="POST" style="display: inline-block;">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="btn btn-danger btn-sm">Delete Supplier</button>
+                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                     </form>
                 </div>
             </td>

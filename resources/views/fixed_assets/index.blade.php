@@ -49,8 +49,8 @@
                 <td class="align-middle">{{ $fixedAsset->purchase_price }}</td>
                 <td class="align-middle">{{ $fixedAsset->status }}</td>
                 <td class="align-middle">
-                    <a href="{{ route('fixed_assets.show', $fixedAsset->id) }}" class="btn btn-info btn-sm">Show</a>
-                    <a href="{{ route('fixed_assets.edit', $fixedAsset->id) }}" class="btn btn-warning btn-sm">Edit</a>
+                    <a href="{{ route('fixed_assets.show', $fixedAsset->id) }}" class="btn btn-secondary btn-sm">View</a>
+                    <a href="{{ route('fixed_assets.edit', $fixedAsset->id) }}" class="btn btn-info btn-sm">Edit</a>
                     <form action="{{ route('fixed_assets.destroy', $fixedAsset->id) }}" method="POST" style="display:inline;">
                         @csrf
                         @method('DELETE')
