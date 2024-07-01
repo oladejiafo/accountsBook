@@ -9,86 +9,61 @@ document.addEventListener("DOMContentLoaded", function () {
         return btn;
     }
 
-    var searchInputs = document.querySelectorAll(
-        ".input-group.search .textinput"
-    );
-    searchInputs.forEach(function (input) {
+    var searchInputs = document.querySelectorAll(".input-group.search .textinput");
+    searchInputs.forEach(function(input) {
         var clearBtn = createClearButton();
         input.parentNode.appendChild(clearBtn);
 
-        input.setAttribute("autocomplete", "off");
+        // Position the clear button
+        positionClearButton(input, clearBtn);
 
-        function toggleClearButton() {
-            clearBtn.classList.toggle("d-none", !input.value);
-        }
-
-        // Show the clear button when input has value on focus, input, and keyup events
-        input.addEventListener("change", toggleClearButton);
-        input.addEventListener("focus", toggleClearButton);
-        input.addEventListener("input", toggleClearButton);
-
-        // Clear the input when clear button is clicked
-        clearBtn.addEventListener("click", function () {
-            input.value = "";
-            clearBtn.classList.add("d-none");
-            input.focus();
+        // Show/hide the clear button based on input content
+        input.addEventListener("input", function() {
+            toggleClearButton(input, clearBtn);
+            positionClearButton(input, clearBtn);
         });
 
-        toggleClearButton();
+        // Clear input content when clear button is clicked
+        clearBtn.addEventListener("click", function() {
+            input.value = "";
+            toggleClearButton(input, clearBtn);
+            positionClearButton(input, clearBtn);
+        });
     });
 
-    // // Select all tables and add the resizable-table class
-    // document.querySelectorAll("table.table").forEach(function (table) {
-    //     table.classList.add("resizable-table");
-    // });
+    function toggleClearButton(input, clearBtn) {
+        clearBtn.classList.toggle("d-none", input.value === "");
+    }
 
-    // // Initialize colResizable on tables with the resizable-table class
-    // if (typeof $ !== "undefined" && $.fn.colResizable) {
-    //     $(".table").colResizable({
-    //         liveDrag: true,
-    //         postbackSafe: true,
-    //         gripInnerHtml: "<div class='grip'></div>",
-    //         draggingClass: "dragging",
-    //     });
-    // }
+    function positionClearButton(input, clearBtn) {
+        var inputRect = input.getBoundingClientRect();
+        var inputRight = inputRect.right;
+        var inputLeft = inputRect.left;
 
-// Function to initialize colResizable if on medium and larger screens
-function initializeColResizable() {
-    if (window.innerWidth >= 768) { // Adjust breakpoint as needed (768px for md)
-        document.querySelectorAll("table.table").forEach(function (table) {
-            if ($.fn.colResizable) {
-                $(table).colResizable({
-                    liveDrag: true,
-                    postbackSafe: true,
-                    gripInnerHtml: "<div class='grip'></div>",
-                    draggingClass: "dragging",
-                });
-            }
+        // Adjust position if the clear button exceeds input width
+        if (clearBtn.offsetLeft + clearBtn.offsetWidth > inputRight) {
+            clearBtn.style.left = inputLeft - 90 + "px"; // Move leftwards by 90px
+        } else {
+            clearBtn.style.left = ""; // Reset position
+        }
+    }
+
+    // Select all tables and add the resizable-table class
+    document.querySelectorAll("table.table").forEach(function (table) {
+        table.classList.add("resizable-table");
+    });
+
+    // Initialize colResizable on tables with the resizable-table class
+    if (typeof $ !== "undefined" && $.fn.colResizable) {
+        $(".table").colResizable({
+            liveDrag: true,
+            postbackSafe: true,
+            gripInnerHtml: "<div class='grip'></div>",
+            draggingClass: "dragging",
         });
     }
-}
 
-// Initialize on page load
-document.addEventListener('DOMContentLoaded', function () {
-    initializeColResizable();
-});
-
-// Reinitialize on window resize (optional)
-window.addEventListener('resize', function () {
-    initializeColResizable();
-});
-
-
-///////////////////////////////////////////////////////////////////////////////////
-
-    // Add resizer grips to each table row
-    document.querySelectorAll("table.table tbody tr").forEach(function (row) {
-        let grip = document.createElement("div");
-        grip.className = "row-grip";
-        row.style.position = "relative"; 
-    });
-
-    // Function to handle row resizing
+    /////////////////////////////////////////////////////////////////////////////////
     let startY, startHeight, currentRow;
 
     function onMouseMove(event) {
@@ -107,14 +82,24 @@ window.addEventListener('resize', function () {
         }
     }
 
-    document.querySelectorAll(".row-grip").forEach(function (grip) {
-        grip.addEventListener("mousedown", function (event) {
+    // Event listener for row grip mousedown
+    document.querySelectorAll(".table tbody tr").forEach(function(row) {
+        let grip = document.createElement("div");
+        grip.className = "row-grip";
+        row.appendChild(grip);
+
+        grip.addEventListener("mousedown", function(event) {
             startY = event.clientY;
-            currentRow = this.parentElement;
+            currentRow = row;
             startHeight = currentRow.offsetHeight;
             currentRow.classList.add("dragging-row");
             document.addEventListener("mousemove", onMouseMove);
             document.addEventListener("mouseup", onMouseUp);
         });
     });
+       
+ 
+    
+
+
 });

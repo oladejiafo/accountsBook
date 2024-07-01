@@ -4713,9 +4713,15 @@ textarea.form-control-lg {
   display: flex;
   padding-left: 0;
   list-style: none;
+
 }
 
+.pagination svg {
+  width: 45px !important;
+  height: auto;
+}
 .page-link {
+  margin-right: 8px;
   position: relative;
   display: block;
   padding: var(--bs-pagination-padding-y) var(--bs-pagination-padding-x);
@@ -11964,3 +11970,4 @@ textarea.form-control-lg {
     display: none !important;
   }
 }
+

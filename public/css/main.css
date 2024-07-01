@@ -601,14 +601,14 @@
 
 /* Style for the resizer grips */
 .grip {
-  background-color: transparent; /* Make the grip invisible */
-  width: 2px; /* Adjust the width to your liking */
+  background-color: transparent;
+  width: 2px; 
   cursor: col-resize;
 }
 
 /* Optional: Style the dragging effect */
 .dragging {
-  border-left: 2px solid #007bff; /* Change color to your liking */
+  border-left: 2px solid #007bff; 
 }
 
 /* Style for the resizer grips for rows */
@@ -627,8 +627,27 @@
 /* Optional: Style the dragging effect for rows */
 .dragging-row {
   border-bottom: 2px solid #007bff;
+  cursor: row-resize;
 }
 
+.btn-clear {
+  position: absolute;
+  right: 0;
+  border: none;
+  font-size: 18px;
+  font-weight: bold; 
+  line-height: 1;
+  margin-top: 3px;
+  margin-right: 70px; 
+  width: 30px;
+  height: 30px; 
+  background-color: transparent; 
+  cursor: pointer; 
+}
+
+.input-group.search {
+  position: relative; 
+} 
 
 @media (max-width: 768px) {
   .top-margin-10 {
@@ -644,6 +663,5 @@ label {
   font-size: 2rem !important;
 }
 }
-
 
 
